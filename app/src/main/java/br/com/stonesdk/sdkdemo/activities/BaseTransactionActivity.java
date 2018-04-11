@@ -3,6 +3,7 @@ package br.com.stonesdk.sdkdemo.activities;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -150,6 +151,7 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
             @Override
             public void run() {
                 Toast.makeText(BaseTransactionActivity.this, "Erro: " + transactionProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
+                Log.e("BaseTransactionActivity", "onError: " + transactionProvider.getListOfErrors());
             }
         });
     }

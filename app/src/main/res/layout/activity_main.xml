@@ -95,7 +95,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cancelTransactionsOption" />
+            app:layout_constraintTop_toBottomOf="@+id/manageStoneCodeOption" />
 
         <TextView
             android:id="@+id/cancelTransactionsOption"
@@ -139,6 +139,28 @@
             android:text="Pinpad"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/deactivateOption" />
+
+        <TextView
+            android:id="@+id/manageStoneCodeOption"
+            style="@style/listItem"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Gerenciar Stone Codes"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cancelTransactionsOption" />
+
+        <TextView
+            android:id="@+id/posValidateCardOption"
+            style="@style/listItem"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Validar pelo cartão"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/posTransactionOption" />
 
     </android.support.constraint.ConstraintLayout>
 

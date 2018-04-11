@@ -73,4 +73,5 @@
     <string name="environment">Ambiente</string>
     <string name="type_stone_code">Digite o Stone Code</string>
     <string name="activate">Ativar</string>
+    <string name="title_activity_manage_stone_codes">Gerenciar Stone Codes</string>
 </resources>

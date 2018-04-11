@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -20,9 +21,9 @@ import stone.utils.PinpadObject;
 
 public class DevicesActivity extends AppCompatActivity implements OnItemClickListener {
 
-    static BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    static boolean btConnected = false;
-    ListView listView;
+    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private boolean btConnected = false;
+    private ListView listView;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +72,7 @@ public class DevicesActivity extends AppCompatActivity implements OnItemClickLis
         PinpadObject pinpadSelected = new PinpadObject(pinpadInfo[0], pinpadInfo[1], false);
 
         // Passa o pinpad selecionado para o provider de conexão bluetooth.
-        BluetoothConnectionProvider bluetoothConnectionProvider = new BluetoothConnectionProvider(DevicesActivity.this, pinpadSelected);
+        final BluetoothConnectionProvider bluetoothConnectionProvider = new BluetoothConnectionProvider(DevicesActivity.this, pinpadSelected);
         bluetoothConnectionProvider.setDialogMessage("Criando conexao com o pinpad selecionado"); // Mensagem exibida do dialog.
         bluetoothConnectionProvider.useDefaultUI(false); // Informa que haverá um feedback para o usuário.
         bluetoothConnectionProvider.setConnectionCallback(new StoneCallbackInterface() {
@@ -84,6 +85,7 @@ public class DevicesActivity extends AppCompatActivity implements OnItemClickLis
 
             public void onError() {
                 Toast.makeText(getApplicationContext(), "Erro durante a conexao. Verifique a lista de erros do provider para mais informacoes", Toast.LENGTH_SHORT).show();
+                Log.e("DevicesActivity", "onError: " + bluetoothConnectionProvider.getListOfErrors());
             }
         });
         bluetoothConnectionProvider.execute(); // Executa o provider de conexão bluetooth.

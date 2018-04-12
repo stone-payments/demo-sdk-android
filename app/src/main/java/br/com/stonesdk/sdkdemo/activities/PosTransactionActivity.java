@@ -19,28 +19,32 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
     @Override
     public void onSuccess() {
         if (transactionObject.getTransactionStatus() == TransactionStatusEnum.APPROVED) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Transação aprovada! Deseja imprimir o comprovante?");
-            builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            runOnUiThread(new Runnable() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    final PosPrintReceiptProvider posPrintProvider = new PosPrintReceiptProvider(PosTransactionActivity.this, transactionObject);
-                    posPrintProvider.setConnectionCallback(new StoneCallbackInterface() {
+                public void run() {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(PosTransactionActivity.this);
+                    builder.setTitle("Transação aprovada! Deseja imprimir o comprovante?");
+                    builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onSuccess() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            final PosPrintReceiptProvider posPrintProvider = new PosPrintReceiptProvider(PosTransactionActivity.this, transactionObject);
+                            posPrintProvider.setConnectionCallback(new StoneCallbackInterface() {
+                                @Override
+                                public void onSuccess() {
 
-                        }
+                                }
 
-                        @Override
-                        public void onError() {
-                            showToastOnUiThread("Erro ao imprimir: " + posPrintProvider.getListOfErrors());
+                                @Override
+                                public void onError() {
+                                    showToastOnUiThread("Erro ao imprimir: " + posPrintProvider.getListOfErrors());
+                                }
+                            });
                         }
                     });
+                    builder.setNegativeButton(android.R.string.no, null);
+                    builder.show();
                 }
             });
-            builder.setNegativeButton(android.R.string.no, null);
-            builder.show();
         } else {
             showToastOnUiThread("Erro na transação: \"" + getAuthorizationMessage() + "\"");
         }

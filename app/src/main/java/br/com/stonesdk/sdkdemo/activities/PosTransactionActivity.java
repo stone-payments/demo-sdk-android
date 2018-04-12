@@ -2,9 +2,7 @@ package br.com.stonesdk.sdkdemo.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.widget.Toast;
 
-import br.com.stone.posandroid.providers.PosPrintProvider;
 import br.com.stone.posandroid.providers.PosPrintReceiptProvider;
 import br.com.stone.posandroid.providers.PosTransactionProvider;
 import stone.application.enums.ErrorsEnum;
@@ -31,12 +29,12 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
                     posPrintProvider.setConnectionCallback(new StoneCallbackInterface() {
                         @Override
                         public void onSuccess() {
-                            Toast.makeText(PosTransactionActivity.this, "Recibo impresso", Toast.LENGTH_SHORT).show();
+
                         }
 
                         @Override
                         public void onError() {
-                            Toast.makeText(PosTransactionActivity.this, "Erro ao imprimir: " + posPrintProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
+                            showToastOnUiThread("Erro ao imprimir: " + posPrintProvider.getListOfErrors());
                         }
                     });
                 }
@@ -44,7 +42,7 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
             builder.setNegativeButton(android.R.string.no, null);
             builder.show();
         } else {
-            Toast.makeText(getApplicationContext(), "Erro na transação: \"" + getAuthorizationMessage() + "\"", Toast.LENGTH_LONG).show();
+            showToastOnUiThread("Erro na transação: \"" + getAuthorizationMessage() + "\"");
         }
     }
 
@@ -52,7 +50,7 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
     public void onError() {
         super.onError();
         if (providerHasErrorEnum(ErrorsEnum.DEVICE_NOT_COMPATIBLE)) {
-            Toast.makeText(this, "Dispositivo não compatível ou dependência relacionada não está presente", Toast.LENGTH_SHORT).show();
+            showToastOnUiThread("Dispositivo não compatível ou dependência relacionada não está presente");
         }
     }
 }

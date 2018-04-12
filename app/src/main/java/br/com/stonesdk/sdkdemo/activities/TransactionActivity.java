@@ -1,7 +1,5 @@
 package br.com.stonesdk.sdkdemo.activities;
 
-import android.widget.Toast;
-
 import stone.application.enums.ErrorsEnum;
 import stone.application.enums.TransactionStatusEnum;
 import stone.application.interfaces.StoneCallbackInterface;
@@ -19,14 +17,14 @@ public class TransactionActivity extends BaseTransactionActivity<TransactionProv
     @Override
     public void onSuccess() {
         if (transactionObject.getTransactionStatus() == TransactionStatusEnum.APPROVED) {
-            Toast.makeText(getApplicationContext(), "Transação enviada com sucesso e salva no banco. Para acessar, use o TransactionDAO.", Toast.LENGTH_SHORT).show();
+            showToastOnUiThread("Transação enviada com sucesso e salva no banco. Para acessar, use o TransactionDAO.");
         } else {
-            Toast.makeText(getApplicationContext(), "Erro na transação: \"" + getAuthorizationMessage() + "\"", Toast.LENGTH_LONG).show();
+            showToastOnUiThread("Erro na transação: \"" + getAuthorizationMessage() + "\"");
         }
     }
 
     @Override
-    public void onError()   {
+    public void onError() {
         super.onError();
         if (providerHasErrorEnum(ErrorsEnum.NEED_LOAD_TABLES)) { // code 20
             LoadTablesProvider loadTablesProvider = new LoadTablesProvider(TransactionActivity.this, Stone.getPinpadFromListAt(0));
@@ -39,7 +37,7 @@ public class TransactionActivity extends BaseTransactionActivity<TransactionProv
                 }
 
                 public void onError() {
-                    Toast.makeText(getApplicationContext(), "Sucesso.", Toast.LENGTH_SHORT).show();
+                    showToastOnUiThread("Sucesso.");
                 }
             });
         }

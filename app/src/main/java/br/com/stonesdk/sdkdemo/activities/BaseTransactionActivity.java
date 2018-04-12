@@ -147,13 +147,8 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
 
     @Override
     public void onError() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(BaseTransactionActivity.this, "Erro: " + transactionProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
-                Log.e("BaseTransactionActivity", "onError: " + transactionProvider.getListOfErrors());
-            }
-        });
+        showToastOnUiThread("Erro: " + transactionProvider.getListOfErrors());
+        Log.e("BaseTransactionActivity", "onError: " + transactionProvider.getListOfErrors());
     }
 
     @Override
@@ -168,5 +163,14 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
 
     protected UserModel getSelectedUserModel() {
         return Stone.getUserModel(stoneCodeSpinner.getSelectedItemPosition());
+    }
+
+    protected void showToastOnUiThread(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(BaseTransactionActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

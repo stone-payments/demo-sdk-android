@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -37,7 +38,6 @@ import stone.utils.Stone;
 import static android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
 import static br.com.stonesdk.sdkdemo.activities.ValidationActivityPermissionsDispatcher.initiateAppWithPermissionCheck;
 import static stone.environment.Environment.PRODUCTION;
-import static stone.environment.Environment.SANDBOX;
 import static stone.environment.Environment.valueOf;
 
 @RuntimePermissions
@@ -51,7 +51,7 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_validation);
         initiateAppWithPermissionCheck(this);
 
-        Stone.setEnvironment(SANDBOX);
+        Stone.setEnvironment(getSavedEnvironment());
         findViewById(R.id.activateButton).setOnClickListener(this);
         stoneCodeEditText = findViewById(R.id.stoneCodeEditText);
         Spinner environmentSpinner = findViewById(R.id.environmentSpinner);
@@ -65,11 +65,11 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Environment environment = valueOf(adapter.getItem(position));
                 Stone.setEnvironment(environment);
+                saveEnvironment(environment);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Stone.setEnvironment(PRODUCTION);
             }
         });
         environmentSpinner.setAdapter(adapter);
@@ -106,7 +106,7 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
     public void initiateApp() {
-        /**
+        /*
          * Este deve ser, obrigatoriamente, o primeiro metodo
          * a ser chamado. E um metodo que trabalha com sessao.
          */
@@ -178,6 +178,19 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
             initiateAppWithPermissionCheck(this);
         }
         ValidationActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    public Environment getSavedEnvironment() {
+        final SharedPreferences enviroment = getSharedPreferences("environment", MODE_PRIVATE);
+        final String env = enviroment.getString("env", PRODUCTION.name());
+        return Environment.valueOf(env);
+    }
+
+    public void saveEnvironment(Environment env) {
+        final SharedPreferences enviroment = getSharedPreferences("environment", MODE_PRIVATE);
+        final SharedPreferences.Editor editor = enviroment.edit();
+        editor.putString("env", env.name());
+        editor.apply();
     }
 }
 

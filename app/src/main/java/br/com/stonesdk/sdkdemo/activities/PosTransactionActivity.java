@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import br.com.stone.posandroid.providers.PosPrintReceiptProvider;
 import br.com.stone.posandroid.providers.PosTransactionProvider;
 import stone.application.enums.ErrorsEnum;
+import stone.application.enums.ReceiptType;
 import stone.application.enums.TransactionStatusEnum;
 import stone.application.interfaces.StoneCallbackInterface;
 
@@ -22,12 +23,28 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    final PosPrintReceiptProvider posPrintProvider = new PosPrintReceiptProvider(PosTransactionActivity.this, transactionObject);
+                    posPrintProvider.setReceiptType(ReceiptType.MERCHANT);
+                    posPrintProvider.setConnectionCallback(new StoneCallbackInterface() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError() {
+                            showToastOnUiThread("Erro ao imprimir: " + posPrintProvider.getListOfErrors());
+                        }
+                    });
+                    posPrintProvider.execute();
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(PosTransactionActivity.this);
-                    builder.setTitle("Transação aprovada! Deseja imprimir o comprovante?");
+                    builder.setTitle("Transação aprovada! Deseja imprimir a via do Cliente?");
                     builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             final PosPrintReceiptProvider posPrintProvider = new PosPrintReceiptProvider(PosTransactionActivity.this, transactionObject);
+                            posPrintProvider.setReceiptType(ReceiptType.CLIENT);
                             posPrintProvider.setConnectionCallback(new StoneCallbackInterface() {
                                 @Override
                                 public void onSuccess() {
@@ -39,6 +56,7 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
                                     showToastOnUiThread("Erro ao imprimir: " + posPrintProvider.getListOfErrors());
                                 }
                             });
+                            posPrintProvider.execute();
                         }
                     });
                     builder.setNegativeButton(android.R.string.no, null);

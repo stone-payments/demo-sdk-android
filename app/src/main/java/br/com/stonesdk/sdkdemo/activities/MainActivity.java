@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import br.com.stone.posandroid.providers.PosValidationTransactionByCardProvider;
+import br.com.stone.posandroid.providers.PosValidateTransactionByCardProvider;
 import br.com.stonesdk.sdkdemo.R;
 import stone.application.enums.Action;
 import stone.application.interfaces.StoneActionCallback;
@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.posValidateCardOption:
-                final PosValidationTransactionByCardProvider posValidationTransactionByCardProvider = new PosValidationTransactionByCardProvider(this);
+                final PosValidateTransactionByCardProvider posValidationTransactionByCardProvider = new PosValidateTransactionByCardProvider(this);
                 posValidationTransactionByCardProvider.setConnectionCallback(new StoneActionCallback() {
                     @Override
                     public void onStatusChanged(final Action action) {

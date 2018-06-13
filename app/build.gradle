@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "br.com.stonesdk.sdkdemo"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -25,11 +25,11 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.github.hotchemi:permissionsdispatcher:3.1.0'
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:3.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.1'
     implementation 'com.android.support:design:27.1.1'
-    implementation 'br.com.stone:stone-sdk:2.6.0-RC5'
-    implementation 'br.com.stone:stone-sdk-posandroid:2.6.0-RC5'
-    implementation 'br.com.stone:stone-sdk-posandroid-pax:2.6.0-RC5'
-    implementation 'br.com.stone:stone-sdk-posandroid-nexgo:2.6.0-RC5'
-    implementation 'br.com.stone:stone-sdk-posandroid-ingenico:2.6.0-RC5'
+    implementation 'br.com.stone:stone-sdk:2.6.0-RC6'
+    implementation 'br.com.stone:stone-sdk-posandroid:2.6.0-RC6'
+    implementation 'br.com.stone:stone-sdk-posandroid-pax:2.6.0-RC6'
+    implementation 'br.com.stone:stone-sdk-posandroid-nexgo:2.6.0-RC6'
+    implementation 'br.com.stone:stone-sdk-posandroid-ingenico:2.6.0-RC6'
 }

@@ -28,7 +28,6 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-import stone.application.StoneStart;
 import stone.application.interfaces.StoneCallbackInterface;
 import stone.environment.Environment;
 import stone.providers.ActiveApplicationProvider;
@@ -110,7 +109,7 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
          * Este deve ser, obrigatoriamente, o primeiro metodo
          * a ser chamado. E um metodo que trabalha com sessao.
          */
-        List<UserModel> user = StoneStart.init(this);
+        List<UserModel> user = DemoApplication.getUsers();
 
         // se retornar nulo, voce provavelmente nao ativou a SDK
         // ou as informacoes da Stone SDK foram excluidas

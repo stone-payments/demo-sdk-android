@@ -23,7 +23,7 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    final PosPrintReceiptProvider posPrintProvider = new PosPrintReceiptProvider(PosTransactionActivity.this, transactionObject, ReceiptType.MERCHANT);
+                    final PosPrintReceiptProvider posPrintProvider = new PosPrintReceiptProvider(PosTransactionActivity.this, transactionObject);
                     posPrintProvider.setConnectionCallback(new StoneCallbackInterface() {
                         @Override
                         public void onSuccess() {
@@ -42,7 +42,7 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
                     builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            final PosPrintReceiptProvider posPrintProvider = new PosPrintReceiptProvider(PosTransactionActivity.this, transactionObject, ReceiptType.CLIENT);
+                            final PosPrintReceiptProvider posPrintProvider = new PosPrintReceiptProvider(PosTransactionActivity.this, transactionObject);
                             posPrintProvider.setConnectionCallback(new StoneCallbackInterface() {
                                 @Override
                                 public void onSuccess() {

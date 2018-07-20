@@ -22,7 +22,7 @@ import stone.application.enums.ReceiptType;
 import stone.application.interfaces.StoneCallbackInterface;
 import stone.database.transaction.TransactionDAO;
 import stone.database.transaction.TransactionObject;
-import stone.email.pombo.email.Contact;
+import stone.email.pombo.Contact;
 import stone.providers.CancellationProvider;
 import stone.providers.CaptureTransactionProvider;
 import stone.providers.PrintProvider;
@@ -109,7 +109,8 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
                                 }
                                 break;
                             case 1:
-                                final PosPrintReceiptProvider posPrintMerchantProvider = new PosPrintReceiptProvider(TransactionListActivity.this, selectedTransaction, ReceiptType.MERCHANT);
+                                final PosPrintReceiptProvider posPrintMerchantProvider = new PosPrintReceiptProvider(TransactionListActivity.this, selectedTransaction);
+                                posPrintMerchantProvider.setReceiptType(ReceiptType.MERCHANT);
                                 posPrintMerchantProvider.setConnectionCallback(new StoneCallbackInterface() {
                                     @Override
                                     public void onSuccess() {
@@ -124,7 +125,8 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
                                 posPrintMerchantProvider.execute();
                                 break;
                             case 2:
-                                final PosPrintReceiptProvider posPrintClientProvider = new PosPrintReceiptProvider(TransactionListActivity.this, selectedTransaction, ReceiptType.CLIENT);
+                                final PosPrintReceiptProvider posPrintClientProvider = new PosPrintReceiptProvider(TransactionListActivity.this, selectedTransaction);
+                                posPrintClientProvider.setReceiptType(ReceiptType.CLIENT);
                                 posPrintClientProvider.setConnectionCallback(new StoneCallbackInterface() {
                                     @Override
                                     public void onSuccess() {
@@ -206,8 +208,9 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
     }
 
     private void sendReceipt(TransactionObject selectedTransaction, boolean merchantReceipt) {
-        SendEmailTransactionProvider sendEmailProvider = new SendEmailTransactionProvider(TransactionListActivity.this, selectedTransaction,ReceiptType.MERCHANT);
+        SendEmailTransactionProvider sendEmailProvider = new SendEmailTransactionProvider(TransactionListActivity.this, Stone.getUserModel(0), selectedTransaction);
         sendEmailProvider.useDefaultUI(false);
+        sendEmailProvider.setMerchantReceipt(merchantReceipt);
         sendEmailProvider.addTo(new Contact("cliente@gmail.com", "Nome do Cliente"));
         sendEmailProvider.setFrom(new Contact("loja@gmail.com", "Nome do Estabelecimento"));
         sendEmailProvider.setDialogMessage("Enviando comprovante");

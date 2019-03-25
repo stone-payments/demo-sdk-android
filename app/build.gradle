@@ -30,6 +30,6 @@ dependencies {
     implementation 'br.com.stone:stone-sdk:3.2.0-RC8'
     implementation 'br.com.stone:stone-sdk-posandroid:3.2.0-RC8'
     implementation 'br.com.stone:stone-sdk-posandroid-nexgo:3.2.0-RC8'
-    implementation 'br.com.stone:stone-sdk-posandroid-ingenico-3.2.0-RC8'
+    implementation 'br.com.stone:stone-sdk-posandroid-ingenico:3.2.0-RC8'
 
 }

@@ -115,7 +115,7 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
                                 break;
 
                             case 2:
-                                printReceipt(ReceiptType.MERCHANT, selectedTransaction);
+                                printReceipt(ReceiptType.CLIENT, selectedTransaction);
                                 break;
 
                             case 3:

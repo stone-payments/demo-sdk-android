@@ -112,9 +112,11 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
 
                             case 1:
                                 printReceipt(ReceiptType.MERCHANT, selectedTransaction);
+                                break;
 
                             case 2:
                                 printReceipt(ReceiptType.MERCHANT, selectedTransaction);
+                                break;
 
                             case 3:
                                 final PosPrintProvider customPosPrintProvider = new PosPrintProvider(TransactionListActivity.this);

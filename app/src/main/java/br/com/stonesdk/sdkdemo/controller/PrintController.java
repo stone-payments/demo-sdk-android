@@ -24,7 +24,7 @@ public class PrintController {
 
     public void print(final ReceiptType receiptType) {
         final PosPrintReceiptProvider posPrintReceiptProviderInstance =
-                getPosPrintReceiptProviderInstance();
+                getPosPrintReceiptProviderInstance(receiptType);
 
         posPrintReceiptProviderInstance.setConnectionCallback(new StoneCallbackInterface() {
             @Override
@@ -38,13 +38,15 @@ public class PrintController {
                         .getListOfErrors(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        posPrintReceiptProviderInstance.execute();
     }
 
-    private PosPrintReceiptProvider getPosPrintReceiptProviderInstance() {
+    private PosPrintReceiptProvider getPosPrintReceiptProviderInstance(final ReceiptType receiptType) {
         return new PosPrintReceiptProvider(
                 context,
                 transactionObject,
-                ReceiptType.MERCHANT
+                receiptType
         );
     }
 

@@ -3,6 +3,7 @@
 buildscript {
     ext.kotlin_version = '1.3.50'
     repositories {
+        mavenLocal()
         jcenter()
         google()
     }
@@ -16,9 +17,12 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenLocal()
         jcenter()
+        maven { url '/Users/marcelolopes/.m2/repository' }
         maven { url "https://packagecloud.io/stone/sdk-android/maven2" }
         maven { url "https://packagecloud.io/stone/sdk-android-snapshot/maven2" }
+        maven { url "https://packagecloud.io/Stone/pos-android-service-container/maven2" }
         google()
     }
 }

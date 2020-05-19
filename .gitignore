@@ -5,3 +5,5 @@
 /build
 /captures
 *.iml
+gertec/gertec-keystore.properties
+gertec/*.jks

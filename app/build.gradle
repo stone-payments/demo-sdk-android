@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply from: '../gertec/gertec-signing-config.gradle'
 
 android {
     compileSdkVersion 28

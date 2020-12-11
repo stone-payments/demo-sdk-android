@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply from: '../gertec/gertec-signing-config.gradle'
 
 android {
     compileSdkVersion 28
@@ -32,9 +33,12 @@ dependencies {
     annotationProcessor "org.permissionsdispatcher:permissionsdispatcher-processor:4.7.0"
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.android.material:material:1.1.0'
+
     implementation 'br.com.stone:stone-sdk:3.10.0'
     implementation 'br.com.stone:stone-sdk-posandroid:3.10.0'
     implementation 'br.com.stone:stone-sdk-posandroid-ingenico:3.10.0'
+    implementation 'br.com.stone:stone-sdk-posandroid-gertec:3.10.0'
+
     implementation 'org.koin:koin-android:2.0.1'
 
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

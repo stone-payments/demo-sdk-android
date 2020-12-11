@@ -1,0 +1,26 @@
+
+def keystorePropertiesFile = rootProject.file("gertec/gertec-keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+
+    signingConfigs {
+        gertec {
+            storeFile file("../gertec/${keystoreProperties['storeFile']}")
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+    buildTypes {
+        gertec {
+            initWith debug
+            signingConfig signingConfigs.gertec
+            matchingFallbacks = ['debug']
+        }
+    }
+}

@@ -30,7 +30,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
-    implementation'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    implementation files('libs/activeandroid-3.1.0-SNAPSHOT.jar')
     implementation 'androidx.vectordrawable:vectordrawable:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.jakewharton:butterknife:9.0.0'

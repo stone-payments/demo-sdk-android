@@ -18,6 +18,7 @@ allprojects {
     repositories {
         mavenCentral()
         jcenter()
+        maven { url "https://packagecloud.io/stone/pos-android/maven2" }
         maven { url "https://packagecloud.io/stone/sdk-android/maven2" }
         maven { url "https://packagecloud.io/stone/sdk-android-snapshot/maven2" }
         maven { url "https://packagecloud.io/Stone/pos-android-service-container/maven2" }

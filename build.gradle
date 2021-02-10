@@ -1,7 +1,17 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.3.50'
+    ext {
+        kotlin_version = '1.3.50'
+
+        localProp = new Properties()
+        fileName = 'local.properties'
+        if (project.rootProject.file(fileName).exists()) {
+            localProp.load(new FileInputStream(rootProject.file(fileName)))
+        }
+        packageCloudReadToken = System.env.PACKAGECLOUD_READ_TOKEN != null ? System.env.PACKAGECLOUD_READ_TOKEN  : localProp["packageCloudReadToken"] ?: ""
+    }
+
     repositories {
         jcenter()
         google()
@@ -18,6 +28,7 @@ allprojects {
     repositories {
         mavenCentral()
         jcenter()
+        maven { url "https://packagecloud.io/priv/${packageCloudReadToken}/stone/pos-android/maven2" }
         maven { url "https://packagecloud.io/stone/sdk-android/maven2" }
         maven { url "https://packagecloud.io/stone/sdk-android-snapshot/maven2" }
         maven { url "https://packagecloud.io/Stone/pos-android-service-container/maven2" }

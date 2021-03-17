@@ -1,5 +1,3 @@
-![StoneSDK](https://cloud.githubusercontent.com/assets/2567823/11539067/6300c838-990c-11e5-9831-4f8ce691859e.png)
-
 # Demo Android
 Esse repositório contém a demo da SDK para android, a documentação da SDK pode ser encontrada [aqui](http://sdkandroid.stone.com.br/v3.10.0/docs)
 

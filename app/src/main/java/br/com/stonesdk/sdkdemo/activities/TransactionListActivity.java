@@ -124,7 +124,7 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
                                 customPosPrintProvider.addLine("PAN : " + selectedTransaction.getCardHolderNumber());
                                 customPosPrintProvider.addLine("DATE/TIME : " + selectedTransaction.getDate() + " " + selectedTransaction.getTime());
                                 customPosPrintProvider.addLine("AMOUNT : " + selectedTransaction.getAmount());
-                                customPosPrintProvider.addLine("ATK : " + selectedTransaction.getRecipientTransactionIdentification());
+                                customPosPrintProvider.addLine("ATK : " + selectedTransaction.getAcquirerTransactionKey());
                                 customPosPrintProvider.addLine("Signature");
                                 customPosPrintProvider.addBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.signature));
                                 customPosPrintProvider.setConnectionCallback(new StoneCallbackInterface() {

@@ -2,6 +2,12 @@
 Esse repositório contém a demo da SDK para android, a documentação da SDK pode ser encontrada [aqui](http://sdkandroid.stone.com.br/v3.10.0/docs)
 
 
+## Configurando Repositórios
+Inclua no arquivo **local.properties**, localizado na raiz do projeto, a variável abaixo com o seu token:
+```
+packageCloudReadToken=SEU_TOKEN
+```
+
 ---
 #### LICENSE
 ```

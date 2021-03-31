@@ -21,7 +21,7 @@ public class TransactionActivity extends BaseTransactionActivity<TransactionProv
 
             String msg = "Erro na transação";
 
-            if (getAuthorizationMessage() == null) {
+            if (getAuthorizationMessage() != null) {
                 msg += ":" + getAuthorizationMessage();
             } else {
                 msg += "!";

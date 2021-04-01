@@ -17,6 +17,8 @@ import java.util.List;
 
 import br.com.stone.posandroid.providers.PosPrintProvider;
 import br.com.stone.posandroid.providers.PosPrintReceiptProvider;
+import br.com.stonesdk.sdkdemo.model.CentralizedMediumText;
+import br.com.stonesdk.sdkdemo.model.CentralizedBigText;
 import br.com.stonesdk.sdkdemo.R;
 import br.com.stonesdk.sdkdemo.controller.PrintController;
 import stone.application.enums.ReceiptType;
@@ -120,12 +122,17 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
                                 break;
 
                             case 3:
+                                // Impressão customizada
                                 final PosPrintProvider customPosPrintProvider = new PosPrintProvider(TransactionListActivity.this);
+                                customPosPrintProvider.addLine(new CentralizedBigText("Stone"));
+                                customPosPrintProvider.addLine(new CentralizedMediumText("Comprovante customizado"));
+                                customPosPrintProvider.addLine("");
                                 customPosPrintProvider.addLine("PAN : " + selectedTransaction.getCardHolderNumber());
                                 customPosPrintProvider.addLine("DATE/TIME : " + selectedTransaction.getDate() + " " + selectedTransaction.getTime());
                                 customPosPrintProvider.addLine("AMOUNT : " + selectedTransaction.getAmount());
                                 customPosPrintProvider.addLine("ATK : " + selectedTransaction.getAcquirerTransactionKey());
-                                customPosPrintProvider.addLine("Signature");
+                                customPosPrintProvider.addLine("");
+                                customPosPrintProvider.addLine(new CentralizedMediumText("Signature"));
                                 customPosPrintProvider.addBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.signature));
                                 customPosPrintProvider.setConnectionCallback(new StoneCallbackInterface() {
                                     @Override

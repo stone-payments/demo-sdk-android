@@ -2,6 +2,7 @@ package br.com.stonesdk.sdkdemo.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,8 +11,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
+import br.com.stone.posandroid.providers.PosPrintProvider;
 import br.com.stone.posandroid.providers.PosValidateTransactionByCardProvider;
 import br.com.stonesdk.sdkdemo.R;
 import stone.application.enums.Action;
@@ -41,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.listTransactionOption).setOnClickListener(this);
         findViewById(R.id.manageStoneCodeOption).setOnClickListener(this);
         findViewById(R.id.posValidateCardOption).setOnClickListener(this);
+        findViewById(R.id.posPrinterProvider).setOnClickListener(this);
     }
 
     @Override
@@ -198,6 +203,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
                 posValidateTransactionByCardProvider.execute();
                 break;
+
+            case R.id.posPrinterProvider:
+                final PosPrintProvider customPosPrintProvider = new PosPrintProvider(getApplicationContext());
+                customPosPrintProvider.addLine("PAN : " + "123");
+                customPosPrintProvider.addLine("DATE/TIME : 01/01/1900");
+                customPosPrintProvider.addLine("AMOUNT : 200.00");
+                customPosPrintProvider.addLine("ATK : 123456789");
+                customPosPrintProvider.addLine("Signature");
+                customPosPrintProvider.addBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.signature));
+                customPosPrintProvider.setConnectionCallback(new StoneCallbackInterface() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(getApplicationContext(), "Recibo impresso", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError() {
+                        Toast.makeText(getApplicationContext(), "Erro ao imprimir: " + customPosPrintProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                customPosPrintProvider.execute();
 
             default:
                 break;

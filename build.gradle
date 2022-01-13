@@ -2,7 +2,7 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.4.32'
+        kotlin_version = '1.6.10'
         stone_sdk_version = '3.11.8'
 
         localProp = new Properties()
@@ -14,7 +14,7 @@ buildscript {
     }
 
     repositories {
-        jcenter()
+        mavenCentral()
         google()
     }
     dependencies {
@@ -28,7 +28,6 @@ buildscript {
 allprojects {
     repositories {
         mavenCentral()
-        jcenter()
         maven { url "https://packagecloud.io/priv/${packageCloudReadToken}/stone/pos-android/maven2" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         google()

@@ -1,14 +1,15 @@
 package br.com.stonesdk.sdkdemo.activities;
 
+import static android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
+import static br.com.stonesdk.sdkdemo.activities.ValidationActivityPermissionsDispatcher.initiateAppWithPermissionCheck;
+import static stone.environment.Environment.valueOf;
+
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,6 +17,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +39,6 @@ import stone.providers.ActiveApplicationProvider;
 import stone.user.UserModel;
 import stone.utils.Stone;
 
-import static android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
-import static br.com.stonesdk.sdkdemo.activities.ValidationActivityPermissionsDispatcher.initiateAppWithPermissionCheck;
-import static stone.environment.Environment.PRODUCTION;
-import static stone.environment.Environment.SANDBOX;
-import static stone.environment.Environment.valueOf;
-
 @RuntimePermissions
 public class ValidationActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "ValidationActivity";
@@ -50,7 +49,7 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_validation);
         initiateAppWithPermissionCheck(this);
-        Stone.setEnvironment(SANDBOX);
+//        Stone.setEnvironment(SANDBOX);
         Stone.setAppName("DEMO APP"); // Setando o nome do APP (obrigatorio)
         findViewById(R.id.activateButton).setOnClickListener(this);
         stoneCodeEditText = findViewById(R.id.stoneCodeEditText);
@@ -64,12 +63,12 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Environment environment = valueOf(adapter.getItem(position));
-                Stone.setEnvironment(environment);
+//                Stone.setEnvironment(environment);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Stone.setEnvironment(PRODUCTION);
+//                Stone.setEnvironment(PRODUCTION);
             }
         });
         environmentSpinner.setAdapter(adapter);

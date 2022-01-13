@@ -44,6 +44,7 @@ dependencies {
     implementation "br.com.stone:stone-sdk-posandroid:$stone_sdk_version"
     implementation "br.com.stone:stone-sdk-posandroid-ingenico:$stone_sdk_version"
     implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
+    implementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
 
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 

@@ -39,6 +39,7 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     EditText amountEditText;
     TextView logTextView;
     Button sendTransactionButton;
+    Button cancelTransactionButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,32 +53,26 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
         amountEditText = findViewById(R.id.amountEditText);
         logTextView = findViewById(R.id.logTextView);
         sendTransactionButton = findViewById(R.id.sendTransactionButton);
+        cancelTransactionButton = findViewById(R.id.cancelTransactionButton);
 
         spinnerAction();
         radioGroupClick();
-        sendTransactionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                initTransaction();
-            }
-        });
+        sendTransactionButton.setOnClickListener(v -> initTransaction());
+        cancelTransactionButton.setOnClickListener(v -> transactionProvider.abortPayment());
     }
 
     private void radioGroupClick() {
-        transactionTypeRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.radioDebit:
-                    case R.id.radioVoucher:
-                        installmentsTextView.setVisibility(View.GONE);
-                        installmentsSpinner.setVisibility(View.GONE);
-                        break;
-                    case R.id.radioCredit:
-                        installmentsTextView.setVisibility(View.VISIBLE);
-                        installmentsSpinner.setVisibility(View.VISIBLE);
-                        break;
-                }
+        transactionTypeRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.radioDebit:
+                case R.id.radioVoucher:
+                    installmentsTextView.setVisibility(View.GONE);
+                    installmentsSpinner.setVisibility(View.GONE);
+                    break;
+                case R.id.radioCredit:
+                    installmentsTextView.setVisibility(View.VISIBLE);
+                    installmentsSpinner.setVisibility(View.VISIBLE);
+                    break;
             }
         });
     }
@@ -149,22 +144,12 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
 
     @Override
     public void onError() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(BaseTransactionActivity.this, "Erro: " + transactionProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        runOnUiThread(() -> Toast.makeText(BaseTransactionActivity.this, "Erro: " + transactionProvider.getListOfErrors(), Toast.LENGTH_SHORT).show());
     }
 
     @Override
     public void onStatusChanged(final Action action) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                logTextView.append(action.name() + "\n");
-            }
-        });
+        runOnUiThread(() -> logTextView.append(action.name() + "\n"));
     }
 
     protected UserModel getSelectedUserModel() {

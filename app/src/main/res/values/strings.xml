@@ -22,6 +22,7 @@
     <!-- Main Activity strings -->
     <string name="transaction_enter_value">Digite o valor</string>
     <string name="transaction_send_button">Enviar Transação</string>
+    <string name="cancel_transaction_button">Cancelar Transação</string>
     <string name="transaction_value">Valor: </string>
     <string name="transaction_debit">Débito</string>
     <string name="transaction_credit">Crédito</string>

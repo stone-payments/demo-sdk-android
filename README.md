@@ -1,5 +1,5 @@
 # Demo Android
-Esse repositório contém a demo da SDK para android, a documentação da SDK pode ser encontrada [aqui](http://sdkandroid.stone.com.br/v3.10.0/docs)
+Esse repositório contém a demo da SDK para android, a documentação da SDK pode ser encontrada [aqui](https://sdkandroid.stone.com.br/reference/o-que-%C3%A9-o-deeplink)
 
 
 ## Configurando Repositórios

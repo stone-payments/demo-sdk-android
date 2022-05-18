@@ -75,4 +75,8 @@
     <string name="type_stone_code">Digite o Stone Code</string>
     <string name="activate">Ativar</string>
     <string name="title_activity_manage_stone_codes">Gerenciar Stone Codes</string>
+    <string name="uuid_s">UUID:\n%s</string>
+    <string name="detect_card">Detectar cartão</string>
+    <string name="read_block">Ler bloco</string>
+    <string name="write_block">Escrever no bloco</string>
 </resources>

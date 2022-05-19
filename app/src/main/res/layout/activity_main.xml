@@ -163,6 +163,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/posValidateCardOption" />
 
+        <TextView
+            android:id="@+id/posMifareProvider"
+            style="@style/listItem"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Provider de Mifare"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/posPrinterProvider" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

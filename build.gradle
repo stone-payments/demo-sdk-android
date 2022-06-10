@@ -11,7 +11,6 @@ buildscript {
             localProp.load(new FileInputStream(rootProject.file(fileName)))
         }
         packageCloudReadToken = System.env.PACKAGECLOUD_READ_TOKEN != null ? System.env.PACKAGECLOUD_READ_TOKEN  : localProp["packageCloudReadToken"] ?: ""
-        packageCloudReadTokenInternal = System.env.PACKAGECLOUD_READ_TOKEN != null ? System.env.PACKAGECLOUD_READ_TOKEN  : localProp["packageCloudReadTokenInternal"] ?: ""
     }
 
     repositories {
@@ -30,7 +29,6 @@ allprojects {
     repositories {
         mavenCentral()
         maven { url "https://packagecloud.io/priv/${packageCloudReadToken}/stone/pos-android/maven2" }
-        maven { url "https://packagecloud.io/priv/${packageCloudReadTokenInternal}/stone/pos-android-internal/maven2" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         google()
     }

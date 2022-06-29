@@ -1,0 +1,27 @@
+resources:
+  repositories:
+    - repository: pos-android
+      type: git
+      name: pos-android
+
+trigger:
+  tags:
+    include:
+      - '*.*.*'
+  branches:
+    include:
+      - master
+
+pr:
+  - '*'
+
+extends:
+  template: build.yml@pos-android
+  parameters:
+    projectAssembleExcludes: ' -x assembleGertec'
+    projectBuildExcludes: '-x test -x lint'
+    projectTestTask: 'testDebugUnitTest'
+    positivoJks: false
+    hasArchivesToUpload: false
+    hasGoogleServices: false
+    projectMainModule: 'app'

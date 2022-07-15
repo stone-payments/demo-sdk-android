@@ -3,7 +3,7 @@
 buildscript {
     ext {
         kotlin_version = '1.6.10'
-        stone_sdk_version = '4.0.6'
+        stone_sdk_version = '4.4.0-beta'
 
         localProp = new Properties()
         fileName = 'local.properties'
@@ -15,6 +15,7 @@ buildscript {
     }
 
     repositories {
+        mavenLocal()
         mavenCentral()
         google()
     }
@@ -28,6 +29,7 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenLocal()
         mavenCentral()
         maven { url "https://packagecloud.io/priv/${packageCloudReadToken}/stone/pos-android/maven2" }
         maven { url "https://packagecloud.io/priv/${packageCloudReadTokenInternal}/stone/pos-android-internal/maven2" }

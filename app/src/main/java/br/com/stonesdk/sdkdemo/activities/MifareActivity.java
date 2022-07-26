@@ -21,6 +21,7 @@ import stone.application.interfaces.StoneCallbackInterface;
  */
 public class MifareActivity extends AppCompatActivity {
     private TextView logTextView;
+    private PosMifareProvider mifareProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +32,18 @@ public class MifareActivity extends AppCompatActivity {
         setCardUUIDText("");
     }
 
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mifareProvider != null) mifareProvider.cancelDetection();
+    }
+
     /**
      *  Exemplo de detecção de cartão, pegando o UUID.
      */
     public void detectCard(View view){
-        PosMifareProvider mifareProvider = new PosMifareProvider(getApplicationContext());
+        mifareProvider = new PosMifareProvider(getApplicationContext());
 
         mifareProvider.setConnectionCallback(new StoneCallbackInterface() {
             @Override

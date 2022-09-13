@@ -114,6 +114,7 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Selecione o tipo de transação");
         String[] options = new String[optionsList.size()];
+        optionsList.toArray(options);
         builder.setItems(
                 options,
                 (dialog, which) -> getTransactionProvider().setTransactionTypeSelected(which)

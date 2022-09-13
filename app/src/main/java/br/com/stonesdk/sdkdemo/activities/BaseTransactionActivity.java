@@ -1,8 +1,6 @@
 package br.com.stonesdk.sdkdemo.activities;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -12,6 +10,9 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import br.com.stonesdk.sdkdemo.R;
 import stone.application.enums.Action;
@@ -150,6 +151,10 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     @Override
     public void onStatusChanged(final Action action) {
         runOnUiThread(() -> logTextView.append(action.name() + "\n"));
+    }
+
+    protected BaseTransactionProvider getTransactionProvider() {
+        return transactionProvider;
     }
 
     protected UserModel getSelectedUserModel() {

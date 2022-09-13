@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
+import java.util.List;
+
 import br.com.stone.posandroid.providers.PosPrintReceiptProvider;
 import br.com.stone.posandroid.providers.PosTransactionProvider;
 import br.com.stonesdk.sdkdemo.controller.PrintController;
@@ -17,6 +19,10 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
     @Override
     protected PosTransactionProvider buildTransactionProvider() {
         return new PosTransactionProvider(this, transactionObject, getSelectedUserModel());
+    }
+
+    protected PosTransactionProvider getTransactionProvider() {
+        return (PosTransactionProvider) super.getTransactionProvider();
     }
 
     @Override
@@ -85,17 +91,33 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
     public void onStatusChanged(final Action action) {
         super.onStatusChanged(action);
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (action == Action.TRANSACTION_WAITING_PASSWORD) {
+        runOnUiThread(() -> {
+
+            switch (action) {
+                case TRANSACTION_WAITING_PASSWORD:
                     Toast.makeText(
                             PosTransactionActivity.this,
                             "Pin tries remaining to block card: ${transactionProvider?.remainingPinTries}",
                             Toast.LENGTH_LONG
                     ).show();
-                }
+                    break;
+                case TRANSACTION_TYPE_SELECTION:
+                    List<String> options = getTransactionProvider().getTransactionTypeOptions();
+                    showTransactionTypeSelectionDialog(options);
             }
+
         });
+    }
+
+
+    private void showTransactionTypeSelectionDialog(final List<String> optionsList) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Selecione o tipo de transação");
+        String[] options = new String[optionsList.size()];
+        builder.setItems(
+                options,
+                (dialog, which) -> getTransactionProvider().setTransactionTypeSelected(which)
+        );
+        builder.show();
     }
 }

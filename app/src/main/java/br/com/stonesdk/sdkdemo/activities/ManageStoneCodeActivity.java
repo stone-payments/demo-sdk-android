@@ -13,11 +13,12 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import br.com.stone.sdk.activation.providers.ActiveApplicationProvider;
+import br.com.stone.sdk.core.model.user.UserModel;
+import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
+import br.com.stone.sdk.core.utils.Stone;
 import br.com.stonesdk.sdkdemo.R;
-import stone.application.interfaces.StoneCallbackInterface;
-import stone.providers.ActiveApplicationProvider;
-import stone.user.UserModel;
-import stone.utils.Stone;
+
 
 /**
  * @author tiago.barbosa
@@ -25,7 +26,7 @@ import stone.utils.Stone;
  */
 public class ManageStoneCodeActivity extends AppCompatActivity {
 
-    private final List<UserModel> userModelList = Stone.sessionApplication.getUserModelList();
+    private final List<UserModel> userModelList = Stone.getSessionApplication().getUserModelList();
     private ListView stoneCodeListView;
 
     @Override

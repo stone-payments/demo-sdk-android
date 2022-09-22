@@ -4,13 +4,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
-import br.com.stone.posandroid.providers.PosPrintReceiptProvider;
-import br.com.stone.posandroid.providers.PosTransactionProvider;
+import br.com.stone.sdk.core.enums.ErrorsEnum;
+import br.com.stone.sdk.payment.enums.Action;
+import br.com.stone.sdk.payment.enums.ReceiptType;
+import br.com.stone.sdk.payment.enums.TransactionStatusEnum;
+import br.com.stone.sdk.payment.providers.PosPrintReceiptProvider;
+import br.com.stone.sdk.payment.providers.PosTransactionProvider;
 import br.com.stonesdk.sdkdemo.controller.PrintController;
-import stone.application.enums.Action;
-import stone.application.enums.ErrorsEnum;
-import stone.application.enums.ReceiptType;
-import stone.application.enums.TransactionStatusEnum;
+
 
 public class PosTransactionActivity extends BaseTransactionActivity<PosTransactionProvider> {
 

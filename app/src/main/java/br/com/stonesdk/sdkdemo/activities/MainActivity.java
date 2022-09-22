@@ -1,34 +1,33 @@
 package br.com.stonesdk.sdkdemo.activities;
 
+import static android.widget.Toast.LENGTH_SHORT;
+import static android.widget.Toast.makeText;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.List;
 
-import br.com.stone.posandroid.providers.PosPrintProvider;
-import br.com.stone.posandroid.providers.PosValidateTransactionByCardProvider;
+import br.com.stone.sdk.activation.providers.ActiveApplicationProvider;
+import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
+import br.com.stone.sdk.hardware.providers.PosPrintProvider;
+import br.com.stone.sdk.payment.database.models.transaction.TransactionObject;
+import br.com.stone.sdk.payment.enums.Action;
+import br.com.stone.sdk.payment.providers.DisplayMessageProvider;
+import br.com.stone.sdk.payment.providers.PosValidateTransactionByCardProvider;
+import br.com.stone.sdk.payment.providers.ReversalProvider;
+import br.com.stone.sdk.payment.providers.interfaces.StoneActionCallback;
+import br.com.stone.sdk.payment.utils.StonePayment;
 import br.com.stonesdk.sdkdemo.R;
-import stone.application.enums.Action;
-import stone.application.interfaces.StoneActionCallback;
-import stone.application.interfaces.StoneCallbackInterface;
-import stone.database.transaction.TransactionObject;
-import stone.providers.ActiveApplicationProvider;
-import stone.providers.DisplayMessageProvider;
-import stone.providers.ReversalProvider;
-import stone.utils.Stone;
-
-import static android.widget.Toast.LENGTH_SHORT;
-import static android.widget.Toast.makeText;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.transactionOption:
                 // Verifica se o bluetooth esta ligado e se existe algum pinpad conectado.
-                if (Stone.getPinpadListSize() > 0) {
+                if (StonePayment.getPinpadListSize() > 0) {
                     Intent transactionIntent = new Intent(MainActivity.this, TransactionActivity.class);
                     startActivity(transactionIntent);
                     break;
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.displayMessageOption:
-                if (Stone.getPinpadListSize() <= 0) {
+                if (StonePayment.getPinpadListSize() <= 0) {
                     makeText(getApplicationContext(), "Conecte-se a um pinpad.", LENGTH_SHORT).show();
                     break;
                 }
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onClick(DialogInterface dialog, int which) {
                         String text = editText.getText().toString();
                         DisplayMessageProvider displayMessageProvider =
-                                new DisplayMessageProvider(MainActivity.this, text, Stone.getPinpadFromListAt(0));
+                                new DisplayMessageProvider(MainActivity.this, text, StonePayment.getPinpadFromListAt(0));
                         displayMessageProvider.execute();
                     }
                 });
@@ -145,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.disconnectDeviceOption:
-                if (Stone.getPinpadListSize() > 0) {
+                if (StonePayment.getPinpadListSize() > 0) {
                     Intent closeBluetoothConnectionIntent = new Intent(MainActivity.this, DisconnectPinpadActivity.class);
                     startActivity(closeBluetoothConnectionIntent);
                 } else {

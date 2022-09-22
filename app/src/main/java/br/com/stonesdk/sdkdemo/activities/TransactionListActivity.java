@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -12,26 +11,25 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.stone.posandroid.providers.PosPrintProvider;
-import br.com.stone.posandroid.providers.PosPrintReceiptProvider;
-import br.com.stonesdk.sdkdemo.model.CentralizedMediumText;
-import br.com.stonesdk.sdkdemo.model.CentralizedBigText;
+import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
+import br.com.stone.sdk.hardware.providers.PosPrintProvider;
+import br.com.stone.sdk.payment.database.dao.transaction.TransactionDAO;
+import br.com.stone.sdk.payment.database.models.transaction.TransactionObject;
+import br.com.stone.sdk.payment.enums.ReceiptType;
+import br.com.stone.sdk.payment.providers.CancellationProvider;
+import br.com.stone.sdk.payment.providers.CaptureTransactionProvider;
+import br.com.stone.sdk.payment.providers.PosPrintReceiptProvider;
+import br.com.stone.sdk.payment.providers.SendEmailTransactionProvider;
+import br.com.stone.sdk.payment.providers.model.email.Contact;
 import br.com.stonesdk.sdkdemo.R;
 import br.com.stonesdk.sdkdemo.controller.PrintController;
-import stone.application.enums.ReceiptType;
-import stone.application.interfaces.StoneCallbackInterface;
-import stone.database.transaction.TransactionDAO;
-import stone.database.transaction.TransactionObject;
-import stone.providers.CancellationProvider;
-import stone.providers.CaptureTransactionProvider;
-import stone.providers.PrintProvider;
-import stone.providers.SendEmailTransactionProvider;
-import stone.repository.remote.email.pombo.email.Contact;
-import stone.utils.PrintObject;
-import stone.utils.Stone;
+import br.com.stonesdk.sdkdemo.model.CentralizedBigText;
+import br.com.stonesdk.sdkdemo.model.CentralizedMediumText;
 
 public class TransactionListActivity extends AppCompatActivity implements OnItemClickListener {
 
@@ -84,33 +82,7 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
                         switch (which) {
 
                             case 0:
-                                try {
-                                    // lógica da impressão
-                                    List<PrintObject> listToPrint = new ArrayList<>();
-                                    for (int i = 0; i < 10; i++) {
-                                        listToPrint.add(new PrintObject("Teste de impressão linha " + i, PrintObject.MEDIUM, PrintObject.CENTER));
-                                    }
-                                    // Stone.getPinpadFromListAt(0) eh o pinpad conectado, que esta na posicao zero.
-                                    final PrintProvider printProvider = new PrintProvider(TransactionListActivity.this, listToPrint, Stone.getPinpadFromListAt(0));
-                                    printProvider.useDefaultUI(false);
-                                    printProvider.setDialogMessage("Imprimindo...");
-                                    printProvider.setConnectionCallback(new StoneCallbackInterface() {
-                                        public void onSuccess() {
-                                            Toast.makeText(getApplicationContext(), "Impressão realizada com sucesso", Toast.LENGTH_SHORT).show();
-                                            finish();
-                                        }
-
-                                        public void onError() {
-                                            Toast.makeText(getApplicationContext(), "Um erro ocorreu durante a impressão", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                    printProvider.execute();
-                                } catch (IndexOutOfBoundsException outException) {
-                                    Toast.makeText(getApplicationContext(), "Conecte-se a um pinpad.", Toast.LENGTH_SHORT).show();
-                                } catch (Exception e) {
-                                    Toast.makeText(getApplicationContext(), "Houve um erro inesperado. Tente novamente mais tarde.", Toast.LENGTH_SHORT).show();
-                                    e.printStackTrace();
-                                }
+                                Toast.makeText(getApplicationContext(), "Operação não Suportada", Toast.LENGTH_LONG).show();
                                 break;
 
                             case 1:

@@ -3,7 +3,6 @@ package br.com.stonesdk.sdkdemo.activities;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,12 +11,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.Set;
 
+import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
+import br.com.stone.sdk.payment.database.models.pinpad.PinpadObject;
+import br.com.stone.sdk.payment.providers.BluetoothConnectionProvider;
 import br.com.stonesdk.sdkdemo.R;
-import stone.application.interfaces.StoneCallbackInterface;
-import stone.providers.BluetoothConnectionProvider;
-import stone.utils.PinpadObject;
 
 public class DevicesActivity extends AppCompatActivity implements OnItemClickListener {
 

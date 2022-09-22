@@ -13,16 +13,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import br.com.stone.sdk.core.enums.ErrorsEnum;
+import br.com.stone.sdk.core.model.user.UserModel;
+import br.com.stone.sdk.core.utils.Stone;
+import br.com.stone.sdk.payment.database.models.transaction.TransactionObject;
+import br.com.stone.sdk.payment.enums.Action;
+import br.com.stone.sdk.payment.enums.InstalmentTransactionEnum;
+import br.com.stone.sdk.payment.enums.TypeOfTransactionEnum;
+import br.com.stone.sdk.payment.providers.interfaces.BaseTransactionProvider;
+import br.com.stone.sdk.payment.providers.interfaces.StoneActionCallback;
 import br.com.stonesdk.sdkdemo.R;
-import stone.application.enums.Action;
-import stone.application.enums.ErrorsEnum;
-import stone.application.enums.InstalmentTransactionEnum;
-import stone.application.enums.TypeOfTransactionEnum;
-import stone.application.interfaces.StoneActionCallback;
-import stone.database.transaction.TransactionObject;
-import stone.providers.BaseTransactionProvider;
-import stone.user.UserModel;
-import stone.utils.Stone;
 
 /**
  * Created by felipe on 05/03/18.
@@ -84,7 +84,7 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
 
         ArrayAdapter<String> stoneCodeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
         stoneCodeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        for (UserModel userModel : Stone.sessionApplication.getUserModelList()) {
+        for (UserModel userModel : Stone.getSessionApplication().getUserModelList()) {
             stoneCodeAdapter.add(userModel.getStoneCode());
         }
         stoneCodeSpinner.setAdapter(stoneCodeAdapter);

@@ -2,9 +2,9 @@ package br.com.stonesdk.sdkdemo.model;
 
 import org.jetbrains.annotations.NotNull;
 
-import stone.application.enums.StoneTextAlignment;
-import stone.application.enums.StoneTextSize;
-import stone.application.interfaces.StoneCustomizedText;
+import br.com.stone.sdk.hardware.enums.StoneTextAlignment;
+import br.com.stone.sdk.hardware.enums.StoneTextSize;
+import br.com.stone.sdk.hardware.providers.interfaces.StoneCustomizedText;
 
 public class CentralizedMediumText implements StoneCustomizedText {
     private final String text;

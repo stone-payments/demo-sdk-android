@@ -2,7 +2,6 @@ package br.com.stonesdk.sdkdemo.activities;
 
 import static android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
 import static br.com.stonesdk.sdkdemo.activities.ValidationActivityPermissionsDispatcher.initiateAppWithPermissionCheck;
-import static stone.environment.Environment.valueOf;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -25,6 +24,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.stone.sdk.activation.providers.ActiveApplicationProvider;
+import br.com.stone.sdk.core.application.StoneStart;
+import br.com.stone.sdk.core.environment.Environment;
+import br.com.stone.sdk.core.model.user.UserModel;
+import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
+import br.com.stone.sdk.core.utils.Stone;
 import br.com.stonesdk.sdkdemo.R;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -32,12 +37,7 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-import stone.application.StoneStart;
-import stone.application.interfaces.StoneCallbackInterface;
-import stone.environment.Environment;
-import stone.providers.ActiveApplicationProvider;
-import stone.user.UserModel;
-import stone.utils.Stone;
+
 
 @RuntimePermissions
 public class ValidationActivity extends AppCompatActivity implements View.OnClickListener {
@@ -62,13 +62,11 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
         environmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Environment environment = valueOf(adapter.getItem(position));
-//                Stone.setEnvironment(environment);
+                Environment environment = Environment.valueOf(adapter.getItem(position));
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-//                Stone.setEnvironment(PRODUCTION);
             }
         });
         environmentSpinner.setAdapter(adapter);
@@ -115,7 +113,8 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
         List<UserModel> user = StoneStart.init(this);
 
         // se retornar nulo, voce provavelmente nao ativou a SDK
-        // ou as informacoes da Stone SDK foram excluidas
+        // ou as informacoes da Stone SDK
+        // foram excluidas
         if (user != null) {
             /* caso ja tenha as informacoes da SDK e chamado o ActiveApplicationProvider anteriormente
                sua aplicacao podera seguir o fluxo normal */

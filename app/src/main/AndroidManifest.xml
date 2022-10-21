@@ -36,7 +36,8 @@
         <activity
             android:name=".activities.ValidationActivity"
             android:label="@string/title_activity_validation"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -38,6 +38,7 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     Spinner stoneCodeSpinner;
     TextView installmentTypeTextView;
     TextView installmentNumberTextView;
+    TextView infoTextView;
     EditText installmentNumberEditText;
     CheckBox captureTransactionCheckBox;
     EditText amountEditText;
@@ -54,6 +55,7 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
         installmentTypeTextView = findViewById(R.id.installmentTypeTextView);
         installmentTypeSpinner = findViewById(R.id.installmentTypeSpinner);
         installmentNumberTextView = findViewById(R.id.installmentNumberTextView);
+        infoTextView = findViewById(R.id.infoTextView);
         installmentNumberEditText = findViewById(R.id.installmentNumberEditText);
         stoneCodeSpinner = findViewById(R.id.stoneCodeSpinner);
         captureTransactionCheckBox = findViewById(R.id.captureTransactionCheckBox);
@@ -64,33 +66,30 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
 
         spinnerAction();
         radioGroupClick();
-        getInstalmentTransaction();
 
         sendTransactionButton.setOnClickListener(v -> initTransaction());
         cancelTransactionButton.setOnClickListener(v -> transactionProvider.abortPayment());
     }
 
-    private void getInstalmentTransaction() {
+    private InstalmentTransaction getInstalmentTransaction() {
         switch (installmentTypeSpinner.getSelectedItemPosition()) {
             case 0: {
-                instalmentTransaction = InstalmentTransaction.None.INSTANCE;
-                break;
+                return new InstalmentTransaction.None();
             }
             case 1: {
-                instalmentTransaction = new InstalmentTransaction.Issuer(
+                return new InstalmentTransaction.Issuer(
                         Integer.parseInt(
                                 installmentNumberEditText.getText().toString()
                         ));
-                break;
             }
             case 2: {
-                instalmentTransaction = new InstalmentTransaction.Merchant(
+                return new InstalmentTransaction.Merchant(
                         Integer.parseInt(
                                 installmentNumberEditText.getText().toString()
                         ));
-                break;
             }
         }
+        return null;
     }
 
     private void radioGroupClick() {
@@ -98,12 +97,14 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
             switch (checkedId) {
                 case R.id.radioDebit:
                 case R.id.radioVoucher:
+                    infoTextView.setVisibility(View.GONE);
                     installmentTypeTextView.setVisibility(View.GONE);
                     installmentTypeSpinner.setVisibility(View.GONE);
                     installmentNumberTextView.setVisibility(View.GONE);
                     installmentNumberEditText.setVisibility(View.GONE);
                     break;
                 case R.id.radioCredit:
+                    infoTextView.setVisibility(View.VISIBLE);
                     installmentTypeTextView.setVisibility(View.VISIBLE);
                     installmentTypeSpinner.setVisibility(View.VISIBLE);
                     installmentNumberTextView.setVisibility(View.VISIBLE);
@@ -127,6 +128,8 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     }
 
     public void initTransaction() {
+        instalmentTransaction = getInstalmentTransaction();
+
         // Informa a quantidade de parcelas.
         transactionObject.setInstalmentTransaction(instalmentTransaction);
 

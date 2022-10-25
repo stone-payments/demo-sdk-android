@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.stone.sdk.activation.providers.ActiveApplicationProvider;
+import br.com.stone.sdk.android.error.sdk.StoneSDKException;
 import br.com.stone.sdk.core.application.StoneStart;
 import br.com.stone.sdk.core.environment.Environment;
 import br.com.stone.sdk.core.model.user.UserModel;
@@ -110,17 +111,23 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
          * Este deve ser, obrigatoriamente, o primeiro metodo
          * a ser chamado. E um metodo que trabalha com sessao.
          */
-        List<UserModel> user = StoneStart.init(this);
+        StoneStart.StoneStartCallback stoneStartCallback = new StoneStart.StoneStartCallback() {
+            @Override
+            public void onSuccess(@NonNull List<? extends UserModel> list) {
+                continueApplication();
+            }
+
+            @Override
+            public void onError(@NonNull StoneSDKException e) {
+                Toast.makeText(ValidationActivity.this, "Erro ao inicializar a SDK", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onError: " + e);
+            }
+        };
+        StoneStart.init(this, "SDK Demo", stoneStartCallback);
 
         // se retornar nulo, voce provavelmente nao ativou a SDK
         // ou as informacoes da Stone SDK
         // foram excluidas
-        if (user != null) {
-            /* caso ja tenha as informacoes da SDK e chamado o ActiveApplicationProvider anteriormente
-               sua aplicacao podera seguir o fluxo normal */
-            continueApplication();
-
-        }
     }
 
     @OnPermissionDenied({Manifest.permission.READ_EXTERNAL_STORAGE})

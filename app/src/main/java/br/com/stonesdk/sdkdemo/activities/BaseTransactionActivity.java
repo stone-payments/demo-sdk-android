@@ -1,8 +1,10 @@
 package br.com.stonesdk.sdkdemo.activities;
 
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,7 +20,7 @@ import br.com.stone.sdk.core.model.user.UserModel;
 import br.com.stone.sdk.core.utils.Stone;
 import br.com.stone.sdk.payment.database.models.transaction.TransactionObject;
 import br.com.stone.sdk.payment.enums.Action;
-import br.com.stone.sdk.payment.enums.InstalmentTransactionEnum;
+import br.com.stone.sdk.payment.enums.InstalmentTransaction;
 import br.com.stone.sdk.payment.enums.TypeOfTransactionEnum;
 import br.com.stone.sdk.payment.providers.interfaces.BaseTransactionProvider;
 import br.com.stone.sdk.payment.providers.interfaces.StoneActionCallback;
@@ -32,22 +34,29 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     private BaseTransactionProvider transactionProvider;
     protected final TransactionObject transactionObject = new TransactionObject();
     RadioGroup transactionTypeRadioGroup;
-    Spinner installmentsSpinner;
+    Spinner installmentTypeSpinner;
     Spinner stoneCodeSpinner;
-    TextView installmentsTextView;
+    TextView installmentTypeTextView;
+    TextView installmentNumberTextView;
+    TextView infoTextView;
+    EditText installmentNumberEditText;
     CheckBox captureTransactionCheckBox;
     EditText amountEditText;
     TextView logTextView;
     Button sendTransactionButton;
     Button cancelTransactionButton;
+    InstalmentTransaction instalmentTransaction;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction);
         transactionTypeRadioGroup = findViewById(R.id.transactionTypeRadioGroup);
-        installmentsTextView = findViewById(R.id.installmentsTextView);
-        installmentsSpinner = findViewById(R.id.installmentsSpinner);
+        installmentTypeTextView = findViewById(R.id.installmentTypeTextView);
+        installmentTypeSpinner = findViewById(R.id.installmentTypeSpinner);
+        installmentNumberTextView = findViewById(R.id.installmentNumberTextView);
+        infoTextView = findViewById(R.id.infoTextView);
+        installmentNumberEditText = findViewById(R.id.installmentNumberEditText);
         stoneCodeSpinner = findViewById(R.id.stoneCodeSpinner);
         captureTransactionCheckBox = findViewById(R.id.captureTransactionCheckBox);
         amountEditText = findViewById(R.id.amountEditText);
@@ -57,8 +66,30 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
 
         spinnerAction();
         radioGroupClick();
+
         sendTransactionButton.setOnClickListener(v -> initTransaction());
         cancelTransactionButton.setOnClickListener(v -> transactionProvider.abortPayment());
+    }
+
+    private InstalmentTransaction getInstalmentTransaction() {
+        switch (installmentTypeSpinner.getSelectedItemPosition()) {
+            case 0: {
+                return new InstalmentTransaction.None();
+            }
+            case 1: {
+                return new InstalmentTransaction.Issuer(
+                        Integer.parseInt(
+                                installmentNumberEditText.getText().toString()
+                        ));
+            }
+            case 2: {
+                return new InstalmentTransaction.Merchant(
+                        Integer.parseInt(
+                                installmentNumberEditText.getText().toString()
+                        ));
+            }
+        }
+        return null;
     }
 
     private void radioGroupClick() {
@@ -66,12 +97,18 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
             switch (checkedId) {
                 case R.id.radioDebit:
                 case R.id.radioVoucher:
-                    installmentsTextView.setVisibility(View.GONE);
-                    installmentsSpinner.setVisibility(View.GONE);
+                    infoTextView.setVisibility(View.GONE);
+                    installmentTypeTextView.setVisibility(View.GONE);
+                    installmentTypeSpinner.setVisibility(View.GONE);
+                    installmentNumberTextView.setVisibility(View.GONE);
+                    installmentNumberEditText.setVisibility(View.GONE);
                     break;
                 case R.id.radioCredit:
-                    installmentsTextView.setVisibility(View.VISIBLE);
-                    installmentsSpinner.setVisibility(View.VISIBLE);
+                    infoTextView.setVisibility(View.VISIBLE);
+                    installmentTypeTextView.setVisibility(View.VISIBLE);
+                    installmentTypeSpinner.setVisibility(View.VISIBLE);
+                    installmentNumberTextView.setVisibility(View.VISIBLE);
+                    installmentNumberEditText.setVisibility(View.VISIBLE);
                     break;
             }
         });
@@ -80,7 +117,7 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     private void spinnerAction() {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.installments_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        installmentsSpinner.setAdapter(adapter);
+        installmentTypeSpinner.setAdapter(adapter);
 
         ArrayAdapter<String> stoneCodeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
         stoneCodeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -91,8 +128,10 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     }
 
     public void initTransaction() {
+        instalmentTransaction = getInstalmentTransaction();
+
         // Informa a quantidade de parcelas.
-        transactionObject.setInstalmentTransaction(InstalmentTransactionEnum.getAt(installmentsSpinner.getSelectedItemPosition()));
+        transactionObject.setInstalmentTransaction(instalmentTransaction);
 
         // Verifica a forma de pagamento selecionada.
         TypeOfTransactionEnum transactionType;

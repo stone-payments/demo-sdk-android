@@ -25,6 +25,7 @@
     <string name="cancel_transaction_button">Cancelar Transação</string>
     <string name="transaction_value">Valor: </string>
     <string name="transaction_debit">Débito</string>
+    <string name="transaction_pix">PIX</string>
     <string name="transaction_credit">Crédito</string>
     <string name="transaction_sight">A Vista</string>
     <string name="transaction_voucher">Voucher</string>

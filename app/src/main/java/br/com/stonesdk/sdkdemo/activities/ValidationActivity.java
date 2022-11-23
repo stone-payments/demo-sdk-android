@@ -112,6 +112,9 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
     public void initiateApp() {
         Map<StoneKeyType, String> keys = new HashMap<>();
+        keys.put(StoneKeyType.QRCODE_PROVIDERID, "7694ac39-13be-4b70-8187-8af256d7e2c2");
+        keys.put(StoneKeyType.QRCODE_AUTHORIZATION, "Bearer 217152a7-ac66-42b0-a146-260c8d933b4a");
+
         /**
          * Este deve ser, obrigatoriamente, o primeiro metodo
          * a ser chamado. E um metodo que trabalha com sessao.

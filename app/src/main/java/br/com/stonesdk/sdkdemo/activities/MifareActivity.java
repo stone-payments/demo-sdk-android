@@ -12,9 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Arrays;
 
 import br.com.stone.posandroid.hal.api.mifare.MifareKeyType;
-import br.com.stone.posandroid.providers.PosMifareProvider;
+import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
+import br.com.stone.sdk.hardware.providers.PosMifareProvider;
 import br.com.stonesdk.sdkdemo.R;
-import stone.application.interfaces.StoneCallbackInterface;
 
 /**
  *  https://sdkandroid.stone.com.br/reference/provider-de-mifare

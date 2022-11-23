@@ -3,7 +3,7 @@
 buildscript {
     ext {
         kotlin_version = '1.6.10'
-        stone_sdk_version = '4.3.11'
+        stone_sdk_version = '3.14.18.4-PR_919-0b56248'
 
         localProp = new Properties()
         fileName = 'local.properties'

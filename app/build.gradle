@@ -3,13 +3,13 @@ apply plugin: 'kotlin-android'
 apply from: '../gertec/gertec-signing-config.gradle'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 33
+    buildToolsVersion '30.0.3'
 
     defaultConfig {
         applicationId "br.com.stonesdk.sdkdemo"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
     }
@@ -22,8 +22,14 @@ android {
     }
 
     compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    // For Kotlin projects
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 
     packagingOptions {
@@ -33,6 +39,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.github.permissions-dispatcher:permissionsdispatcher:4.8.0'
@@ -42,11 +49,14 @@ dependencies {
 
     debugImplementation "com.github.tony19:logback-android:2.0.0"
 
-    implementation "br.com.stone:stone-sdk:$stone_sdk_version"
-    implementation "br.com.stone:stone-sdk-posandroid:$stone_sdk_version"
-    implementation "br.com.stone:stone-sdk-posandroid-ingenico:$stone_sdk_version"
+    implementation "br.com.stone:stone-sdk-activation:$stone_sdk_version"
+    implementation "br.com.stone:stone-sdk-core:$stone_sdk_version"
+    implementation "br.com.stone:stone-sdk-hardware:$stone_sdk_version"
+    implementation "br.com.stone:stone-sdk-payment:$stone_sdk_version"
+//    implementation "br.com.stone:stone-sdk-posandroid-ingenico:$stone_sdk_version"
     implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
     implementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
+
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 

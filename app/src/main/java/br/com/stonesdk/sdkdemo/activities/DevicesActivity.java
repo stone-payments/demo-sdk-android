@@ -14,10 +14,10 @@ import android.widget.Toast;
 
 import java.util.Set;
 
+import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
+import br.com.stone.sdk.payment.database.models.pinpad.PinpadObject;
+import br.com.stone.sdk.payment.providers.BluetoothConnectionProvider;
 import br.com.stonesdk.sdkdemo.R;
-import stone.application.interfaces.StoneCallbackInterface;
-import stone.providers.BluetoothConnectionProvider;
-import stone.utils.PinpadObject;
 
 public class DevicesActivity extends AppCompatActivity implements OnItemClickListener {
 

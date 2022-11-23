@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="br.com.stonesdk.sdkdemo">
     <!-- Permissoes necessarias para o pleno funcionamento do aplicativo e da SDK -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

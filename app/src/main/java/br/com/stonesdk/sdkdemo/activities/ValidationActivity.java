@@ -2,7 +2,6 @@ package br.com.stonesdk.sdkdemo.activities;
 
 import static android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
 import static br.com.stonesdk.sdkdemo.activities.ValidationActivityPermissionsDispatcher.initiateAppWithPermissionCheck;
-import static stone.environment.Environment.valueOf;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -23,8 +22,18 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import br.com.stone.sdk.activation.providers.ActiveApplicationProvider;
+import br.com.stone.sdk.android.error.sdk.StoneSDKException;
+import br.com.stone.sdk.core.application.StoneStart;
+import br.com.stone.sdk.core.environment.Environment;
+import br.com.stone.sdk.core.model.user.UserModel;
+import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
+import br.com.stone.sdk.core.security.keys.StoneKeyType;
+import br.com.stone.sdk.core.utils.Stone;
 import br.com.stonesdk.sdkdemo.R;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -32,12 +41,6 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-import stone.application.StoneStart;
-import stone.application.interfaces.StoneCallbackInterface;
-import stone.environment.Environment;
-import stone.providers.ActiveApplicationProvider;
-import stone.user.UserModel;
-import stone.utils.Stone;
 
 @RuntimePermissions
 public class ValidationActivity extends AppCompatActivity implements View.OnClickListener {
@@ -62,7 +65,7 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
         environmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Environment environment = valueOf(adapter.getItem(position));
+                Environment environment = Environment.valueOf(adapter.getItem(position));
 //                Stone.setEnvironment(environment);
             }
 
@@ -108,20 +111,29 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
     public void initiateApp() {
+        Map<StoneKeyType, String> keys = new HashMap<>();
         /**
          * Este deve ser, obrigatoriamente, o primeiro metodo
          * a ser chamado. E um metodo que trabalha com sessao.
          */
-        List<UserModel> user = StoneStart.init(this);
+        StoneStart.init(this, "", new StoneStart.StoneStartCallback() {
+            @Override
+            public void onSuccess(@NonNull List<? extends UserModel> list) {
+                // se retornar nulo, voce provavelmente nao ativou a SDK
+                // ou as informacoes da Stone SDK foram excluidas
+                if (!list.isEmpty()) {
+                    /* caso ja tenha as informacoes da SDK e chamado o ActiveApplicationProvider anteriormente
+                       sua aplicacao podera seguir o fluxo normal */
+                    continueApplication();
 
-        // se retornar nulo, voce provavelmente nao ativou a SDK
-        // ou as informacoes da Stone SDK foram excluidas
-        if (user != null) {
-            /* caso ja tenha as informacoes da SDK e chamado o ActiveApplicationProvider anteriormente
-               sua aplicacao podera seguir o fluxo normal */
-            continueApplication();
+                }
+            }
 
-        }
+            @Override
+            public void onError(@NonNull StoneSDKException e) {
+
+            }
+        }, keys);
     }
 
     @OnPermissionDenied({Manifest.permission.READ_EXTERNAL_STORAGE})

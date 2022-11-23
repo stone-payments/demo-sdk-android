@@ -2,13 +2,12 @@ package br.com.stonesdk.sdkdemo.controller
 
 import android.content.Context
 import android.widget.Toast
-import br.com.stone.posandroid.providers.PosPrintReceiptProvider
-import stone.application.enums.ReceiptType
-import stone.application.interfaces.StoneCallbackInterface
-import stone.database.transaction.TransactionObject
+import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface
+import br.com.stone.sdk.payment.providers.PosPrintReceiptProvider
 
 class PrintController(private val context: Context,
-                      private val provider: PosPrintReceiptProvider) {
+                      private val provider: PosPrintReceiptProvider
+) {
 
     fun print() {
         provider.connectionCallback = object : StoneCallbackInterface {

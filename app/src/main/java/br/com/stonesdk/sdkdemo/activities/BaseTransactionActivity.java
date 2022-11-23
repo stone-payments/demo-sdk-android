@@ -42,6 +42,8 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     Button sendTransactionButton;
     Button cancelTransactionButton;
 
+    Dialog builder;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,11 +62,19 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
         radioGroupClick();
         sendTransactionButton.setOnClickListener(v -> initTransaction());
         cancelTransactionButton.setOnClickListener(v -> transactionProvider.abortPayment());
+
+
+        builder = new Dialog(this);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.getWindow().setBackgroundDrawable(
+                new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
     }
 
     private void radioGroupClick() {
         transactionTypeRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
+                case R.id.radioPix:
                 case R.id.radioDebit:
                 case R.id.radioVoucher:
                     installmentsTextView.setVisibility(View.GONE);
@@ -92,6 +102,8 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     }
 
     public void initTransaction() {
+        InstalmentTransactionEnum installmentsEnum = InstalmentTransactionEnum.getAt(installmentsSpinner.getSelectedItemPosition());
+
         // Informa a quantidade de parcelas.
         transactionObject.setInstalmentTransaction(InstalmentTransactionEnum.getAt(installmentsSpinner.getSelectedItemPosition()));
 
@@ -106,6 +118,9 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
                 break;
             case R.id.radioVoucher:
                 transactionType = TypeOfTransactionEnum.VOUCHER;
+                break;
+            case R.id.radioPix:
+                transactionType = TypeOfTransactionEnum.PIX;
                 break;
             default:
                 transactionType = TypeOfTransactionEnum.CREDIT;
@@ -151,6 +166,20 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     @Override
     public void onStatusChanged(final Action action) {
         runOnUiThread(() -> logTextView.append(action.name() + "\n"));
+
+        if (action == Action.TRANSACTION_WAITING_QRCODE_SCAN) {
+            ImageView imageView = new ImageView(this);
+            imageView.setImageBitmap(transactionObject.getQRCode());
+
+            runOnUiThread(() -> {
+                builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+                builder.show();
+            });
+        } else {
+            runOnUiThread(() -> builder.dismiss());
+        }
     }
 
     protected BaseTransactionProvider getTransactionProvider() {

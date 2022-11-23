@@ -23,7 +23,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.com.stonesdk.sdkdemo.R;
 import permissions.dispatcher.NeedsPermission;
@@ -38,6 +40,7 @@ import stone.environment.Environment;
 import stone.providers.ActiveApplicationProvider;
 import stone.user.UserModel;
 import stone.utils.Stone;
+import stone.utils.keys.StoneKeyType;
 
 @RuntimePermissions
 public class ValidationActivity extends AppCompatActivity implements View.OnClickListener {
@@ -108,6 +111,10 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
     public void initiateApp() {
+        Map<StoneKeyType, String> keys = new HashMap<>();
+        keys.put(StoneKeyType.QRCODE_PROVIDERID, "xxxx");
+        keys.put(StoneKeyType.QRCODE_AUTHORIZATION, "xxx");
+
         /**
          * Este deve ser, obrigatoriamente, o primeiro metodo
          * a ser chamado. E um metodo que trabalha com sessao.

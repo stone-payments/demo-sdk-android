@@ -128,6 +128,14 @@
             android:layout_weight="1"
             android:text="@string/transaction_voucher"
             android:textSize="20sp" />
+
+        <RadioButton
+            android:id="@+id/radioPix"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/transaction_pix"
+            android:textSize="20sp" />
     </RadioGroup>
 
     <TextView

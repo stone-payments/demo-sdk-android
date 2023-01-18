@@ -15,12 +15,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import br.com.stone.sdk.android.error.StoneStatus;
 import br.com.stone.sdk.core.enums.ErrorsEnum;
 import br.com.stone.sdk.core.model.user.UserModel;
 import br.com.stone.sdk.core.utils.Stone;
 import br.com.stone.sdk.payment.database.models.transaction.TransactionObject;
 import br.com.stone.sdk.payment.enums.Action;
-import br.com.stone.sdk.payment.enums.InstalmentTransaction;
+import br.com.stone.sdk.payment.utils.InstalmentTransaction;
 import br.com.stone.sdk.payment.enums.TypeOfTransactionEnum;
 import br.com.stone.sdk.payment.providers.interfaces.BaseTransactionProvider;
 import br.com.stone.sdk.payment.providers.interfaces.StoneActionCallback;
@@ -182,8 +183,13 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     }
 
     @Override
-    public void onError() {
-        runOnUiThread(() -> Toast.makeText(BaseTransactionActivity.this, "Erro: " + transactionProvider.getListOfErrors(), Toast.LENGTH_SHORT).show());
+    public void onError(@Nullable StoneStatus stoneStatus) {
+        if (stoneStatus != null) {
+            runOnUiThread(() -> Toast.makeText(BaseTransactionActivity.this, "Erro: " + stoneStatus.getMessage(), Toast.LENGTH_SHORT).show());
+
+        } else {
+            runOnUiThread(() -> Toast.makeText(BaseTransactionActivity.this, "Erro: " + transactionProvider.getListOfErrors(), Toast.LENGTH_SHORT).show());
+        }
     }
 
     @Override

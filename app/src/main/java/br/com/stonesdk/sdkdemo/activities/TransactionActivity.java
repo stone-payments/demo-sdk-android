@@ -2,6 +2,9 @@ package br.com.stonesdk.sdkdemo.activities;
 
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
+import br.com.stone.sdk.android.error.StoneStatus;
 import br.com.stone.sdk.payment.enums.TransactionStatusEnum;
 import br.com.stone.sdk.payment.providers.TransactionProvider;
 import br.com.stone.sdk.payment.utils.StonePayment;
@@ -29,10 +32,5 @@ public class TransactionActivity extends BaseTransactionActivity<TransactionProv
 
             Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
         }
-    }
-
-    @Override
-    public void onError() {
-        super.onError();
     }
 }

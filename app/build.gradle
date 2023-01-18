@@ -53,6 +53,7 @@ dependencies {
     implementation "br.com.stone:stone-sdk-payment"
 
 
+    implementation "br.com.stone:stone-sdk-posandroid-positivo"
     implementation "br.com.stone:stone-sdk-posandroid-ingenico"
     implementation "br.com.stone:stone-sdk-posandroid-gertec"
     implementation "br.com.stone:stone-sdk-posandroid-sunmi"

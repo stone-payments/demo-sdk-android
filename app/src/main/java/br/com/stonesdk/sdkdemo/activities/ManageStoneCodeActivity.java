@@ -14,6 +14,7 @@ import android.widget.Toast;
 import java.util.List;
 
 import br.com.stone.sdk.activation.providers.ActiveApplicationProvider;
+import br.com.stone.sdk.android.error.StoneStatus;
 import br.com.stone.sdk.core.model.user.UserModel;
 import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
 import br.com.stone.sdk.core.utils.Stone;
@@ -75,16 +76,16 @@ public class ManageStoneCodeActivity extends AppCompatActivity {
 
         activeApplicationProvider.setConnectionCallback(new StoneCallbackInterface() {
             @Override
+            public void onError(@Nullable StoneStatus stoneStatus) {
+                Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                Log.e("ManageStoneCodeActivity", "onError: " + activeApplicationProvider.getListOfErrors());
+            }
+
+            @Override
             public void onSuccess() {
                 stoneCodeListView.setAdapter(populateStoneCodeListView());
                 ((ArrayAdapter) stoneCodeListView.getAdapter()).notifyDataSetChanged();
                 Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onError() {
-                Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
-                Log.e("ManageStoneCodeActivity", "onError: " + activeApplicationProvider.getListOfErrors());
             }
         });
 
@@ -107,16 +108,16 @@ public class ManageStoneCodeActivity extends AppCompatActivity {
 
         activeApplicationProvider.setConnectionCallback(new StoneCallbackInterface() {
             @Override
+            public void onError(@Nullable StoneStatus stoneStatus) {
+                Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                Log.e("ManageStoneCodeActivity", "onError: " + activeApplicationProvider.getListOfErrors());
+            }
+
+            @Override
             public void onSuccess() {
                 stoneCodeListView.setAdapter(populateStoneCodeListView());
                 ((ArrayAdapter) stoneCodeListView.getAdapter()).notifyDataSetChanged();
                 Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onError() {
-                Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
-                Log.e("ManageStoneCodeActivity", "onError: " + activeApplicationProvider.getListOfErrors());
             }
         });
         activeApplicationProvider.deactivate(userModelList.get(position).getStoneCode());

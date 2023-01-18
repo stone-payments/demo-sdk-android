@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
+import br.com.stone.sdk.android.error.StoneStatus;
 import br.com.stone.sdk.core.enums.ErrorsEnum;
 import br.com.stone.sdk.payment.enums.Action;
 import br.com.stone.sdk.payment.enums.ReceiptType;
@@ -71,8 +74,8 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
     }
 
     @Override
-    public void onError() {
-        super.onError();
+    public void onError(@Nullable StoneStatus stoneStatus) {
+        super.onError(stoneStatus);
         if (providerHasErrorEnum(ErrorsEnum.DEVICE_NOT_COMPATIBLE)) {
             Toast.makeText(
                     this,

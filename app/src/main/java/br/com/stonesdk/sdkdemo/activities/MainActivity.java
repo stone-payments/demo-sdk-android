@@ -12,12 +12,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 
 import br.com.stone.sdk.activation.providers.ActiveApplicationProvider;
+import br.com.stone.sdk.android.error.StoneStatus;
 import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
 import br.com.stone.sdk.hardware.providers.PosPrintProvider;
 import br.com.stone.sdk.payment.database.models.transaction.TransactionObject;
@@ -108,13 +110,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 reversalProvider.setDialogMessage("Cancelando transações com erro");
                 reversalProvider.setConnectionCallback(new StoneCallbackInterface() {
                     @Override
+                    public void onError(@Nullable StoneStatus stoneStatus) {
+                        Toast.makeText(MainActivity.this, "Ocorreu um erro durante o cancelamento das tabelas: " + reversalProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
+
+                    }
+                    @Override
                     public void onSuccess() {
                         Toast.makeText(MainActivity.this, "Transações canceladas com sucesso", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError() {
-                        Toast.makeText(MainActivity.this, "Ocorreu um erro durante o cancelamento das tabelas: " + reversalProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
                     }
                 });
                 reversalProvider.execute();
@@ -126,18 +128,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 provider.setDialogTitle("Aguarde");
                 provider.useDefaultUI(true);
                 provider.setConnectionCallback(new StoneCallbackInterface() {
+                    @Override
+                    public void onError(@Nullable StoneStatus stoneStatus) {
+                        makeText(MainActivity.this, "Erro na ativacao do aplicativo, verifique a lista de erros do provider", LENGTH_SHORT).show();
+                        /* Chame o metodo abaixo para verificar a lista de erros. Para mais detalhes, leia a documentacao: */
+                        Log.e("deactivateOption", "onError: " + provider.getListOfErrors().toString());
+                    }
+
                     /* Metodo chamado se for executado sem erros */
                     public void onSuccess() {
                         Intent mainIntent = new Intent(MainActivity.this, ValidationActivity.class);
                         startActivity(mainIntent);
                         finish();
-                    }
-
-                    /* metodo chamado caso ocorra alguma excecao */
-                    public void onError() {
-                        makeText(MainActivity.this, "Erro na ativacao do aplicativo, verifique a lista de erros do provider", LENGTH_SHORT).show();
-                        /* Chame o metodo abaixo para verificar a lista de erros. Para mais detalhes, leia a documentacao: */
-                        Log.e("deactivateOption", "onError: " + provider.getListOfErrors().toString());
                     }
                 });
                 provider.deactivate();
@@ -164,6 +166,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 final PosValidateTransactionByCardProvider posValidateTransactionByCardProvider = new PosValidateTransactionByCardProvider(this);
                 posValidateTransactionByCardProvider.setConnectionCallback(new StoneActionCallback() {
                     @Override
+                    public void onError(@Nullable StoneStatus stoneStatus) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                Log.e("posValidateCardOption", "onError: " + posValidateTransactionByCardProvider.getListOfErrors());
+                            }
+                        });
+                    }
+
+                    @Override
                     public void onStatusChanged(final Action action) {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -187,18 +200,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         });
 
                     }
-
-                    @Override
-                    public void onError() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                                Log.e("posValidateCardOption", "onError: " + posValidateTransactionByCardProvider.getListOfErrors());
-                            }
-                        });
-                    }
-
                 });
                 posValidateTransactionByCardProvider.execute();
                 break;
@@ -211,19 +212,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 customPosPrintProvider.addLine("ATK : 123456789");
                 customPosPrintProvider.addLine("Signature");
                 customPosPrintProvider.addBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.signature));
-                customPosPrintProvider.setConnectionCallback(new StoneCallbackInterface() {
+                customPosPrintProvider.print(new StoneCallbackInterface() {
+                    @Override
+                    public void onError(@Nullable StoneStatus stoneStatus) {
+                        if(stoneStatus != null) {
+                            runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Erro ao imprimir: " + stoneStatus.getMessage(), Toast.LENGTH_SHORT).show());
+                        }
+                    }
+
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(getApplicationContext(), "Recibo impresso", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError() {
-                        Toast.makeText(getApplicationContext(), "Erro ao imprimir: " + customPosPrintProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
+                        runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Recibo impresso", Toast.LENGTH_SHORT).show());
                     }
                 });
-                customPosPrintProvider.execute();
-
             default:
                 break;
         }

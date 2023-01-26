@@ -11,10 +11,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Set;
 
+import br.com.stone.sdk.android.error.StoneStatus;
 import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
 import br.com.stone.sdk.payment.database.models.pinpad.PinpadObject;
 import br.com.stone.sdk.payment.providers.BluetoothConnectionProvider;
@@ -78,13 +80,15 @@ public class DevicesActivity extends AppCompatActivity implements OnItemClickLis
         bluetoothConnectionProvider.useDefaultUI(false); // Informa que haverá um feedback para o usuário.
         bluetoothConnectionProvider.setConnectionCallback(new StoneCallbackInterface() {
 
+            @Override
             public void onSuccess() {
                 Toast.makeText(getApplicationContext(), "Pinpad conectado", Toast.LENGTH_SHORT).show();
                 btConnected = true;
                 finish();
             }
 
-            public void onError() {
+            @Override
+            public void onError(@Nullable StoneStatus stoneStatus) {
                 Toast.makeText(getApplicationContext(), "Erro durante a conexao. Verifique a lista de erros do provider para mais informacoes", Toast.LENGTH_SHORT).show();
                 Log.e("DevicesActivity", "onError: " + bluetoothConnectionProvider.getListOfErrors());
             }

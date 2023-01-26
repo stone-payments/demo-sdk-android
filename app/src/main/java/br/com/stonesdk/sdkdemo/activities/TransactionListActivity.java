@@ -11,11 +11,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.stone.sdk.android.error.StoneStatus;
 import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
 import br.com.stone.sdk.hardware.providers.PosPrintProvider;
 import br.com.stone.sdk.payment.database.dao.transaction.TransactionDAO;
@@ -113,7 +115,7 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
                                     }
 
                                     @Override
-                                    public void onError() {
+                                    public void onError(@Nullable StoneStatus stoneStatus) {
                                         Toast.makeText(TransactionListActivity.this, "Erro ao imprimir: " + customPosPrintProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
@@ -132,7 +134,7 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
                                         finish();
                                     }
 
-                                    public void onError() {
+                                    public void onError(@Nullable StoneStatus stoneStatus) {
                                         Toast.makeText(getApplicationContext(), "Um erro ocorreu durante o cancelamento com a transacao de id: " + selectedTransaction.getIdFromBase(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
@@ -157,7 +159,7 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
                                     }
 
                                     @Override
-                                    public void onError() {
+                                    public void onError(@Nullable StoneStatus stoneStatus) {
                                         Toast.makeText(TransactionListActivity.this, "Ocorreu um " +
                                                 "erro captura da transacao: " +
                                                 provider.getListOfErrors(),
@@ -187,7 +189,7 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
                 Toast.makeText(getApplicationContext(), "Enviado com sucesso", Toast.LENGTH_LONG).show();
             }
 
-            public void onError() {
+            public void onError(@Nullable StoneStatus stoneStatus) {
                 Toast.makeText(getApplicationContext(), "Nao enviado", Toast.LENGTH_LONG).show();
             }
         });

@@ -30,9 +30,4 @@ public class TransactionActivity extends BaseTransactionActivity<TransactionProv
             Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
         }
     }
-
-    @Override
-    public void onError() {
-        super.onError();
-    }
 }

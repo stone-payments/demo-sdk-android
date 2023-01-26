@@ -14,6 +14,7 @@ import android.widget.Toast;
 import java.util.List;
 
 import br.com.stone.sdk.activation.providers.ActiveApplicationProvider;
+import br.com.stone.sdk.android.error.StoneStatus;
 import br.com.stone.sdk.core.model.user.UserModel;
 import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
 import br.com.stone.sdk.core.utils.Stone;
@@ -82,7 +83,7 @@ public class ManageStoneCodeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError() {
+            public void onError(@Nullable StoneStatus stoneStatus) {
                 Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
                 Log.e("ManageStoneCodeActivity", "onError: " + activeApplicationProvider.getListOfErrors());
             }
@@ -114,7 +115,7 @@ public class ManageStoneCodeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError() {
+            public void onError(@Nullable StoneStatus stoneStatus) {
                 Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
                 Log.e("ManageStoneCodeActivity", "onError: " + activeApplicationProvider.getListOfErrors());
             }

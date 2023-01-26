@@ -12,12 +12,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 
 import br.com.stone.sdk.activation.providers.ActiveApplicationProvider;
+import br.com.stone.sdk.android.error.StoneStatus;
 import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
 import br.com.stone.sdk.hardware.providers.PosPrintProvider;
 import br.com.stone.sdk.payment.database.models.transaction.TransactionObject;
@@ -113,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
 
                     @Override
-                    public void onError() {
+                    public void onError(@Nullable StoneStatus stoneStatus) {
                         Toast.makeText(MainActivity.this, "Ocorreu um erro durante o cancelamento das tabelas: " + reversalProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -134,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
 
                     /* metodo chamado caso ocorra alguma excecao */
-                    public void onError() {
+                    public void onError(@Nullable StoneStatus stoneStatus) {
                         makeText(MainActivity.this, "Erro na ativacao do aplicativo, verifique a lista de erros do provider", LENGTH_SHORT).show();
                         /* Chame o metodo abaixo para verificar a lista de erros. Para mais detalhes, leia a documentacao: */
                         Log.e("deactivateOption", "onError: " + provider.getListOfErrors().toString());
@@ -189,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
 
                     @Override
-                    public void onError() {
+                    public void onError(@Nullable StoneStatus stoneStatus) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -218,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
 
                     @Override
-                    public void onError() {
+                    public void onError(@Nullable StoneStatus stoneStatus) {
                         Toast.makeText(getApplicationContext(), "Erro ao imprimir: " + customPosPrintProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
                     }
                 });

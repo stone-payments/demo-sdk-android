@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.stone.sdk.activation.providers.ActiveApplicationProvider;
+import br.com.stone.sdk.android.error.StoneStatus;
 import br.com.stone.sdk.android.error.sdk.StoneSDKException;
 import br.com.stone.sdk.core.application.StoneStart;
 import br.com.stone.sdk.core.environment.Environment;
@@ -94,7 +96,7 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
             }
 
             /* metodo chamado caso ocorra alguma excecao */
-            public void onError() {
+            public void onError(@Nullable StoneStatus stoneStatus) {
                 Toast.makeText(ValidationActivity.this, "Erro na ativacao do aplicativo, verifique a lista de erros do provider", Toast.LENGTH_SHORT).show();
 
                 /* Chame o metodo abaixo para verificar a lista de erros. Para mais detalhes, leia a documentacao: */
@@ -113,8 +115,10 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
          */
         StoneStart.StoneStartCallback stoneStartCallback = new StoneStart.StoneStartCallback() {
             @Override
-            public void onSuccess(@NonNull List<? extends UserModel> list) {
-                continueApplication();
+            public void onSuccess(@NonNull List<UserModel> list) {
+                if (!list.isEmpty()) {
+                    continueApplication();
+                }
             }
 
             @Override

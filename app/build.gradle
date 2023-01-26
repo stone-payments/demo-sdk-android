@@ -46,6 +46,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
 
     debugImplementation "com.github.tony19:logback-android:2.0.0"
+    debugImplementation "br.com.stone:debugmode:$stone_sdk_version"
 
     implementation platform("br.com.stone:stone-sdk-core:$stone_sdk_version")
     implementation "br.com.stone:stone-sdk-activation"
@@ -56,7 +57,7 @@ dependencies {
     implementation "br.com.stone:stone-sdk-posandroid-ingenico"
     implementation "br.com.stone:stone-sdk-posandroid-gertec"
     implementation "br.com.stone:stone-sdk-posandroid-sunmi"
-
+    implementation "br.com.stone:stone-sdk-posandroid-serial"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     testImplementation "io.mockk:mockk:1.10.6"

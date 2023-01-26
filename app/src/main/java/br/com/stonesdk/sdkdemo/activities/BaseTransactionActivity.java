@@ -15,15 +15,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import br.com.stone.sdk.android.error.StoneStatus;
 import br.com.stone.sdk.core.enums.ErrorsEnum;
 import br.com.stone.sdk.core.model.user.UserModel;
 import br.com.stone.sdk.core.utils.Stone;
 import br.com.stone.sdk.payment.database.models.transaction.TransactionObject;
 import br.com.stone.sdk.payment.enums.Action;
-import br.com.stone.sdk.payment.enums.InstalmentTransaction;
 import br.com.stone.sdk.payment.enums.TypeOfTransactionEnum;
 import br.com.stone.sdk.payment.providers.interfaces.BaseTransactionProvider;
 import br.com.stone.sdk.payment.providers.interfaces.StoneActionCallback;
+import br.com.stone.sdk.payment.utils.InstalmentTransaction;
 import br.com.stonesdk.sdkdemo.R;
 
 /**
@@ -180,9 +181,8 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     protected boolean providerHasErrorEnum(ErrorsEnum errorsEnum) {
         return transactionProvider.theListHasError(errorsEnum);
     }
-
     @Override
-    public void onError() {
+    public void onError(@Nullable StoneStatus stoneStatus) {
         runOnUiThread(() -> Toast.makeText(BaseTransactionActivity.this, "Erro: " + transactionProvider.getListOfErrors(), Toast.LENGTH_SHORT).show());
     }
 

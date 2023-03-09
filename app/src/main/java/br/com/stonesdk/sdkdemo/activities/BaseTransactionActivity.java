@@ -116,17 +116,6 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
         transactionObject.setCapture(captureTransactionCheckBox.isChecked());
         transactionObject.setAmount(amountEditText.getText().toString());
 
-        transactionObject.setSubMerchantCity("city"); //Cidade do sub-merchant
-        transactionObject.setSubMerchantPostalAddress("00000000"); //CEP do sub-merchant (Apenas números)
-        transactionObject.setSubMerchantRegisteredIdentifier("00000000"); // Identificador do sub-merchant
-        transactionObject.setSubMerchantTaxIdentificationNumber("33368443000199"); // CNPJ do sub-merchant (apenas números)
-
-//        Seleciona o mcc do lojista.
-//        transactionObject.setSubMerchantCategoryCode("123");
-
-//        Seleciona o endereço do lojista.
-//        transactionObject.setSubMerchantAddress("address");]
-
         transactionProvider = buildTransactionProvider();
         transactionProvider.useDefaultUI(true);
         transactionProvider.setConnectionCallback(this);

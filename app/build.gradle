@@ -3,13 +3,12 @@ apply plugin: 'kotlin-android'
 apply from: '../gertec/gertec-signing-config.gradle'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "br.com.stonesdk.sdkdemo"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
     }
@@ -33,14 +32,15 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+//    implementation fileTree(dir: 'libs', include: ['*.aar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.github.permissions-dispatcher:permissionsdispatcher:4.8.0'
     annotationProcessor "com.github.permissions-dispatcher:permissionsdispatcher-processor:4.8.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.google.android.material:material:1.3.0'
 
-    debugImplementation "com.github.tony19:logback-android:2.0.0"
+    gertecImplementation "com.github.tony19:logback-android:2.0.0"
+    gertecImplementation "br.com.stone.sdk.android:debugmode:4.7.1"
 
     implementation "br.com.stone:stone-sdk:$stone_sdk_version"
     implementation "br.com.stone:stone-sdk-posandroid:$stone_sdk_version"

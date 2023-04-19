@@ -10,6 +10,15 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <queries>
+        <package android:name="br.com.stone.posandroid.config"/>
+        <package android:name="br.com.stone.posandroid.datacontainer"/>
+        <package android:name="br.com.stone.posandroid.settingsapp" />
+        <package android:name="br.com.stone.posandroid.pdm"/>
+        <package android:name="br.com.stone.posandroid.pdtapp"/>
+        <package android:name="br.com.stone.posandroid.checkupapp" />
+    </queries>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

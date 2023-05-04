@@ -119,7 +119,7 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
          * Este deve ser, obrigatoriamente, o primeiro metodo
          * a ser chamado. E um metodo que trabalha com sessao.
          */
-        List<UserModel> user = StoneStart.init(this);
+        List<UserModel> user = StoneStart.init(this, keys);
 
         // se retornar nulo, voce provavelmente nao ativou a SDK
         // ou as informacoes da Stone SDK foram excluidas

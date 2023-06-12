@@ -3,7 +3,7 @@
 buildscript {
     ext {
         kotlin_version = '1.6.10'
-        stone_sdk_version = '4.6.0'
+        stone_sdk_version = '4.7.3'
 
         localProp = new Properties()
         fileName = 'local.properties'
@@ -11,6 +11,7 @@ buildscript {
             localProp.load(new FileInputStream(rootProject.file(fileName)))
         }
         packageCloudReadToken = System.env.PACKAGECLOUD_READ_TOKEN != null ? System.env.PACKAGECLOUD_READ_TOKEN  : localProp["packageCloudReadToken"] ?: ""
+        packageCloudReadTokenInternal = System.env.PACKAGECLOUD_READ_TOKEN_INTERNAL ?: localProp["packageCloudReadTokenInternal"]
     }
 
     repositories {
@@ -29,6 +30,7 @@ allprojects {
     repositories {
         mavenCentral()
         maven { url "https://packagecloud.io/priv/${packageCloudReadToken}/stone/pos-android/maven2" }
+        maven { url "https://packagecloud.io/priv/${packageCloudReadTokenInternal}/stone/pos-android-internal/maven2" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         google()
     }

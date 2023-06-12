@@ -53,6 +53,12 @@
             android:onClick="detectCard"
             android:text="@string/detect_card"/>
         <Button
+            android:id="@+id/btn_cancel_detect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="cancelDetectCard"
+            android:text="Cancelar detecção"/>
+        <Button
             android:id="@+id/btn_block_read"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

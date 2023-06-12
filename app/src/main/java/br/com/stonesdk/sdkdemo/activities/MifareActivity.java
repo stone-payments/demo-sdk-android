@@ -63,6 +63,10 @@ public class MifareActivity extends AppCompatActivity {
         mifareProvider.execute();
     }
 
+    public void cancelDetectCard(View view) {
+        if(mifareProvider != null) mifareProvider.cancelDetection();
+    }
+
     /**
      *  Exemplo de leitura do valor de um bloco.
      * @param sector Número do setor.

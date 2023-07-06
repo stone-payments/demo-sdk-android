@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId "br.com.stonesdk.sdkdemo"
         minSdkVersion 21
-        targetSdkVersio
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
     }

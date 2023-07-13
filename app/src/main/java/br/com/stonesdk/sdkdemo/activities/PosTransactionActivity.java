@@ -23,6 +23,10 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
         return new PosTransactionProvider(this, transactionObject, getSelectedUserModel());
     }
 
+    protected PosTransactionProvider getTransactionProvider() {
+        return (PosTransactionProvider) super.getTransactionProvider();
+    }
+
     @Override
     public void onSuccess() {
         if (transactionObject.getTransactionStatus() == TransactionStatusEnum.APPROVED) {
@@ -92,13 +96,32 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
         super.onStatusChanged(action);
 
         runOnUiThread(() -> {
-            if (action == Action.TRANSACTION_WAITING_PASSWORD) {
-                Toast.makeText(
-                        PosTransactionActivity.this,
-                        "Pin tries remaining to block card: ${transactionProvider?.remainingPinTries}",
-                        Toast.LENGTH_LONG
-                ).show();
+
+            switch (action) {
+                case TRANSACTION_WAITING_PASSWORD:
+                    Toast.makeText(
+                            PosTransactionActivity.this,
+                            "Pin tries remaining to block card: ${transactionProvider?.remainingPinTries}",
+                            Toast.LENGTH_LONG
+                    ).show();
+                    break;
+                case TRANSACTION_TYPE_SELECTION:
+                    List<String> options = getTransactionProvider().getTransactionTypeOptions();
+                    showTransactionTypeSelectionDialog(options);
             }
         });
+    }
+
+
+    private void showTransactionTypeSelectionDialog(final List<String> optionsList) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Selecione o tipo de transação");
+        String[] options = new String[optionsList.size()];
+        optionsList.toArray(options);
+        builder.setItems(
+                options,
+                (dialog, which) -> getTransactionProvider().setTransactionTypeSelected(which)
+        );
+        builder.show();
     }
 }

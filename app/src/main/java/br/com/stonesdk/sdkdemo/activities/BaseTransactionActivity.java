@@ -1,19 +1,28 @@
 package br.com.stonesdk.sdkdemo.activities;
 
+import android.app.Dialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import br.com.stone.sdk.android.error.StoneStatus;
 import br.com.stone.sdk.core.enums.ErrorsEnum;
@@ -48,6 +57,8 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     Button cancelTransactionButton;
     InstalmentTransaction instalmentTransaction;
 
+    Dialog builder;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,49 +78,29 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
 
         spinnerAction();
         radioGroupClick();
-
         sendTransactionButton.setOnClickListener(v -> initTransaction());
         cancelTransactionButton.setOnClickListener(v -> transactionProvider.abortPayment());
-    }
 
-    private InstalmentTransaction getInstalmentTransaction() {
-        switch (installmentTypeSpinner.getSelectedItemPosition()) {
-            case 0: {
-                return new InstalmentTransaction.None();
-            }
-            case 1: {
-                return new InstalmentTransaction.Issuer(
-                        Integer.parseInt(
-                                installmentNumberEditText.getText().toString()
-                        ));
-            }
-            case 2: {
-                return new InstalmentTransaction.Merchant(
-                        Integer.parseInt(
-                                installmentNumberEditText.getText().toString()
-                        ));
-            }
-        }
-        return null;
+
+        builder = new Dialog(this);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.getWindow().setBackgroundDrawable(
+                new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
     }
 
     private void radioGroupClick() {
         transactionTypeRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
+                case R.id.radioPix:
                 case R.id.radioDebit:
                 case R.id.radioVoucher:
-                    infoTextView.setVisibility(View.GONE);
-                    installmentTypeTextView.setVisibility(View.GONE);
-                    installmentTypeSpinner.setVisibility(View.GONE);
-                    installmentNumberTextView.setVisibility(View.GONE);
-                    installmentNumberEditText.setVisibility(View.GONE);
+                    installmentsTextView.setVisibility(View.GONE);
+                    installmentsSpinner.setVisibility(View.GONE);
                     break;
                 case R.id.radioCredit:
-                    infoTextView.setVisibility(View.VISIBLE);
-                    installmentTypeTextView.setVisibility(View.VISIBLE);
-                    installmentTypeSpinner.setVisibility(View.VISIBLE);
-                    installmentNumberTextView.setVisibility(View.VISIBLE);
-                    installmentNumberEditText.setVisibility(View.VISIBLE);
+                    installmentsTextView.setVisibility(View.VISIBLE);
+                    installmentsSpinner.setVisibility(View.VISIBLE);
                     break;
             }
         });
@@ -143,6 +134,9 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
             case R.id.radioVoucher:
                 transactionType = TypeOfTransactionEnum.VOUCHER;
                 break;
+            case R.id.radioPix:
+                transactionType = TypeOfTransactionEnum.PIX;
+                break;
             default:
                 transactionType = TypeOfTransactionEnum.CREDIT;
         }
@@ -152,12 +146,8 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
         transactionObject.setCapture(captureTransactionCheckBox.isChecked());
         transactionObject.setAmount(amountEditText.getText().toString());
 
-        transactionObject.setSubMerchantCity("city");
-        transactionObject.setSubMerchantPostalAddress("00000000");
-        transactionObject.setSubMerchantRegisteredIdentifier("00000000");
-        transactionObject.setSubMerchantTaxIdentificationNumber("33368443000199");
-
         transactionProvider = buildTransactionProvider();
+        transactionProvider.useDefaultUI(true);
         transactionProvider.setConnectionCallback(this);
         transactionProvider.execute();
     }
@@ -171,6 +161,7 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     protected boolean providerHasErrorEnum(ErrorsEnum errorsEnum) {
         return transactionProvider.theListHasError(errorsEnum);
     }
+
     @Override
     public void onError(@Nullable StoneStatus stoneStatus) {
         runOnUiThread(() -> Toast.makeText(BaseTransactionActivity.this, "Erro: " + transactionProvider.getListOfErrors(), Toast.LENGTH_SHORT).show());
@@ -179,6 +170,24 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     @Override
     public void onStatusChanged(final Action action) {
         runOnUiThread(() -> logTextView.append(action.name() + "\n"));
+
+        if (action == Action.TRANSACTION_WAITING_QRCODE_SCAN) {
+            ImageView imageView = new ImageView(this);
+            imageView.setImageBitmap(transactionObject.getQRCode());
+
+            runOnUiThread(() -> {
+                builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+                builder.show();
+            });
+        } else {
+            runOnUiThread(() -> builder.dismiss());
+        }
+    }
+
+    protected BaseTransactionProvider getTransactionProvider() {
+        return transactionProvider;
     }
 
     protected UserModel getSelectedUserModel() {

@@ -1,7 +1,9 @@
 package br.com.stonesdk.sdkdemo.activities;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import java.util.Set;
 
@@ -24,7 +27,7 @@ import br.com.stonesdk.sdkdemo.R;
 
 public class DevicesActivity extends AppCompatActivity implements OnItemClickListener {
 
-    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private boolean btConnected = false;
     private ListView listView;
 
@@ -39,26 +42,28 @@ public class DevicesActivity extends AppCompatActivity implements OnItemClickLis
     }
 
     public void listBluetoothDevices() {
-
-        // Lista de Pinpads para passar para o BluetoothConnectionProvider.
         ArrayAdapter<String> btArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
 
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
 
-        // Lista todos os dispositivos pareados.
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
                 btArrayAdapter.add(String.format("%s_%s", device.getName(), device.getAddress()));
             }
         }
 
-        // Exibe todos os dispositivos da lista.
         listView.setAdapter(btArrayAdapter);
     }
 
     public void turnBluetoothOn() {
         try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
             mBluetoothAdapter.enable();
             do {
             } while (!mBluetoothAdapter.isEnabled());
@@ -69,17 +74,11 @@ public class DevicesActivity extends AppCompatActivity implements OnItemClickLis
 
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        // Pega o pinpad selecionado do ListView.
         String[] pinpadInfo = listView.getAdapter().getItem(position).toString().split("_");
         PinpadObject pinpadSelected = new PinpadObject(pinpadInfo[0], pinpadInfo[1], false);
 
-        // Passa o pinpad selecionado para o provider de conexão bluetooth.
         final BluetoothConnectionProvider bluetoothConnectionProvider = new BluetoothConnectionProvider(DevicesActivity.this, pinpadSelected);
-        bluetoothConnectionProvider.setDialogMessage("Criando conexao com o pinpad selecionado"); // Mensagem exibida do dialog.
-        bluetoothConnectionProvider.useDefaultUI(false); // Informa que haverá um feedback para o usuário.
         bluetoothConnectionProvider.setConnectionCallback(new StoneCallbackInterface() {
-
             @Override
             public void onSuccess() {
                 Toast.makeText(getApplicationContext(), "Pinpad conectado", Toast.LENGTH_SHORT).show();
@@ -89,10 +88,11 @@ public class DevicesActivity extends AppCompatActivity implements OnItemClickLis
 
             @Override
             public void onError(@Nullable StoneStatus stoneStatus) {
-                Toast.makeText(getApplicationContext(), "Erro durante a conexao. Verifique a lista de erros do provider para mais informacoes", Toast.LENGTH_SHORT).show();
-                Log.e("DevicesActivity", "onError: " + bluetoothConnectionProvider.getListOfErrors());
+                Toast.makeText(getApplicationContext(), "Erro durante a conexao. Verifique a mensagem do Stone Status", Toast.LENGTH_SHORT).show();
+                assert stoneStatus != null;
+                Log.e("DevicesActivity", "onError: " + stoneStatus.getMessage());
             }
         });
-        bluetoothConnectionProvider.execute(); // Executa o provider de conexão bluetooth.
+        bluetoothConnectionProvider.execute();
     }
 }

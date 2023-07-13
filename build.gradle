@@ -2,8 +2,8 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.6.10'
-        stone_sdk_version = '4.4.2-PR_924-0f16c87'
+        kotlin_version = '1.7.10'
+        stone_sdk_version = '5.1.2-fix-error-initialized-sdk-b503a6b'
 
         localProp = new Properties()
         fileName = 'local.properties'
@@ -19,7 +19,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.0'
+        classpath 'com.android.tools.build:gradle:7.3.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 

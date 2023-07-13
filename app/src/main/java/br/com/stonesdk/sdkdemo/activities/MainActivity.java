@@ -3,7 +3,6 @@ package br.com.stonesdk.sdkdemo.activities;
 import static android.widget.Toast.LENGTH_SHORT;
 import static android.widget.Toast.makeText;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -51,8 +50,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        // Para cada nova opção na lista, um novo "case" precisa ser inserido aqui.
         switch (v.getId()) {
+            //region Geral
+
+            case R.id.listTransactionOption:
+                Intent transactionListIntent = new Intent(MainActivity.this, TransactionListActivity.class);
+                startActivity(transactionListIntent);
+                break;
+
+            case R.id.cancelTransactionsOption:
+                final ReversalProvider reversalProvider = new ReversalProvider(this);
+                reversalProvider.setConnectionCallback(new StoneCallbackInterface() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(MainActivity.this, "Transações canceladas com sucesso", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(@Nullable StoneStatus stoneStatus) {
+                        assert stoneStatus != null;
+                        Toast.makeText(MainActivity.this, "Ocorreu um erro durante o cancelamento das tabelas: " + stoneStatus.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                reversalProvider.execute();
+                break;
+
+            case R.id.manageStoneCodeOption:
+                startActivity(new Intent(MainActivity.this, ManageStoneCodeActivity.class));
+                break;
+
+            case R.id.deactivateOption:
+                final ActiveApplicationProvider provider = new ActiveApplicationProvider(MainActivity.this);
+                provider.deactivate(new StoneCallbackInterface() {
+                    @Override
+                    public void onSuccess() {
+                        Intent mainIntent = new Intent(MainActivity.this, ValidationActivity.class);
+                        startActivity(mainIntent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(@Nullable StoneStatus stoneStatus) {
+                        makeText(MainActivity.this, "Erro na ativacao do aplicativo, verifique a mensagem do Stone Status", LENGTH_SHORT).show();
+                        assert stoneStatus != null;
+                        Log.e("deactivateOption", "onError: " + stoneStatus.getMessage());
+                    }
+                });
+                break;
+            //endregion
+
+            //regionPinpad
 
             case R.id.pairedDevicesOption:
                 Intent devicesIntent = new Intent(MainActivity.this, DevicesActivity.class);
@@ -60,19 +107,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.transactionOption:
-                // Verifica se o bluetooth esta ligado e se existe algum pinpad conectado.
                 if (StonePayment.getPinpadListSize() > 0) {
                     Intent transactionIntent = new Intent(MainActivity.this, TransactionActivity.class);
                     startActivity(transactionIntent);
-                    break;
                 } else {
                     makeText(getApplicationContext(), "Conecte-se a um pinpad.", LENGTH_SHORT).show();
-                    break;
                 }
-
-            case R.id.listTransactionOption:
-                Intent transactionListIntent = new Intent(MainActivity.this, TransactionListActivity.class);
-                startActivity(transactionListIntent);
                 break;
 
             case R.id.displayMessageOption:
@@ -85,64 +125,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 builder.setTitle("Digite a mensagem para mostrar no pinpad");
                 final EditText editText = new EditText(MainActivity.this);
                 builder.setView(editText);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String text = editText.getText().toString();
-                        DisplayMessageProvider displayMessageProvider =
-                                new DisplayMessageProvider(MainActivity.this, text, StonePayment.getPinpadFromListAt(0));
-                        displayMessageProvider.execute();
-                    }
+                builder.setPositiveButton("OK", (dialog, which) -> {
+                    String text = editText.getText().toString();
+                    DisplayMessageProvider displayMessageProvider = new DisplayMessageProvider(MainActivity.this, text, StonePayment.getPinpadFromListAt(0));
+                    displayMessageProvider.execute();
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
                 builder.show();
-                break;
-
-            case R.id.cancelTransactionsOption:
-                final ReversalProvider reversalProvider = new ReversalProvider(this);
-                reversalProvider.useDefaultUI(true);
-                reversalProvider.setDialogMessage("Cancelando transações com erro");
-                reversalProvider.setConnectionCallback(new StoneCallbackInterface() {
-                    @Override
-                    public void onSuccess() {
-                        Toast.makeText(MainActivity.this, "Transações canceladas com sucesso", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError(@Nullable StoneStatus stoneStatus) {
-                        Toast.makeText(MainActivity.this, "Ocorreu um erro durante o cancelamento das tabelas: " + reversalProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                reversalProvider.execute();
-                break;
-
-            case R.id.deactivateOption:
-                final ActiveApplicationProvider provider = new ActiveApplicationProvider(MainActivity.this);
-                provider.setDialogMessage("Desativando o aplicativo...");
-                provider.setDialogTitle("Aguarde");
-                provider.useDefaultUI(true);
-                provider.setConnectionCallback(new StoneCallbackInterface() {
-                    /* Metodo chamado se for executado sem erros */
-                    public void onSuccess() {
-                        Intent mainIntent = new Intent(MainActivity.this, ValidationActivity.class);
-                        startActivity(mainIntent);
-                        finish();
-                    }
-
-                    /* metodo chamado caso ocorra alguma excecao */
-                    public void onError(@Nullable StoneStatus stoneStatus) {
-                        makeText(MainActivity.this, "Erro na ativacao do aplicativo, verifique a lista de erros do provider", LENGTH_SHORT).show();
-                        /* Chame o metodo abaixo para verificar a lista de erros. Para mais detalhes, leia a documentacao: */
-                        Log.e("deactivateOption", "onError: " + provider.getListOfErrors().toString());
-                    }
-                });
-                provider.deactivate();
                 break;
 
             case R.id.disconnectDeviceOption:
@@ -154,66 +144,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
 
+            //endregion
+
+            //region POS Android
+
             case R.id.posTransactionOption:
                 startActivity(new Intent(MainActivity.this, PosTransactionActivity.class));
-                break;
-
-            case R.id.manageStoneCodeOption:
-                startActivity(new Intent(MainActivity.this, ManageStoneCodeActivity.class));
                 break;
 
             case R.id.posValidateCardOption:
                 final PosValidateTransactionByCardProvider posValidateTransactionByCardProvider = new PosValidateTransactionByCardProvider(this);
                 posValidateTransactionByCardProvider.setConnectionCallback(new StoneActionCallback() {
                     @Override
+                    public void onError(@Nullable StoneStatus stoneStatus) {
+                        assert stoneStatus != null;
+                        Log.i("posValidateCardOption", "onError: " + stoneStatus.getMessage());
+                    }
+
+                    @Override
                     public void onStatusChanged(final Action action) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(MainActivity.this, action.name(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        runOnUiThread(() -> Toast.makeText(MainActivity.this, action.name(), Toast.LENGTH_SHORT).show());
                     }
 
                     @Override
                     public void onSuccess() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                final List<TransactionObject> transactionsWithCurrentCard = posValidateTransactionByCardProvider.getTransactionsWithCurrentCard();
-                                if (transactionsWithCurrentCard.isEmpty())
-                                    Toast.makeText(MainActivity.this, "Cartão não fez transação.", Toast.LENGTH_SHORT).show();
-                                Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                                Log.i("posValidateCardOption", "onSuccess: " + transactionsWithCurrentCard);
-                            }
+                        runOnUiThread(() -> {
+                            final List<TransactionObject> transactionsWithCurrentCard = posValidateTransactionByCardProvider.getTransactionsWithCurrentCard();
+                            if (transactionsWithCurrentCard.isEmpty())
+                                Toast.makeText(MainActivity.this, "Cartão não fez transação.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                            Log.i("posValidateCardOption", "onSuccess: " + transactionsWithCurrentCard);
                         });
 
                     }
-
-                    @Override
-                    public void onError(@Nullable StoneStatus stoneStatus) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                                Log.e("posValidateCardOption", "onError: " + posValidateTransactionByCardProvider.getListOfErrors());
-                            }
-                        });
-                    }
-
                 });
                 posValidateTransactionByCardProvider.execute();
                 break;
 
             case R.id.posPrinterProvider:
-                final PosPrintProvider customPosPrintProvider = new PosPrintProvider(getApplicationContext());
-                customPosPrintProvider.addLine("PAN : " + "123");
-                customPosPrintProvider.addLine("DATE/TIME : 01/01/1900");
-                customPosPrintProvider.addLine("AMOUNT : 200.00");
-                customPosPrintProvider.addLine("ATK : 123456789");
-                customPosPrintProvider.addLine("Signature");
-                customPosPrintProvider.addBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.signature));
-                customPosPrintProvider.setConnectionCallback(new StoneCallbackInterface() {
+                final PosPrintProvider posPrintProvider = new PosPrintProvider(getApplicationContext());
+                posPrintProvider.addLine("PAN : " + "123");
+                posPrintProvider.addLine("DATE/TIME : 01/01/1900");
+                posPrintProvider.addLine("AMOUNT : 200.00");
+                posPrintProvider.addLine("ATK : 123456789");
+                posPrintProvider.addLine("Signature");
+                posPrintProvider.addBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.signature));
+                posPrintProvider.print(new StoneCallbackInterface() {
                     @Override
                     public void onSuccess() {
                         Toast.makeText(getApplicationContext(), "Recibo impresso", Toast.LENGTH_SHORT).show();
@@ -221,10 +197,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     @Override
                     public void onError(@Nullable StoneStatus stoneStatus) {
-                        Toast.makeText(getApplicationContext(), "Erro ao imprimir: " + customPosPrintProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
+                        assert stoneStatus != null;
+                        Toast.makeText(getApplicationContext(), "Erro ao imprimir: " + stoneStatus.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-                customPosPrintProvider.execute();
+                break;
+            //endregion
 
             default:
                 break;

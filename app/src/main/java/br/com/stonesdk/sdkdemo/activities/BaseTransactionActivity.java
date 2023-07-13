@@ -130,11 +130,8 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
 
     public void initTransaction() {
         instalmentTransaction = getInstalmentTransaction();
-
-        // Informa a quantidade de parcelas.
         transactionObject.setInstalmentTransaction(instalmentTransaction);
 
-        // Verifica a forma de pagamento selecionada.
         TypeOfTransactionEnum transactionType;
         switch (transactionTypeRadioGroup.getCheckedRadioButtonId()) {
             case R.id.radioCredit:
@@ -155,19 +152,12 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
         transactionObject.setCapture(captureTransactionCheckBox.isChecked());
         transactionObject.setAmount(amountEditText.getText().toString());
 
-        transactionObject.setSubMerchantCity("city"); //Cidade do sub-merchant
-        transactionObject.setSubMerchantPostalAddress("00000000"); //CEP do sub-merchant (Apenas números)
-        transactionObject.setSubMerchantRegisteredIdentifier("00000000"); // Identificador do sub-merchant
-        transactionObject.setSubMerchantTaxIdentificationNumber("33368443000199"); // CNPJ do sub-merchant (apenas números)
-
-//        Seleciona o mcc do lojista.
-//        transactionObject.setSubMerchantCategoryCode("123");
-
-//        Seleciona o endereço do lojista.
-//        transactionObject.setSubMerchantAddress("address");]
+        transactionObject.setSubMerchantCity("city");
+        transactionObject.setSubMerchantPostalAddress("00000000");
+        transactionObject.setSubMerchantRegisteredIdentifier("00000000");
+        transactionObject.setSubMerchantTaxIdentificationNumber("33368443000199");
 
         transactionProvider = buildTransactionProvider();
-        transactionProvider.useDefaultUI(true);
         transactionProvider.setConnectionCallback(this);
         transactionProvider.execute();
     }

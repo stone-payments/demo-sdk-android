@@ -44,7 +44,6 @@ dependencies {
 
     //stone - bibliotecas dispositivos
     implementation "br.com.stone:stone-sdk-posandroid-ingenico"
-    implementation "br.com.stone:hal-adapter:3.7.0"
     implementation "br.com.stone:stone-sdk-posandroid-gertec"
     implementation "br.com.stone:stone-sdk-posandroid-sunmi"
     implementation "br.com.stone:stone-sdk-posandroid-serial"

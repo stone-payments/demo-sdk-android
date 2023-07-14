@@ -1,10 +1,11 @@
 package br.com.stonesdk.sdkdemo.activities;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+
+import java.util.List;
 
 import br.com.stone.sdk.android.error.StoneStatus;
 import br.com.stone.sdk.core.enums.ErrorsEnum;
@@ -81,7 +82,8 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
         }
     }
 
-    public void onError() {
+    @Override
+    public void onError(@Nullable StoneStatus stoneStatus) {
         if (providerHasErrorEnum(ErrorsEnum.DEVICE_NOT_COMPATIBLE)) {
             Toast.makeText(
                     this,

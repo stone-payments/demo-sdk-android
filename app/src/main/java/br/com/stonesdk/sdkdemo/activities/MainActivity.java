@@ -15,8 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 import br.com.stone.sdk.activation.providers.ActiveApplicationProvider;
@@ -30,8 +28,6 @@ import br.com.stone.sdk.payment.providers.PosValidateTransactionByCardProvider;
 import br.com.stone.sdk.payment.providers.ReversalProvider;
 import br.com.stone.sdk.payment.providers.interfaces.StoneActionCallback;
 import br.com.stone.sdk.payment.utils.StonePayment;
-import br.com.stone.posandroid.providers.PosPrintProvider;
-import br.com.stone.posandroid.providers.PosValidateTransactionByCardProvider;
 import br.com.stonesdk.sdkdemo.R;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -186,10 +182,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 posValidateTransactionByCardProvider.execute();
                 break;
 
-            case R.id.posMifareProvider:
-                startActivity(new Intent(MainActivity.this, MifareActivity.class));
-                break;
-
             case R.id.posPrinterProvider:
                 final PosPrintProvider posPrintProvider = new PosPrintProvider(getApplicationContext());
                 posPrintProvider.addLine("PAN : " + "123");
@@ -210,6 +202,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Toast.makeText(getApplicationContext(), "Erro ao imprimir: " + stoneStatus.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+                break;
+
+            case R.id.posMifareProvider:
+                startActivity(new Intent(MainActivity.this, MifareActivity.class));
                 break;
             //endregion
 

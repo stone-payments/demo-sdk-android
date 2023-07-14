@@ -1,7 +1,6 @@
 package br.com.stonesdk.sdkdemo.activities;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;

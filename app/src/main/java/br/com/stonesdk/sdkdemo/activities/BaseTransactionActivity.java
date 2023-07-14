@@ -3,10 +3,6 @@ package br.com.stonesdk.sdkdemo.activities;
 import android.app.Dialog;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -30,6 +26,7 @@ import br.com.stone.sdk.core.model.user.UserModel;
 import br.com.stone.sdk.core.utils.Stone;
 import br.com.stone.sdk.payment.database.models.transaction.TransactionObject;
 import br.com.stone.sdk.payment.enums.Action;
+import br.com.stone.sdk.payment.enums.EntryMode;
 import br.com.stone.sdk.payment.enums.TypeOfTransactionEnum;
 import br.com.stone.sdk.payment.providers.interfaces.BaseTransactionProvider;
 import br.com.stone.sdk.payment.providers.interfaces.StoneActionCallback;
@@ -55,8 +52,6 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     TextView logTextView;
     Button sendTransactionButton;
     Button cancelTransactionButton;
-    InstalmentTransaction instalmentTransaction;
-
     Dialog builder;
 
     @Override
@@ -81,12 +76,30 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
         sendTransactionButton.setOnClickListener(v -> initTransaction());
         cancelTransactionButton.setOnClickListener(v -> transactionProvider.abortPayment());
 
-
         builder = new Dialog(this);
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        builder.getWindow().setBackgroundDrawable(
-                new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        builder.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+    }
 
+    private InstalmentTransaction getInstalmentTransaction() {
+        switch (installmentTypeSpinner.getSelectedItemPosition()) {
+            case 0: {
+                return new InstalmentTransaction.None();
+            }
+            case 1: {
+                return new InstalmentTransaction.Issuer(
+                        Integer.parseInt(
+                                installmentNumberEditText.getText().toString()
+                        ));
+            }
+            case 2: {
+                return new InstalmentTransaction.Merchant(
+                        Integer.parseInt(
+                                installmentNumberEditText.getText().toString()
+                        ));
+            }
+        }
+        return null;
     }
 
     private void radioGroupClick() {
@@ -95,12 +108,18 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
                 case R.id.radioPix:
                 case R.id.radioDebit:
                 case R.id.radioVoucher:
-                    installmentsTextView.setVisibility(View.GONE);
-                    installmentsSpinner.setVisibility(View.GONE);
+                    installmentTypeTextView.setVisibility(View.GONE);
+                    installmentTypeSpinner.setVisibility(View.GONE);
+                    installmentNumberTextView.setVisibility(View.GONE);
+                    installmentNumberEditText.setVisibility(View.GONE);
+                    infoTextView.setVisibility(View.GONE);
                     break;
                 case R.id.radioCredit:
-                    installmentsTextView.setVisibility(View.VISIBLE);
-                    installmentsSpinner.setVisibility(View.VISIBLE);
+                    installmentTypeTextView.setVisibility(View.VISIBLE);
+                    installmentTypeSpinner.setVisibility(View.VISIBLE);
+                    installmentNumberTextView.setVisibility(View.VISIBLE);
+                    installmentNumberEditText.setVisibility(View.VISIBLE);
+                    infoTextView.setVisibility(View.VISIBLE);
                     break;
             }
         });
@@ -120,8 +139,7 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     }
 
     public void initTransaction() {
-        instalmentTransaction = getInstalmentTransaction();
-        transactionObject.setInstalmentTransaction(instalmentTransaction);
+        transactionObject.setInstalmentTransaction(getInstalmentTransaction());
 
         TypeOfTransactionEnum transactionType;
         switch (transactionTypeRadioGroup.getCheckedRadioButtonId()) {
@@ -134,9 +152,11 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
             case R.id.radioVoucher:
                 transactionType = TypeOfTransactionEnum.VOUCHER;
                 break;
-            case R.id.radioPix:
+            case R.id.radioPix: {
                 transactionType = TypeOfTransactionEnum.PIX;
+                transactionObject.setEntryMode(EntryMode.QRCODE);
                 break;
+            }
             default:
                 transactionType = TypeOfTransactionEnum.CREDIT;
         }

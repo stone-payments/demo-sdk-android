@@ -10,10 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,17 +18,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.com.stone.sdk.activation.providers.ActiveApplicationProvider;
 import br.com.stone.sdk.android.error.StoneStatus;
 import br.com.stone.sdk.android.error.sdk.StoneSDKException;
 import br.com.stone.sdk.core.application.StoneStart;
-import br.com.stone.sdk.core.enums.ErrorsEnum;
-import br.com.stone.sdk.core.environment.Environment;
 import br.com.stone.sdk.core.model.user.UserModel;
 import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
-import br.com.stone.sdk.core.utils.Stone;
+import br.com.stone.sdk.core.security.keys.StoneKeyType;
 import br.com.stonesdk.sdkdemo.R;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -55,25 +52,6 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
 
         findViewById(R.id.activateButton).setOnClickListener(this);
         stoneCodeEditText = findViewById(R.id.stoneCodeEditText);
-        Spinner environmentSpinner = findViewById(R.id.environmentSpinner);
-
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item);
-        for (Environment env : Environment.values()) {
-            adapter.add(env.name());
-        }
-        environmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Environment environment = Environment.valueOf(adapter.getItem(position));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-        environmentSpinner.setAdapter(adapter);
-
-        Stone.setAppName("Demo SDK");
     }
 
     @Override
@@ -100,6 +78,10 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
     public void initiateApp() {
+        Map<StoneKeyType, String> stoneKeys = new HashMap<>();
+        stoneKeys.put(StoneKeyType.QRCODE_PROVIDERID, "SUA_CHAVE");
+        stoneKeys.put(StoneKeyType.QRCODE_AUTHORIZATION, "Bearer SUA_CHAVE");
+
         StoneStart.init(this, "SDK Demo", new StoneStart.StoneStartCallback() {
             @Override
             public void onSuccess(@NonNull List<UserModel> userModelList) {
@@ -113,7 +95,7 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
                 Toast.makeText(ValidationActivity.this, "Erro ao inicializar a SDK", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "onError: " + error);
             }
-        });
+        }, stoneKeys);
     }
 
     @OnPermissionDenied({Manifest.permission.READ_EXTERNAL_STORAGE})

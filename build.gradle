@@ -11,7 +11,7 @@ buildscript {
             localProp.load(new FileInputStream(rootProject.file(fileName)))
         }
         packageCloudReadToken = System.env.PACKAGECLOUD_READ_TOKEN != null ? System.env.PACKAGECLOUD_READ_TOKEN  : localProp["packageCloudReadToken"] ?: ""
-        packageCloudReadTokenInternal = System.env.PACKAGECLOUD_READ_TOKEN != null ? System.env.PACKAGECLOUD_READ_TOKEN  : localProp["packageCloudReadTokenInternal"] ?: ""
+        packageCloudReadTokenInternal = System.env.PACKAGECLOUD_READ_TOKEN_INTERNAL != null ? System.env.PACKAGECLOUD_READ_TOKEN_INTERNAL  : localProp["packageCloudReadTokenInternal"] ?: ""
     }
 
     repositories {

@@ -1,9 +1,8 @@
 package br.com.stonesdk.sdkdemo.activities;
 
-import android.Manifest;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,14 +14,14 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import java.util.Set;
 
 import br.com.stone.sdk.android.error.StoneStatus;
-import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
 import br.com.stone.sdk.payment.database.models.pinpad.PinpadObject;
+import br.com.stone.sdk.payment.enums.Action;
 import br.com.stone.sdk.payment.providers.BluetoothConnectionProvider;
+import br.com.stone.sdk.payment.providers.interfaces.StoneActionCallback;
 import br.com.stonesdk.sdkdemo.R;
 
 public class DevicesActivity extends AppCompatActivity implements OnItemClickListener {
@@ -41,14 +40,10 @@ public class DevicesActivity extends AppCompatActivity implements OnItemClickLis
         listBluetoothDevices();
     }
 
+    @SuppressLint("MissingPermission")
     public void listBluetoothDevices() {
         ArrayAdapter<String> btArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
 
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
@@ -59,13 +54,11 @@ public class DevicesActivity extends AppCompatActivity implements OnItemClickLis
         listView.setAdapter(btArrayAdapter);
     }
 
+    @SuppressLint("MissingPermission")
     public void turnBluetoothOn() {
         try {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            mBluetoothAdapter.enable();
             do {
+                mBluetoothAdapter.enable();
             } while (!mBluetoothAdapter.isEnabled());
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,7 +71,12 @@ public class DevicesActivity extends AppCompatActivity implements OnItemClickLis
         PinpadObject pinpadSelected = new PinpadObject(pinpadInfo[0], pinpadInfo[1], false);
 
         final BluetoothConnectionProvider bluetoothConnectionProvider = new BluetoothConnectionProvider(DevicesActivity.this, pinpadSelected);
-        bluetoothConnectionProvider.setConnectionCallback(new StoneCallbackInterface() {
+        bluetoothConnectionProvider.setConnectionCallback(new StoneActionCallback() {
+            @Override
+            public void onStatusChanged(Action action) {
+
+            }
+
             @Override
             public void onSuccess() {
                 Toast.makeText(getApplicationContext(), "Pinpad conectado", Toast.LENGTH_SHORT).show();
@@ -93,6 +91,7 @@ public class DevicesActivity extends AppCompatActivity implements OnItemClickLis
                 Log.e("DevicesActivity", "onError: " + stoneStatus.getMessage());
             }
         });
+
         bluetoothConnectionProvider.execute();
     }
 }

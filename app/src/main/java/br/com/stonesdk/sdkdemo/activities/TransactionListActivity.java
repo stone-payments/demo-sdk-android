@@ -3,6 +3,7 @@ package br.com.stonesdk.sdkdemo.activities;
 import android.app.AlertDialog;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -97,8 +98,14 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
 
                                 @Override
                                 public void onError(@Nullable StoneStatus stoneStatus) {
-                                    assert stoneStatus != null;
-                                    Toast.makeText(TransactionListActivity.this, "Erro ao imprimir: " + stoneStatus.getMessage(), Toast.LENGTH_SHORT).show();
+                                    String error;
+                                    if (stoneStatus != null) {
+                                        error = stoneStatus.getMessage();
+                                    } else {
+                                        error = customPosPrintProvider.getListOfErrors().toString();
+                                    }
+                                    Log.e("DevicesActivity", "onError: " + error);
+                                    Toast.makeText(TransactionListActivity.this, "Erro ao imprimir: " + error, Toast.LENGTH_SHORT).show();
                                 }
                             });
                             break;
@@ -126,8 +133,8 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
                             sendReceipt(selectedTransaction, ReceiptType.MERCHANT);
                             break;
                         case 7:
-                            final CaptureTransactionProvider provider = new CaptureTransactionProvider(TransactionListActivity.this, selectedTransaction);
-                            provider.setConnectionCallback(new StoneCallbackInterface() {
+                            final CaptureTransactionProvider captureTransactionProvider = new CaptureTransactionProvider(TransactionListActivity.this, selectedTransaction);
+                            captureTransactionProvider.setConnectionCallback(new StoneCallbackInterface() {
                                 @Override
                                 public void onSuccess() {
                                     Toast.makeText(TransactionListActivity.this, "Transação Capturada com sucesso!",
@@ -136,15 +143,21 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
 
                                 @Override
                                 public void onError(@Nullable StoneStatus stoneStatus) {
-                                    assert stoneStatus != null;
+                                    String error;
+                                    if (stoneStatus != null) {
+                                        error = stoneStatus.getMessage();
+                                    } else {
+                                        error = captureTransactionProvider.getListOfErrors().toString();
+                                    }
+                                    Log.e("DevicesActivity", "onError: " + error);
                                     Toast.makeText(TransactionListActivity.this, "Ocorreu um erro captura da transacao: " +
-                                                    stoneStatus.getMessage(),
+                                                    error,
                                             Toast.LENGTH_SHORT).show();
 
                                 }
                             });
 
-                            provider.execute();
+                            captureTransactionProvider.execute();
                             break;
                     }
                 });
@@ -179,8 +192,14 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
 
             @Override
             public void onError(@Nullable StoneStatus stoneStatus) {
-                assert stoneStatus != null;
-                Toast.makeText(getApplicationContext(), "Erro ao imprimir: " + stoneStatus.getMessage(), Toast.LENGTH_SHORT).show();
+                String error;
+                if (stoneStatus != null) {
+                    error = stoneStatus.getMessage();
+                } else {
+                    error = posPrintReceiptProvider.getListOfErrors().toString();
+                }
+                Log.e("DevicesActivity", "onError: " + error);
+                Toast.makeText(getApplicationContext(), "Erro ao imprimir: " + error, Toast.LENGTH_SHORT).show();
             }
         });
     }

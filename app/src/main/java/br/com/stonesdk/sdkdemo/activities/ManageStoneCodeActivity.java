@@ -71,8 +71,14 @@ public class ManageStoneCodeActivity extends AppCompatActivity {
             @Override
             public void onError(@Nullable StoneStatus stoneStatus) {
                 Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
-                assert stoneStatus != null;
-                Log.e("ManageStoneCodeActivity", "onError: " + stoneStatus.getMessage());
+                String error;
+                if (stoneStatus != null) {
+                    error = stoneStatus.getMessage();
+                } else {
+                    error = activeApplicationProvider.getListOfErrors().toString();
+                }
+                Log.e("DevicesActivity", "onError: " + error);
+                Log.e("ManageStoneCodeActivity", "onError: " + error);
             }
         });
     }
@@ -92,8 +98,14 @@ public class ManageStoneCodeActivity extends AppCompatActivity {
             @Override
             public void onError(@Nullable StoneStatus stoneStatus) {
                 Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
-                assert stoneStatus != null;
-                Log.e("ManageStoneCodeActivity", "onError: " + stoneStatus.getMessage());            }
+                String error;
+                if (stoneStatus != null) {
+                    error = stoneStatus.getMessage();
+                } else {
+                    error = activeApplicationProvider.getListOfErrors().toString();
+                }
+                Log.e("DevicesActivity", "onError: " + error);
+                Log.e("ManageStoneCodeActivity", "onError: " + error);            }
         });
     }
 

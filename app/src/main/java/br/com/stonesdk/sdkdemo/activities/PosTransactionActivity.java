@@ -1,6 +1,7 @@
 package br.com.stonesdk.sdkdemo.activities;
 
 import android.app.AlertDialog;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -41,8 +42,14 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
 
                 @Override
                 public void onError(@Nullable StoneStatus stoneStatus) {
-                    assert stoneStatus != null;
-                    Toast.makeText(PosTransactionActivity.this, "Erro ao imprimir: " + stoneStatus.getMessage(), Toast.LENGTH_SHORT).show();
+                    String error;
+                    if (stoneStatus != null) {
+                        error = stoneStatus.getMessage();
+                    } else {
+                        error = printMerchant.getListOfErrors().toString();
+                    }
+                    Log.e("DevicesActivity", "onError: " + error);
+                    Toast.makeText(PosTransactionActivity.this, "Erro ao imprimir: " + error, Toast.LENGTH_SHORT).show();
 
                 }
             });
@@ -61,8 +68,14 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
 
                     @Override
                     public void onError(@Nullable StoneStatus stoneStatus) {
-                        assert stoneStatus != null;
-                        Toast.makeText(PosTransactionActivity.this, "Erro ao imprimir: " + stoneStatus.getMessage(), Toast.LENGTH_SHORT).show();
+                        String error;
+                        if (stoneStatus != null) {
+                            error = stoneStatus.getMessage();
+                        } else {
+                            error = printClient.getListOfErrors().toString();
+                        }
+                        Log.e("DevicesActivity", "onError: " + error);
+                        Toast.makeText(PosTransactionActivity.this, "Erro ao imprimir: " + error, Toast.LENGTH_SHORT).show();
 
                     }
                 });

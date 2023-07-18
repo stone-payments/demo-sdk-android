@@ -87,8 +87,13 @@ public class DevicesActivity extends AppCompatActivity implements OnItemClickLis
             @Override
             public void onError(@Nullable StoneStatus stoneStatus) {
                 Toast.makeText(getApplicationContext(), "Erro durante a conexao. Verifique a mensagem do Stone Status", Toast.LENGTH_SHORT).show();
-                assert stoneStatus != null;
-                Log.e("DevicesActivity", "onError: " + stoneStatus.getMessage());
+                String error;
+                if (stoneStatus != null) {
+                    error = stoneStatus.getMessage();
+                } else {
+                    error = bluetoothConnectionProvider.getListOfErrors().toString();
+                }
+                Log.e("DevicesActivity", "onError: " + error);
             }
         });
 

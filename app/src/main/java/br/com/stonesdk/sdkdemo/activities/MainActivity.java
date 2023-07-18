@@ -69,8 +69,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     @Override
                     public void onError(@Nullable StoneStatus stoneStatus) {
-                        assert stoneStatus != null;
-                        Toast.makeText(MainActivity.this, "Ocorreu um erro durante o cancelamento das tabelas: " + stoneStatus.getMessage(), Toast.LENGTH_SHORT).show();
+                        String error;
+                        if (stoneStatus != null) {
+                            error = stoneStatus.getMessage();
+                        } else {
+                            error = reversalProvider.getListOfErrors().toString();
+                        }
+                        Log.e("DevicesActivity", "onError: " + error);
+                        Toast.makeText(MainActivity.this, "Ocorreu um erro durante o cancelamento das tabelas: " + error, Toast.LENGTH_SHORT).show();
                     }
                 });
                 reversalProvider.execute();
@@ -81,8 +87,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.deactivateOption:
-                final ActiveApplicationProvider provider = new ActiveApplicationProvider(MainActivity.this);
-                provider.deactivate(new StoneCallbackInterface() {
+                final ActiveApplicationProvider activeApplicationProvider = new ActiveApplicationProvider(MainActivity.this);
+                activeApplicationProvider.deactivate(new StoneCallbackInterface() {
                     @Override
                     public void onSuccess() {
                         Intent mainIntent = new Intent(MainActivity.this, ValidationActivity.class);
@@ -93,8 +99,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onError(@Nullable StoneStatus stoneStatus) {
                         makeText(MainActivity.this, "Erro na ativacao do aplicativo, verifique a mensagem do Stone Status", LENGTH_SHORT).show();
-                        assert stoneStatus != null;
-                        Log.e("deactivateOption", "onError: " + stoneStatus.getMessage());
+                        String error;
+                        if (stoneStatus != null) {
+                            error = stoneStatus.getMessage();
+                        } else {
+                            error = activeApplicationProvider.getListOfErrors().toString();
+                        }
+                        Log.e("DevicesActivity", "onError: " + error);
                     }
                 });
                 break;
@@ -158,8 +169,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 posValidateTransactionByCardProvider.setConnectionCallback(new StoneActionCallback() {
                     @Override
                     public void onError(@Nullable StoneStatus stoneStatus) {
-                        assert stoneStatus != null;
-                        Log.i("posValidateCardOption", "onError: " + stoneStatus.getMessage());
+                        String error;
+                        if (stoneStatus != null) {
+                            error = stoneStatus.getMessage();
+                        } else {
+                            error = posValidateTransactionByCardProvider.getListOfErrors().toString();
+                        }
+                        Log.e("DevicesActivity", "onError: " + error);
+                        Log.i("posValidateCardOption", "onError: " + error);
                     }
 
                     @Override
@@ -198,8 +215,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     @Override
                     public void onError(@Nullable StoneStatus stoneStatus) {
-                        assert stoneStatus != null;
-                        Toast.makeText(getApplicationContext(), "Erro ao imprimir: " + stoneStatus.getMessage(), Toast.LENGTH_SHORT).show();
+                        String error;
+                        if (stoneStatus != null) {
+                            error = stoneStatus.getMessage();
+                        } else {
+                            error = posPrintProvider.getListOfErrors().toString();
+                        }
+                        Log.e("DevicesActivity", "onError: " + error);
+                        Toast.makeText(getApplicationContext(), "Erro ao imprimir: " + error, Toast.LENGTH_SHORT).show();
                     }
                 });
                 break;

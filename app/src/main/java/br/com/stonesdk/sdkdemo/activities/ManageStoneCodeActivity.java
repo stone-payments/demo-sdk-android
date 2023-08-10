@@ -1,8 +1,6 @@
 package br.com.stonesdk.sdkdemo.activities;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,6 +8,9 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 
@@ -70,7 +71,6 @@ public class ManageStoneCodeActivity extends AppCompatActivity {
         final ActiveApplicationProvider activeApplicationProvider = new ActiveApplicationProvider(ManageStoneCodeActivity.this);
         activeApplicationProvider.setDialogTitle("Aguarde");
         activeApplicationProvider.setDialogMessage("Ativando...");
-        activeApplicationProvider.useDefaultUI(true);
 
         activeApplicationProvider.setConnectionCallback(new StoneCallbackInterface() {
             @Override
@@ -102,7 +102,7 @@ public class ManageStoneCodeActivity extends AppCompatActivity {
         final ActiveApplicationProvider activeApplicationProvider = new ActiveApplicationProvider(ManageStoneCodeActivity.this);
         activeApplicationProvider.setDialogTitle("Aguarde");
         activeApplicationProvider.setDialogMessage("Desativando...");
-        activeApplicationProvider.useDefaultUI(true);
+        //activeApplicationProvider.useDefaultUI(true);
 
         activeApplicationProvider.setConnectionCallback(new StoneCallbackInterface() {
             @Override

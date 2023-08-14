@@ -102,7 +102,6 @@ public class ManageStoneCodeActivity extends AppCompatActivity {
         final ActiveApplicationProvider activeApplicationProvider = new ActiveApplicationProvider(ManageStoneCodeActivity.this);
         activeApplicationProvider.setDialogTitle("Aguarde");
         activeApplicationProvider.setDialogMessage("Desativando...");
-        //activeApplicationProvider.useDefaultUI(true);
 
         activeApplicationProvider.setConnectionCallback(new StoneCallbackInterface() {
             @Override

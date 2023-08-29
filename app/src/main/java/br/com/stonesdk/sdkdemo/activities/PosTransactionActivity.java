@@ -1,10 +1,12 @@
 package br.com.stonesdk.sdkdemo.activities;
 
 import android.app.AlertDialog;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import java.util.List;
 
@@ -16,6 +18,8 @@ import br.com.stone.sdk.payment.enums.ReceiptType;
 import br.com.stone.sdk.payment.enums.TransactionStatusEnum;
 import br.com.stone.sdk.payment.providers.PosPrintReceiptProvider;
 import br.com.stone.sdk.payment.providers.PosTransactionProvider;
+import br.com.stonesdk.sdkdemo.R;
+import br.com.stonesdk.sdkdemo.util.ExtDrawableKt;
 
 
 public class PosTransactionActivity extends BaseTransactionActivity<PosTransactionProvider> {
@@ -32,8 +36,13 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
     @Override
     public void onSuccess() {
         if (transactionObject.getTransactionStatus() == TransactionStatusEnum.APPROVED) {
+            Bitmap customLogo = ExtDrawableKt.toBitmap((ContextCompat.getDrawable(this, R.drawable.custom)));
             PosPrintReceiptProvider printMerchant =
-                    new PosPrintReceiptProvider(PosTransactionActivity.this, transactionObject, ReceiptType.MERCHANT);
+                    new PosPrintReceiptProvider(PosTransactionActivity.this,
+                            transactionObject,
+                            ReceiptType.MERCHANT,
+                            customLogo
+                    );
             printMerchant.print(new StoneCallbackInterface() {
                 @Override
                 public void onSuccess() {
@@ -59,7 +68,11 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
 
             builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
                 PosPrintReceiptProvider printClient =
-                        new PosPrintReceiptProvider(PosTransactionActivity.this, transactionObject, ReceiptType.CLIENT);
+                        new PosPrintReceiptProvider(PosTransactionActivity.this,
+                                transactionObject,
+                                ReceiptType.CLIENT,
+                                customLogo
+                        );
                 printClient.print(new StoneCallbackInterface() {
                     @Override
                     public void onSuccess() {

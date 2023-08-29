@@ -1,6 +1,7 @@
 package br.com.stonesdk.sdkdemo.activities;
 
 import android.app.AlertDialog;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,7 @@ import br.com.stone.sdk.payment.providers.PosPrintReceiptProvider;
 import br.com.stone.sdk.payment.providers.SendEmailTransactionProvider;
 import br.com.stone.sdk.payment.providers.model.email.Contact;
 import br.com.stonesdk.sdkdemo.R;
+import br.com.stonesdk.sdkdemo.util.ExtDrawableKt;
 
 public class TransactionListActivity extends AppCompatActivity implements OnItemClickListener {
 
@@ -183,7 +186,13 @@ public class TransactionListActivity extends AppCompatActivity implements OnItem
     }
 
     private void printReceipt(ReceiptType receiptType, TransactionObject transactionObject) {
-        PosPrintReceiptProvider posPrintReceiptProvider = new PosPrintReceiptProvider(this, transactionObject, receiptType);
+        Bitmap customLogo = ExtDrawableKt.toBitmap((ContextCompat.getDrawable(this, R.drawable.custom)));
+        PosPrintReceiptProvider posPrintReceiptProvider = new PosPrintReceiptProvider(
+                this,
+                transactionObject,
+                receiptType,
+                customLogo
+        );
         posPrintReceiptProvider.print(new StoneCallbackInterface() {
             @Override
             public void onSuccess() {

@@ -58,7 +58,6 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         String stoneCode = stoneCodeEditText.getText().toString();
         final ActiveApplicationProvider provider = new ActiveApplicationProvider(this);
-
         provider.activate(stoneCode, new StoneCallbackInterface() {
             public void onSuccess() {
                 Toast.makeText(ValidationActivity.this, "Ativado com sucesso, iniciando o aplicativo", Toast.LENGTH_SHORT).show();

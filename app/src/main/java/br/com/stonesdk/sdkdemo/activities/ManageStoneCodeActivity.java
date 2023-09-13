@@ -1,13 +1,14 @@
 package br.com.stonesdk.sdkdemo.activities;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 import java.util.Objects;
@@ -59,7 +60,6 @@ public class ManageStoneCodeActivity extends AppCompatActivity {
         final EditText stoneCodeEditText = findViewById(R.id.insertManageStoneCodeEditText);
         String stoneCode = stoneCodeEditText.getText().toString();
         final ActiveApplicationProvider activeApplicationProvider = new ActiveApplicationProvider(ManageStoneCodeActivity.this);
-
         activeApplicationProvider.activate(stoneCode, new StoneCallbackInterface() {
             @Override
             public void onSuccess() {
@@ -86,7 +86,6 @@ public class ManageStoneCodeActivity extends AppCompatActivity {
     private void deactivateStoneCodeListViewOnItemClickListener(int position) {
         String stoneCode = userModelList.get(position).getStoneCode();
         final ActiveApplicationProvider activeApplicationProvider = new ActiveApplicationProvider(ManageStoneCodeActivity.this);
-
         activeApplicationProvider.deactivate(stoneCode, new StoneCallbackInterface() {
             @Override
             public void onSuccess() {

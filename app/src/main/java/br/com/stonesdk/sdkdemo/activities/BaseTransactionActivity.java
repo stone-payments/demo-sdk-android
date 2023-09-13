@@ -167,7 +167,6 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
         transactionObject.setAmount(amountEditText.getText().toString());
 
         transactionProvider = buildTransactionProvider();
-        transactionProvider.useDefaultUI(true);
         transactionProvider.setConnectionCallback(this);
         transactionProvider.execute();
     }

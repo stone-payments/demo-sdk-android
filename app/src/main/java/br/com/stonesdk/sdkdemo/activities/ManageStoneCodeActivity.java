@@ -2,8 +2,6 @@ package br.com.stonesdk.sdkdemo.activities;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -13,12 +11,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
+import java.util.Objects;
 
+import br.com.stone.sdk.activation.providers.ActiveApplicationProvider;
+import br.com.stone.sdk.android.error.StoneStatus;
+import br.com.stone.sdk.core.model.user.UserModel;
+import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
+import br.com.stone.sdk.core.utils.Stone;
 import br.com.stonesdk.sdkdemo.R;
-import stone.application.interfaces.StoneCallbackInterface;
-import stone.providers.ActiveApplicationProvider;
-import stone.user.UserModel;
-import stone.utils.Stone;
+
 
 /**
  * @author tiago.barbosa
@@ -26,7 +27,7 @@ import stone.utils.Stone;
  */
 public class ManageStoneCodeActivity extends AppCompatActivity {
 
-    private final List<UserModel> userModelList = Stone.sessionApplication.getUserModelList();
+    private final List<UserModel> userModelList = Stone.getSessionApplication().getUserModelList();
     private ListView stoneCodeListView;
 
     @Override
@@ -34,22 +35,11 @@ public class ManageStoneCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_stone_code);
 
-        findViewById(R.id.activateManageStoneCodeButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                activateStoneCodeButtonOnClickListener();
-            }
-        });
+        findViewById(R.id.activateManageStoneCodeButton).setOnClickListener(view -> activateStoneCodeButtonOnClickListener());
 
         stoneCodeListView = findViewById(R.id.manageStoneCodeListView);
         stoneCodeListView.setAdapter(populateStoneCodeListView());
-        stoneCodeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                manageStoneCodeListViewOnItemClickListener(position);
-            }
-        });
-
+        stoneCodeListView.setOnItemClickListener((adapterView, view, position, l) -> deactivateStoneCodeListViewOnItemClickListener(position));
     }
 
     @Override
@@ -68,11 +58,9 @@ public class ManageStoneCodeActivity extends AppCompatActivity {
 
     private void activateStoneCodeButtonOnClickListener() {
         final EditText stoneCodeEditText = findViewById(R.id.insertManageStoneCodeEditText);
+        String stoneCode = stoneCodeEditText.getText().toString();
         final ActiveApplicationProvider activeApplicationProvider = new ActiveApplicationProvider(ManageStoneCodeActivity.this);
-        activeApplicationProvider.setDialogTitle("Aguarde");
-        activeApplicationProvider.setDialogMessage("Ativando...");
-
-        activeApplicationProvider.setConnectionCallback(new StoneCallbackInterface() {
+        activeApplicationProvider.activate(stoneCode, new StoneCallbackInterface() {
             @Override
             public void onSuccess() {
                 stoneCodeListView.setAdapter(populateStoneCodeListView());
@@ -81,29 +69,24 @@ public class ManageStoneCodeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError() {
+            public void onError(@Nullable StoneStatus stoneStatus) {
                 Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
-                Log.e("ManageStoneCodeActivity", "onError: " + activeApplicationProvider.getListOfErrors());
+                String error;
+                if (stoneStatus != null) {
+                    error = stoneStatus.getMessage();
+                } else {
+                    error = activeApplicationProvider.getListOfErrors().toString();
+                }
+                Log.e("DevicesActivity", "onError: " + error);
+                Log.e("ManageStoneCodeActivity", "onError: " + error);
             }
         });
-
-        activeApplicationProvider.activate(stoneCodeEditText.getText().toString());
-
-        /*
-          : example with list of stone codes :
-
-            List<String> stoneCodeList = Arrays.asList("636852", "357894", "095632");
-            activeApplicationProvider.activate(stoneCodeList);
-
-         */
     }
 
-    private void manageStoneCodeListViewOnItemClickListener(int position) {
+    private void deactivateStoneCodeListViewOnItemClickListener(int position) {
+        String stoneCode = userModelList.get(position).getStoneCode();
         final ActiveApplicationProvider activeApplicationProvider = new ActiveApplicationProvider(ManageStoneCodeActivity.this);
-        activeApplicationProvider.setDialogTitle("Aguarde");
-        activeApplicationProvider.setDialogMessage("Desativando...");
-
-        activeApplicationProvider.setConnectionCallback(new StoneCallbackInterface() {
+        activeApplicationProvider.deactivate(stoneCode, new StoneCallbackInterface() {
             @Override
             public void onSuccess() {
                 stoneCodeListView.setAdapter(populateStoneCodeListView());
@@ -112,12 +95,17 @@ public class ManageStoneCodeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError() {
+            public void onError(@Nullable StoneStatus stoneStatus) {
                 Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
-                Log.e("ManageStoneCodeActivity", "onError: " + activeApplicationProvider.getListOfErrors());
-            }
+                String error;
+                if (stoneStatus != null) {
+                    error = stoneStatus.getMessage();
+                } else {
+                    error = activeApplicationProvider.getListOfErrors().toString();
+                }
+                Log.e("DevicesActivity", "onError: " + error);
+                Log.e("ManageStoneCodeActivity", "onError: " + error);            }
         });
-        activeApplicationProvider.deactivate(userModelList.get(position).getStoneCode());
     }
 
 }

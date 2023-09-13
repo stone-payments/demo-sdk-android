@@ -2,15 +2,18 @@ package br.com.stonesdk.sdkdemo.activities;
 
 import android.widget.Toast;
 
-import stone.application.enums.TransactionStatusEnum;
-import stone.providers.TransactionProvider;
-import stone.utils.Stone;
+import br.com.stone.sdk.payment.database.models.pinpad.PinpadObject;
+import br.com.stone.sdk.payment.enums.TransactionStatusEnum;
+import br.com.stone.sdk.payment.providers.TransactionProvider;
+import br.com.stone.sdk.payment.utils.StonePayment;
 
 public class TransactionActivity extends BaseTransactionActivity<TransactionProvider> {
 
+    PinpadObject pinpadObject = StonePayment.getPinpadFromListAt(0);
+
     @Override
     protected TransactionProvider buildTransactionProvider() {
-        return new TransactionProvider(TransactionActivity.this, transactionObject, getSelectedUserModel(), Stone.getPinpadFromListAt(0));
+        return new TransactionProvider(TransactionActivity.this, transactionObject, getSelectedUserModel(), pinpadObject);
     }
 
     @Override
@@ -29,10 +32,5 @@ public class TransactionActivity extends BaseTransactionActivity<TransactionProv
 
             Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
         }
-    }
-
-    @Override
-    public void onError() {
-        super.onError();
     }
 }

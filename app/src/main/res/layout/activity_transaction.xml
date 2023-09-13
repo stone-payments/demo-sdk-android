@@ -22,12 +22,12 @@
         android:id="@+id/amountEditText"
         android:layout_width="0dp"
         android:layout_height="52dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:hint="@string/transaction_enter_value"
         android:inputType="number"
-        android:text="10"
+        android:text="100"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/amountTextView"
         app:layout_constraintTop_toTopOf="parent">
@@ -42,39 +42,62 @@
         android:id="@+id/stoneCodeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
         android:text="Stone Code"
-        app:layout_constraintStart_toStartOf="@+id/stoneCodeSpinner"
-        app:layout_constraintTop_toBottomOf="@+id/transactionTypeRadioGroup" />
+        app:layout_constraintBottom_toBottomOf="@+id/stoneCodeSpinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/stoneCodeSpinner" />
 
     <TextView
-        android:id="@+id/installmentsTextView"
+        android:id="@+id/installmentNumberTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
         android:text="@string/transaction_no_installments"
+        app:layout_constraintBottom_toBottomOf="@+id/installmentNumberEditText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/transactionTypeRadioGroup" />
+        app:layout_constraintTop_toTopOf="@+id/installmentNumberEditText" />
 
-    <Spinner
-        android:id="@+id/installmentsSpinner"
+    <EditText
+        android:id="@+id/installmentNumberEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/stoneCodeSpinner"
-        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/installmentNumberTextView"
+        app:layout_constraintTop_toBottomOf="@+id/installmentTypeSpinner" />
+
+    <TextView
+        android:id="@+id/installmentTypeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Tipo"
+        app:layout_constraintBottom_toBottomOf="@+id/installmentTypeSpinner"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stoneCodeTextView" />
+        app:layout_constraintTop_toTopOf="@+id/installmentTypeSpinner" />
+
+    <Spinner
+        android:id="@+id/installmentTypeSpinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/installmentTypeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/stoneCodeSpinner" />
 
     <Button
         android:id="@+id/sendTransactionButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/transaction_send_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -96,9 +119,9 @@
         android:id="@+id/transactionTypeRadioGroup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -116,8 +139,8 @@
             android:id="@+id/radioCredit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:checked="true"
             android:layout_weight="1"
+            android:checked="true"
             android:text="@string/transaction_credit"
             android:textSize="20sp" />
 
@@ -142,37 +165,47 @@
         android:id="@+id/logTextView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cancelTransactionButton" />
 
+    <TextView
+        android:id="@+id/infoTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="2dp"
+        android:text="À Vista: Não precisa adicionar número de parcelas\nValores permitidos: entre 2 e 18"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/installmentNumberEditText" />
 
     <CheckBox
         android:id="@+id/captureTransactionCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:checked="true"
         android:text="Transação com Captura"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stoneCodeSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/infoTextView" />
 
     <Spinner
         android:id="@+id/stoneCodeSpinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/installmentsSpinner"
-        app:layout_constraintTop_toBottomOf="@+id/stoneCodeTextView" />
+        app:layout_constraintStart_toEndOf="@+id/stoneCodeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/transactionTypeRadioGroup" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,26 +1,18 @@
 package br.com.stonesdk.sdkdemo.activities;
 
 import android.app.AlertDialog;
-import android.graphics.Bitmap;
-import android.util.Log;
+import android.content.DialogInterface;
 import android.widget.Toast;
-
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import java.util.List;
 
-import br.com.stone.sdk.android.error.StoneStatus;
-import br.com.stone.sdk.core.enums.ErrorsEnum;
-import br.com.stone.sdk.core.providers.interfaces.StoneCallbackInterface;
-import br.com.stone.sdk.payment.enums.Action;
-import br.com.stone.sdk.payment.enums.ReceiptType;
-import br.com.stone.sdk.payment.enums.TransactionStatusEnum;
-import br.com.stone.sdk.payment.providers.PosPrintReceiptProvider;
-import br.com.stone.sdk.payment.providers.PosTransactionProvider;
-import br.com.stonesdk.sdkdemo.R;
-import br.com.stonesdk.sdkdemo.util.ExtDrawableKt;
-
+import br.com.stone.posandroid.providers.PosPrintReceiptProvider;
+import br.com.stone.posandroid.providers.PosTransactionProvider;
+import br.com.stonesdk.sdkdemo.controller.PrintController;
+import stone.application.enums.Action;
+import stone.application.enums.ErrorsEnum;
+import stone.application.enums.ReceiptType;
+import stone.application.enums.TransactionStatusEnum;
 
 public class PosTransactionActivity extends BaseTransactionActivity<PosTransactionProvider> {
 
@@ -36,80 +28,56 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
     @Override
     public void onSuccess() {
         if (transactionObject.getTransactionStatus() == TransactionStatusEnum.APPROVED) {
-            Bitmap customLogo = ExtDrawableKt.toBitmap((ContextCompat.getDrawable(this, R.drawable.custom)));
-            PosPrintReceiptProvider printMerchant =
-                    new PosPrintReceiptProvider(PosTransactionActivity.this,
-                            transactionObject,
-                            ReceiptType.MERCHANT,
-                            customLogo
-                    );
-            printMerchant.print(new StoneCallbackInterface() {
-                @Override
-                public void onSuccess() {
-                    Toast.makeText(PosTransactionActivity.this, "Recibo impresso", Toast.LENGTH_SHORT).show();
-                }
 
-                @Override
-                public void onError(@Nullable StoneStatus stoneStatus) {
-                    String error;
-                    if (stoneStatus != null) {
-                        error = stoneStatus.getMessage();
-                    } else {
-                        error = printMerchant.getListOfErrors().toString();
-                    }
-                    Log.e("DevicesActivity", "onError: " + error);
-                    Toast.makeText(PosTransactionActivity.this, "Erro ao imprimir: " + error, Toast.LENGTH_SHORT).show();
+            final PrintController printMerchant =
+                    new PrintController(PosTransactionActivity.this,
+                            new PosPrintReceiptProvider(this.getApplicationContext(),
+                                    transactionObject, ReceiptType.MERCHANT));
 
-                }
-            });
+            printMerchant.print();
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Transação aprovada! Deseja imprimir a via do cliente?");
 
-            builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                PosPrintReceiptProvider printClient =
-                        new PosPrintReceiptProvider(PosTransactionActivity.this,
-                                transactionObject,
-                                ReceiptType.CLIENT,
-                                customLogo
-                        );
-                printClient.print(new StoneCallbackInterface() {
-                    @Override
-                    public void onSuccess() {
-                        Toast.makeText(PosTransactionActivity.this, "Recibo impresso", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError(@Nullable StoneStatus stoneStatus) {
-                        String error;
-                        if (stoneStatus != null) {
-                            error = stoneStatus.getMessage();
-                        } else {
-                            error = printClient.getListOfErrors().toString();
-                        }
-                        Log.e("DevicesActivity", "onError: " + error);
-                        Toast.makeText(PosTransactionActivity.this, "Erro ao imprimir: " + error, Toast.LENGTH_SHORT).show();
-
-                    }
-                });
+            builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    final PrintController printClient =
+                    new PrintController(PosTransactionActivity.this,
+                            new PosPrintReceiptProvider(getApplicationContext(),
+                                    transactionObject, ReceiptType.CLIENT));
+                    printClient.print();
+                }
             });
 
             builder.setNegativeButton(android.R.string.no, null);
 
-            runOnUiThread(builder::show);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    builder.show();
+
+                }
+            });
 
 
         } else {
-            runOnUiThread(() -> Toast.makeText(
-                    getApplicationContext(),
-                    "Erro na transação: \"" + getAuthorizationMessage() + "\"",
-                    Toast.LENGTH_LONG
-            ).show());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Erro na transação: \"" + getAuthorizationMessage() + "\"",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+            });
         }
     }
 
     @Override
-    public void onError(@Nullable StoneStatus stoneStatus) {
+    public void onError() {
+        super.onError();
         if (providerHasErrorEnum(ErrorsEnum.DEVICE_NOT_COMPATIBLE)) {
             Toast.makeText(
                     this,
@@ -137,6 +105,7 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
                     List<String> options = getTransactionProvider().getTransactionTypeOptions();
                     showTransactionTypeSelectionDialog(options);
             }
+
         });
     }
 

@@ -10,8 +10,8 @@ import android.widget.Spinner;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.stone.sdk.payment.utils.StonePayment;
 import br.com.stonesdk.sdkdemo.R;
+import stone.utils.Stone;
 
 public class DisconnectPinpadActivity extends AppCompatActivity {
 
@@ -32,7 +32,7 @@ public class DisconnectPinpadActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 int pinpadSelected = pinpadsSpinner.getSelectedItemPosition();
-                StonePayment.removePinpadAtIndex(StonePayment.getPinpadFromListAt(pinpadSelected));
+                Stone.removePinpadAtIndex(Stone.getPinpadFromListAt(pinpadSelected));
                 setPinpadsToSpinner();
             }
         });
@@ -41,8 +41,8 @@ public class DisconnectPinpadActivity extends AppCompatActivity {
     private void setPinpadsToSpinner() {
 
         List<String> pinpads = new ArrayList<>();
-        for (Integer i = 0; i < StonePayment.getPinpadListSize(); i++)
-            pinpads.add(StonePayment.getPinpadFromListAt(i).getName());
+        for (Integer i = 0; i < Stone.getPinpadListSize(); i++)
+            pinpads.add(Stone.getPinpadFromListAt(i).getName());
 
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, pinpads);

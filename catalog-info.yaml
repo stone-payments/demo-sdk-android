@@ -6,7 +6,7 @@ metadata:
   description: App de demonstracao do SDK POS Android
   namespace: stone
   annotations:
-    legacy.stone.tech/owner-email: frodrigues@stone.com.br
+    legacy.stone.tech/owner-email: open-source@stone.com.br
     
   labels:
     legacy.stone.tech/internal-user-auth-base: sso

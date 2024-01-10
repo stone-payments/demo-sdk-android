@@ -1,4 +1,3 @@
-
 def keystorePropertiesFile = rootProject.file("gertec/gertec-keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
@@ -9,9 +8,9 @@ android {
 
     signingConfigs {
         gertec {
-            storeFile file("../gertec/${keystoreProperties['storeFile']}")
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
+            storeFile file("../gertec/${keystoreProperties['storeFile']}")
             storePassword keystoreProperties['storePassword']
         }
     }

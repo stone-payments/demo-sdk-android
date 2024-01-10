@@ -7,3 +7,5 @@
 *.iml
 gertec/gertec-keystore.properties
 gertec/*.jks
+positivo/positivo-keystore.properties
+positivo/*.jks

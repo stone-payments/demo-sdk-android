@@ -21,6 +21,7 @@ import br.com.stone.posandroid.providers.PosPrintProvider;
 import br.com.stone.posandroid.providers.PosValidateTransactionByCardProvider;
 import br.com.stonesdk.sdkdemo.R;
 import stone.application.enums.Action;
+import stone.application.interfaces.ProbePendingReversalPaymentCallback;
 import stone.application.interfaces.StoneActionCallback;
 import stone.application.interfaces.StoneCallbackInterface;
 import stone.database.transaction.TransactionObject;
@@ -46,6 +47,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.posValidateCardOption).setOnClickListener(this);
         findViewById(R.id.posPrinterProvider).setOnClickListener(this);
         findViewById(R.id.posMifareProvider).setOnClickListener(this);
+
+        Executor e = new Executor();
+        e.run(this);
+
     }
 
     @Override

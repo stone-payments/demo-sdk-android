@@ -1,235 +1,228 @@
-package br.com.stonesdk.sdkdemo.activities;
+package br.com.stonesdk.sdkdemo.activities
 
-import static android.widget.Toast.LENGTH_SHORT;
-import static android.widget.Toast.makeText;
+import android.content.Intent
+import android.graphics.BitmapFactory
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import br.com.stone.posandroid.providers.PosPrintProvider
+import br.com.stone.posandroid.providers.PosValidateTransactionByCardProvider
+import br.com.stonesdk.sdkdemo.R
+import br.com.stonesdk.sdkdemo.databinding.ActivityMainBinding
+import stone.application.enums.Action
+import stone.application.interfaces.StoneActionCallback
+import stone.application.interfaces.StoneCallbackInterface
+import stone.providers.ActiveApplicationProvider
+import stone.providers.DisplayMessageProvider
+import stone.providers.ReversalProvider
+import stone.utils.Stone
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
+class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+    private lateinit var binding: ActivityMainBinding
 
-import java.util.List;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-import br.com.stone.posandroid.providers.PosPrintProvider;
-import br.com.stone.posandroid.providers.PosValidateTransactionByCardProvider;
-import br.com.stonesdk.sdkdemo.R;
-import stone.application.enums.Action;
-import stone.application.interfaces.StoneActionCallback;
-import stone.application.interfaces.StoneCallbackInterface;
-import stone.database.transaction.TransactionObject;
-import stone.providers.ActiveApplicationProvider;
-import stone.providers.DisplayMessageProvider;
-import stone.providers.ReversalProvider;
-import stone.utils.Stone;
-
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        findViewById(R.id.transactionOption).setOnClickListener(this);
-        findViewById(R.id.posTransactionOption).setOnClickListener(this);
-        findViewById(R.id.pairedDevicesOption).setOnClickListener(this);
-        findViewById(R.id.disconnectDeviceOption).setOnClickListener(this);
-        findViewById(R.id.deactivateOption).setOnClickListener(this);
-        findViewById(R.id.cancelTransactionsOption).setOnClickListener(this);
-        findViewById(R.id.displayMessageOption).setOnClickListener(this);
-        findViewById(R.id.listTransactionOption).setOnClickListener(this);
-        findViewById(R.id.manageStoneCodeOption).setOnClickListener(this);
-        findViewById(R.id.posValidateCardOption).setOnClickListener(this);
-        findViewById(R.id.posPrinterProvider).setOnClickListener(this);
-        findViewById(R.id.posMifareProvider).setOnClickListener(this);
+        binding.transactionOption.setOnClickListener(this)
+        binding.posTransactionOption.setOnClickListener(this)
+        binding.pairedDevicesOption.setOnClickListener(this)
+        binding.disconnectDeviceOption.setOnClickListener(this)
+        binding.deactivateOption.setOnClickListener(this)
+        binding.cancelTransactionsOption.setOnClickListener(this)
+        binding.displayMessageOption.setOnClickListener(this)
+        binding.listTransactionOption.setOnClickListener(this)
+        binding.manageStoneCodeOption.setOnClickListener(this)
+        binding.posValidateCardOption.setOnClickListener(this)
+        binding.posPrinterProvider.setOnClickListener(this)
+        binding.posMifareProvider.setOnClickListener(this)
     }
 
-    @Override
-    public void onClick(View v) {
+    override fun onClick(v: View) {
         // Para cada nova opção na lista, um novo "case" precisa ser inserido aqui.
-        switch (v.getId()) {
+        when (v.id) {
+            binding.pairedDevicesOption.id -> {
+                val devicesIntent = Intent(this@MainActivity, DevicesActivity::class.java)
+                startActivity(devicesIntent)
+            }
 
-            case R.id.pairedDevicesOption:
-                Intent devicesIntent = new Intent(MainActivity.this, DevicesActivity.class);
-                startActivity(devicesIntent);
-                break;
-
-            case R.id.transactionOption:
+            binding.transactionOption.id -> {
                 // Verifica se o bluetooth esta ligado e se existe algum pinpad conectado.
                 if (Stone.getPinpadListSize() > 0) {
-                    Intent transactionIntent = new Intent(MainActivity.this, TransactionActivity.class);
-                    startActivity(transactionIntent);
-                    break;
+                    val transactionIntent =
+                        Intent(this@MainActivity, TransactionActivity::class.java)
+                    startActivity(transactionIntent)
                 } else {
-                    makeText(getApplicationContext(), "Conecte-se a um pinpad.", LENGTH_SHORT).show();
-                    break;
+                    Toast.makeText(
+                        applicationContext,
+                        "Conecte-se a um pinpad.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
+            }
 
-            case R.id.listTransactionOption:
-                Intent transactionListIntent = new Intent(MainActivity.this, TransactionListActivity.class);
-                startActivity(transactionListIntent);
-                break;
+            binding.listTransactionOption.id -> {
+                val transactionListIntent =
+                    Intent(this@MainActivity, TransactionListActivity::class.java)
+                startActivity(transactionListIntent)
+            }
 
-            case R.id.displayMessageOption:
-                if (Stone.getPinpadListSize() <= 0) {
-                    makeText(getApplicationContext(), "Conecte-se a um pinpad.", LENGTH_SHORT).show();
-                    break;
-                }
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Digite a mensagem para mostrar no pinpad");
-                final EditText editText = new EditText(MainActivity.this);
-                builder.setView(editText);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String text = editText.getText().toString();
-                        DisplayMessageProvider displayMessageProvider =
-                                new DisplayMessageProvider(MainActivity.this, text, Stone.getPinpadFromListAt(0));
-                        displayMessageProvider.execute();
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-                builder.show();
-                break;
-
-            case R.id.cancelTransactionsOption:
-                final ReversalProvider reversalProvider = new ReversalProvider(this);
-                reversalProvider.setDialogMessage("Cancelando transações com erro");
-                reversalProvider.setConnectionCallback(new StoneCallbackInterface() {
-                    @Override
-                    public void onSuccess() {
-                        Toast.makeText(MainActivity.this, "Transações canceladas com sucesso", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError() {
-                        Toast.makeText(MainActivity.this, "Ocorreu um erro durante o cancelamento das tabelas: " + reversalProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                reversalProvider.execute();
-                break;
-
-            case R.id.deactivateOption:
-                final ActiveApplicationProvider provider = new ActiveApplicationProvider(MainActivity.this);
-                provider.setDialogMessage("Desativando o aplicativo...");
-                provider.setDialogTitle("Aguarde");
-                provider.setConnectionCallback(new StoneCallbackInterface() {
-                    /* Metodo chamado se for executado sem erros */
-                    public void onSuccess() {
-                        Intent mainIntent = new Intent(MainActivity.this, ValidationActivity.class);
-                        startActivity(mainIntent);
-                        finish();
-                    }
-
-                    /* metodo chamado caso ocorra alguma excecao */
-                    public void onError() {
-                        makeText(MainActivity.this, "Erro na ativacao do aplicativo, verifique a lista de erros do provider", LENGTH_SHORT).show();
-                        /* Chame o metodo abaixo para verificar a lista de erros. Para mais detalhes, leia a documentacao: */
-                        Log.e("deactivateOption", "onError: " + provider.getListOfErrors().toString());
-                    }
-                });
-                provider.deactivate();
-                break;
-
-            case R.id.disconnectDeviceOption:
+            binding.displayMessageOption.id -> {
                 if (Stone.getPinpadListSize() > 0) {
-                    Intent closeBluetoothConnectionIntent = new Intent(MainActivity.this, DisconnectPinpadActivity.class);
-                    startActivity(closeBluetoothConnectionIntent);
+                    val builder = AlertDialog.Builder(this@MainActivity)
+                    builder.setTitle("Digite a mensagem para mostrar no pinpad")
+                    val editText = EditText(this@MainActivity)
+                    builder.setView(editText)
+                    builder.setPositiveButton("OK") { dialog, which ->
+                        val text = editText.text.toString()
+                        val displayMessageProvider =
+                            DisplayMessageProvider(
+                                this@MainActivity,
+                                text,
+                                Stone.getPinpadFromListAt(0)
+                            )
+                        displayMessageProvider.execute()
+                    }
+                    builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
+
+                    builder.show()
                 } else {
-                    Toast.makeText(this, "Nenhum device Conectado", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                        applicationContext,
+                        "Conecte-se a um pinpad.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-                break;
+            }
 
-            case R.id.posTransactionOption:
-                startActivity(new Intent(MainActivity.this, PosTransactionActivity.class));
-                break;
+            binding.cancelTransactionsOption.id -> {
+                val reversalProvider = ReversalProvider(this)
+                reversalProvider.dialogMessage = "Cancelando transações com erro"
+                reversalProvider.connectionCallback = object : StoneCallbackInterface {
+                    override fun onSuccess() {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Transações canceladas com sucesso",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
-            case R.id.manageStoneCodeOption:
-                startActivity(new Intent(MainActivity.this, ManageStoneCodeActivity.class));
-                break;
+                    override fun onError() {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Ocorreu um erro durante o cancelamento das tabelas: " + reversalProvider.listOfErrors,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                reversalProvider.execute()
+            }
 
-            case R.id.posValidateCardOption:
-                final PosValidateTransactionByCardProvider posValidateTransactionByCardProvider = new PosValidateTransactionByCardProvider(this);
-                posValidateTransactionByCardProvider.setConnectionCallback(new StoneActionCallback() {
-                    @Override
-                    public void onStatusChanged(final Action action) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(MainActivity.this, action.name(), Toast.LENGTH_SHORT).show();
+            binding.deactivateOption.id -> {
+                val provider = ActiveApplicationProvider(this@MainActivity)
+                provider.dialogMessage = "Desativando o aplicativo..."
+                provider.dialogTitle = "Aguarde"
+                provider.connectionCallback = object : StoneCallbackInterface {
+                    override fun onSuccess() {
+                        val mainIntent = Intent(this@MainActivity, ValidationActivity::class.java)
+                        startActivity(mainIntent)
+                        finish()
+                    }
+
+                    override fun onError() {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Erro na ativacao do aplicativo, verifique a lista de erros do provider",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Log.e("deactivateOption", "onError: " + provider.listOfErrors.toString())
+                    }
+                }
+                provider.deactivate()
+            }
+
+            binding.disconnectDeviceOption.id -> {
+                if (Stone.getPinpadListSize() > 0) {
+                    val closeBluetoothConnectionIntent =
+                        Intent(this@MainActivity, DisconnectPinpadActivity::class.java)
+                    startActivity(closeBluetoothConnectionIntent)
+                } else {
+                    Toast.makeText(this, "Nenhum device Conectado", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            binding.posTransactionOption.id -> {
+                startActivity(Intent(this@MainActivity, PosTransactionActivity::class.java))
+            }
+
+            binding.manageStoneCodeOption.id -> {
+                startActivity(Intent(this@MainActivity, ManageStoneCodeActivity::class.java))
+            }
+
+            binding.posValidateCardOption.id -> {
+                val posValidateTransactionByCardProvider = PosValidateTransactionByCardProvider(this)
+                posValidateTransactionByCardProvider.setConnectionCallback(object :
+                    StoneActionCallback {
+                    override fun onStatusChanged(action: Action) {
+                        runOnUiThread {
+                            Toast.makeText(this@MainActivity, action.name, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onSuccess() {
+                        runOnUiThread {
+                            val transactionsWithCurrentCard = posValidateTransactionByCardProvider.transactionsWithCurrentCard
+                            if (transactionsWithCurrentCard.isEmpty()) {
+                                Toast.makeText(this@MainActivity, "Cartão não fez transação.", Toast.LENGTH_SHORT).show()
                             }
-                        });
+                            Toast.makeText(this@MainActivity, "Success", Toast.LENGTH_SHORT).show()
+                            Log.i("posValidateCardOption", "onSuccess: $transactionsWithCurrentCard")
+                        }
                     }
 
-                    @Override
-                    public void onSuccess() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                final List<TransactionObject> transactionsWithCurrentCard = posValidateTransactionByCardProvider.getTransactionsWithCurrentCard();
-                                if (transactionsWithCurrentCard.isEmpty())
-                                    Toast.makeText(MainActivity.this, "Cartão não fez transação.", Toast.LENGTH_SHORT).show();
-                                Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                                Log.i("posValidateCardOption", "onSuccess: " + transactionsWithCurrentCard);
-                            }
-                        });
+                    override fun onError() {
+                        runOnUiThread {
+                            Toast.makeText(this@MainActivity, "Error", Toast.LENGTH_SHORT).show()
+                            Log.e("posValidateCardOption", "onError: " + posValidateTransactionByCardProvider.listOfErrors)
+                        }
+                    }
+                })
+                posValidateTransactionByCardProvider.execute()
+            }
 
+            binding.posPrinterProvider.id -> {
+                val customPosPrintProvider = PosPrintProvider(applicationContext)
+                customPosPrintProvider.addLine("PAN : " + "123")
+                customPosPrintProvider.addLine("DATE/TIME : 01/01/1900")
+                customPosPrintProvider.addLine("AMOUNT : 200.00")
+                customPosPrintProvider.addLine("ATK : 123456789")
+                customPosPrintProvider.addLine("Signature")
+                customPosPrintProvider.addBitmap(BitmapFactory.decodeResource(resources, R.drawable.signature))
+                customPosPrintProvider.connectionCallback = object : StoneCallbackInterface {
+                    override fun onSuccess() {
+                        Toast.makeText(applicationContext, "Recibo impresso", Toast.LENGTH_SHORT).show()
                     }
 
-                    @Override
-                    public void onError() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                                Log.e("posValidateCardOption", "onError: " + posValidateTransactionByCardProvider.getListOfErrors());
-                            }
-                        });
+                    override fun onError() {
+                        Toast.makeText(applicationContext, "Erro ao imprimir: " + customPosPrintProvider.listOfErrors, Toast.LENGTH_SHORT).show()
                     }
+                }
+                customPosPrintProvider.execute()
 
-                });
-                posValidateTransactionByCardProvider.execute();
-                break;
+                startActivity(Intent(this@MainActivity, MifareActivity::class.java))
+            }
 
-            case R.id.posPrinterProvider:
-                final PosPrintProvider customPosPrintProvider = new PosPrintProvider(getApplicationContext());
-                customPosPrintProvider.addLine("PAN : " + "123");
-                customPosPrintProvider.addLine("DATE/TIME : 01/01/1900");
-                customPosPrintProvider.addLine("AMOUNT : 200.00");
-                customPosPrintProvider.addLine("ATK : 123456789");
-                customPosPrintProvider.addLine("Signature");
-                customPosPrintProvider.addBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.signature));
-                customPosPrintProvider.setConnectionCallback(new StoneCallbackInterface() {
-                    @Override
-                    public void onSuccess() {
-                        Toast.makeText(getApplicationContext(), "Recibo impresso", Toast.LENGTH_SHORT).show();
-                    }
+            binding.posMifareProvider.id -> {
+                startActivity(Intent(this@MainActivity, MifareActivity::class.java))
+            }
 
-                    @Override
-                    public void onError() {
-                        Toast.makeText(getApplicationContext(), "Erro ao imprimir: " + customPosPrintProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                customPosPrintProvider.execute();
-
-            case R.id.posMifareProvider:
-                startActivity(new Intent(MainActivity.this, MifareActivity.class));
-                break;
-
-            default:
-                break;
+            else -> {}
         }
     }
-
 }

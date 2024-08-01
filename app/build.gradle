@@ -4,12 +4,12 @@ apply from: '../gertec/gertec-signing-config.gradle'
 apply from: '../positivo/positivo-signing-config.gradle'
 
 android {
-    compileSdkVersion 34
+    compileSdk 34
 
     defaultConfig {
         applicationId "br.com.stonesdk.sdkdemo"
         minSdkVersion 22
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionCode 1
         versionName "1.0"
     }
@@ -22,8 +22,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     packagingOptions {
@@ -32,7 +32,7 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
+        viewBinding true
     }
     namespace 'br.com.stonesdk.sdkdemo'
 }
@@ -60,5 +60,5 @@ dependencies {
     testImplementation "io.mockk:mockk:1.12.3"
     testImplementation "org.junit.platform:junit-platform-launcher:1.8.0"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:5.8.0"
-    testImplementation "org.junit.vintage:junit-vintage-engine:5.7.1"
+    testImplementation "org.junit.vintage:junit-vintage-engine:5.8.0"
 }

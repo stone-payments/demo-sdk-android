@@ -1,18 +1,19 @@
 package br.com.stonesdk.sdkdemo.activities
 
+import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.bluetooth.BluetoothAdapter
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
-import android.widget.ListView
 import android.widget.Toast
+import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
-import br.com.stonesdk.sdkdemo.R
+import androidx.core.app.ActivityCompat
 import br.com.stonesdk.sdkdemo.databinding.ActivityDevicesBinding
-import br.com.stonesdk.sdkdemo.databinding.ActivityMainBinding
 import stone.application.interfaces.StoneCallbackInterface
 import stone.providers.BluetoothConnectionProvider
 import stone.utils.PinpadObject
@@ -23,7 +24,6 @@ class DevicesActivity : AppCompatActivity(), OnItemClickListener {
 
     private val mBluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
     private var btConnected = false
-    private var listView: ListView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,17 +31,17 @@ class DevicesActivity : AppCompatActivity(), OnItemClickListener {
         binding = ActivityDevicesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        listView = binding.listDevicesActivity
         binding.listDevicesActivity.onItemClickListener = this
-        turnBluetoothOn()
-        listBluetoothDevices()
+        if (ActivityCompat.checkSelfPermission(this, BLUETOOTH_CONNECT) == PERMISSION_GRANTED) {
+            turnBluetoothOn()
+            listBluetoothDevices()
+        } else {
+            //Request Bluetooth Permission
+        }
     }
 
-
-
-
-
-    fun listBluetoothDevices() {
+    @RequiresPermission(BLUETOOTH_CONNECT)
+    private fun listBluetoothDevices() {
         // Lista de Pinpads para passar para o BluetoothConnectionProvider.
 
         val btArrayAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1)
@@ -50,38 +50,30 @@ class DevicesActivity : AppCompatActivity(), OnItemClickListener {
         val pairedDevices = bluetoothAdapter.bondedDevices
 
         // Lista todos os dispositivos pareados.
-        if (pairedDevices.size > 0) {
-            for (device in pairedDevices) {
-                btArrayAdapter.add(String.format("%s_%s", device.name, device.address))
-            }
+        pairedDevices.forEach { device ->
+            btArrayAdapter.add(String.format("%s_%s", device.name, device.address))
         }
 
         // Exibe todos os dispositivos da lista.
-        listView!!.adapter = btArrayAdapter
+        binding.listDevicesActivity.adapter = btArrayAdapter
     }
 
+    @RequiresPermission(BLUETOOTH_CONNECT)
     fun turnBluetoothOn() {
         try {
             mBluetoothAdapter.enable()
-            do {
-            } while (!mBluetoothAdapter.isEnabled)
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
 
-
-
-
-
-
-
-
     override fun onItemClick(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
         // Pega o pinpad selecionado do ListView.
 
-        val pinpadInfo = listView!!.adapter.getItem(position).toString().split("_".toRegex())
+        val pinpadInfo = binding.listDevicesActivity.adapter.getItem(position)
+            .toString()
+            .split("_".toRegex())
             .dropLastWhile { it.isEmpty() }
             .toTypedArray()
         val pinpadSelected = PinpadObject(pinpadInfo[0], pinpadInfo[1], false)

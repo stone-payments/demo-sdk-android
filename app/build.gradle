@@ -26,6 +26,10 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17
+    }
+
     packagingOptions {
         exclude 'META-INF/api_release.kotlin_module'
         exclude 'META-INF/client_release.kotlin_module'

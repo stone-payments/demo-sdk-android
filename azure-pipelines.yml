@@ -25,3 +25,10 @@ extends:
     hasArchivesToUpload: false
     hasGoogleServices: false
     projectMainModule: 'app'
+    preBuildSteps:
+      - task: JavaToolInstaller@0
+        displayName: Install Java 17
+        inputs:
+          versionSpec: '17'
+          jdkArchitectureOption: 'x64'
+          jdkSourceOption: 'PreInstalled'

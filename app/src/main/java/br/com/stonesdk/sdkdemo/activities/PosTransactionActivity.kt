@@ -2,7 +2,6 @@ package br.com.stonesdk.sdkdemo.activities
 
 import android.R
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.widget.Toast
 import br.com.stone.posandroid.providers.PosPrintReceiptProvider
 import br.com.stone.posandroid.providers.PosTransactionProvider
@@ -12,16 +11,15 @@ import stone.application.enums.ErrorsEnum
 import stone.application.enums.ReceiptType
 import stone.application.enums.TransactionStatusEnum
 
-class PosTransactionActivity() : BaseTransactionActivity<PosTransactionProvider?>() {
+class PosTransactionActivity : BaseTransactionActivity<PosTransactionProvider?>() {
+
     override fun buildTransactionProvider(): PosTransactionProvider {
         return PosTransactionProvider(this, transactionObject, selectedUserModel)
     }
 
-    override var transactionProvider: PosTransactionProvider?
-        get() = super.transactionProvider as PosTransactionProvider?
-        set(transactionProvider) {
-            super.transactionProvider = transactionProvider
-        }
+    private fun getTransactionProvider(): PosTransactionProvider? {
+        return super.transactionProvider as PosTransactionProvider?
+    }
 
     override fun onSuccess() {
         if (transactionObject.transactionStatus == TransactionStatusEnum.APPROVED) {
@@ -39,37 +37,29 @@ class PosTransactionActivity() : BaseTransactionActivity<PosTransactionProvider?
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Transação aprovada! Deseja imprimir a via do cliente?")
 
-            builder.setPositiveButton(
-                R.string.yes,
-                DialogInterface.OnClickListener { dialog, which ->
-                    val printClient =
-                        PrintController(
-                            this@PosTransactionActivity,
-                            PosPrintReceiptProvider(
-                                applicationContext,
-                                transactionObject, ReceiptType.CLIENT
-                            )
+            builder.setPositiveButton(R.string.yes) { _, _ ->
+                val printClient =
+                    PrintController(
+                        this@PosTransactionActivity,
+                        PosPrintReceiptProvider(
+                            applicationContext,
+                            transactionObject, ReceiptType.CLIENT
                         )
-                    printClient.print()
-                })
+                    )
+                printClient.print()
+            }
 
             builder.setNegativeButton(R.string.no, null)
 
-            runOnUiThread(object : Runnable {
-                override fun run() {
-                    builder.show()
-                }
-            })
+            runOnUiThread { builder.show() }
         } else {
-            runOnUiThread(object : Runnable {
-                override fun run() {
-                    Toast.makeText(
-                        applicationContext,
-                        "Erro na transação: \"$authorizationMessage\"",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            })
+            runOnUiThread {
+                Toast.makeText(
+                    applicationContext,
+                    "Erro na transação: \"$authorizationMessage\"",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 
@@ -96,8 +86,8 @@ class PosTransactionActivity() : BaseTransactionActivity<PosTransactionProvider?
                 ).show()
 
                 Action.TRANSACTION_TYPE_SELECTION -> {
-                    val options: List<String> = transactionProvider!!.getTransactionTypeOptions()
-                    showTransactionTypeSelectionDialog(options)
+                    val options = getTransactionProvider()?.transactionTypeOptions
+                    showTransactionTypeSelectionDialog(options.orEmpty())
                 }
 
                 else -> {}
@@ -105,20 +95,12 @@ class PosTransactionActivity() : BaseTransactionActivity<PosTransactionProvider?
         }
     }
 
-
     private fun showTransactionTypeSelectionDialog(optionsList: List<String>) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Selecione o tipo de transação")
-        val options = arrayOfNulls<String>(optionsList.size)
-        optionsList.toArray<String>(options)
-        builder.setItems(
-            options,
-            { dialog: DialogInterface?, which: Int ->
-                transactionProvider!!.setTransactionTypeSelected(
-                    which
-                )
-            }
-        )
+        builder.setItems(optionsList.toTypedArray()) { _, which ->
+            getTransactionProvider()?.setTransactionTypeSelected(which)
+        }
         builder.show()
     }
 }

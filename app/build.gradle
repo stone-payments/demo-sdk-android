@@ -4,6 +4,15 @@ apply from: '../gertec/gertec-signing-config.gradle'
 apply from: '../positivo/positivo-signing-config.gradle'
 
 android {
+
+    flavorDimensions = ["manufacturer"]
+    productFlavors {
+        standard {
+            dimension "manufacturer"
+            signingConfig signingConfigs.debug
+            isDefault true
+        }
+    }
     compileSdk 34
 
     defaultConfig {

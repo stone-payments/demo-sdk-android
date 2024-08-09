@@ -21,7 +21,7 @@ extends:
     projectAssembleExcludes: ' -x assembleGertec'
     projectBuildExcludes: '-x test -x lint'
     projectTestTask: 'testDebugUnitTest'
-    positivoJks: false
+    positivoJks: true
     hasArchivesToUpload: false
     hasGoogleServices: false
     projectMainModule: 'app'

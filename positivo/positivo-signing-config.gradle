@@ -1,4 +1,3 @@
-
 def keystorePropertiesFile = rootProject.file("positivo/positivo-keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {

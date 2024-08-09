@@ -10,9 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import br.com.stone.posandroid.hal.api.mifare.MifareKeyType
 import br.com.stone.posandroid.providers.PosMifareProvider
-import br.com.stone.posandroid.providers.PosMifareProvider.MifareException.errorEnum
 import br.com.stonesdk.sdkdemo.R
-import br.com.stonesdk.sdkdemo.databinding.ActivityMainBinding
 import br.com.stonesdk.sdkdemo.databinding.ActivityMifareBinding
 import stone.application.interfaces.StoneCallbackInterface
 
@@ -89,7 +87,7 @@ class MifareActivity : AppCompatActivity() {
                 // Autentica o setor
                 try {
                     mifareProvider.authenticateSector(MifareKeyType.TypeA, key, sector.toByte())
-                } catch (e: MifareException) {
+                } catch (e: PosMifareProvider.MifareException) {
                     Toast.makeText(this@MifareActivity, "Erro na autenticação", Toast.LENGTH_SHORT)
                         .show()
                     logTextView!!.append(mifareProvider.listOfErrors.toString() + "\n")
@@ -101,7 +99,7 @@ class MifareActivity : AppCompatActivity() {
                 val byteArray = ByteArray(16)
                 try {
                     mifareProvider.readBlock(sector.toByte(), block.toByte(), byteArray)
-                } catch (e: MifareException) {
+                } catch (e: PosMifareProvider.MifareException) {
                     Toast.makeText(
                         this@MifareActivity,
                         "Erro na leitura do bloco",
@@ -148,7 +146,7 @@ class MifareActivity : AppCompatActivity() {
                 // Autentica o setor
                 try {
                     mifareProvider.authenticateSector(MifareKeyType.TypeA, key, sector.toByte())
-                } catch (e: MifareException) {
+                } catch (e: PosMifareProvider.MifareException) {
                     Toast.makeText(this@MifareActivity, "Erro na autenticação", Toast.LENGTH_SHORT)
                         .show()
                     logTextView!!.append(mifareProvider.listOfErrors.toString() + "\n")
@@ -158,7 +156,7 @@ class MifareActivity : AppCompatActivity() {
                 // Lê o valor de um bloco no setor
                 try {
                     mifareProvider.writeBlock(sector.toByte(), block.toByte(), value)
-                } catch (e: MifareException) {
+                } catch (e: PosMifareProvider.MifareException) {
                     Toast.makeText(
                         this@MifareActivity,
                         "Erro na escrita do bloco",
@@ -306,8 +304,8 @@ class MifareActivity : AppCompatActivity() {
             val data = ByteArray(len / 2)
             var i = 0
             while (i < len) {
-                data[i / 2] = ((s[i].digitToIntOrNull(16) ?: -1 shl 4)
-                + s[i + 1].digitToIntOrNull(16)!! ?: -1).toByte()
+                data[i / 2] = ((((s[i].digitToIntOrNull(16)
+                    ?: (-1 shl 4)) + s[i + 1].digitToIntOrNull(16)!!) ?: -1)).toByte()
                 i += 2
             }
             return data

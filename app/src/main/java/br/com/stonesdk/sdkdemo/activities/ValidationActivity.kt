@@ -1,28 +1,22 @@
 package br.com.stonesdk.sdkdemo.activities
 
-import android.Manifest
-import android.content.DialogInterface
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.Intent
-import android.net.Uri
+import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import android.widget.Spinner
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import br.com.stonesdk.sdkdemo.R
-import br.com.stonesdk.sdkdemo.databinding.ActivityMainBinding
+import androidx.core.content.ContextCompat.checkSelfPermission
 import br.com.stonesdk.sdkdemo.databinding.ActivityValidationBinding
-import permissions.dispatcher.NeedsPermission
-import permissions.dispatcher.OnNeverAskAgain
-import permissions.dispatcher.OnPermissionDenied
-import permissions.dispatcher.OnShowRationale
-import permissions.dispatcher.PermissionRequest
 import permissions.dispatcher.RuntimePermissions
 import stone.application.StoneStart.init
 import stone.application.interfaces.StoneCallbackInterface
@@ -37,18 +31,31 @@ class ValidationActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityValidationBinding
 
     private var stoneCodeEditText: EditText? = null
+    private var requestPermissionLauncher: ActivityResultLauncher<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityValidationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        ValidationActivityPermissionsDispatcher.initiateAppWithPermissionCheck(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissionLauncher =
+                registerForActivityResult(RequestPermission()) { isGranted: Boolean ->
+                    if (isGranted) {
+                        initiateApp()
+                    } else {
+                        showDenied()
+                    }
+                }
+
+            initiateAppWithPermissionCheck()
+        } else {
+            initiateApp()
+        }
+
         //        Stone.setEnvironment(SANDBOX);
         Stone.setAppName("DEMO APP") // Setando o nome do APP (obrigatorio)
-        binding.activateButton.setOnClickListener(
-            this
-        )
+        binding.activateButton.setOnClickListener(this)
         stoneCodeEditText = binding.stoneCodeEditText
         val environmentSpinner = binding.environmentSpinner
 
@@ -63,9 +70,7 @@ class ValidationActivity : AppCompatActivity(), View.OnClickListener {
                 position: Int,
                 id: Long
             ) {
-                val environment = Environment.valueOf(
-                    adapter.getItem(position)!!
-                )
+                val environment = Environment.valueOf(adapter.getItem(position)!!)
                 //                Stone.setEnvironment(environment);
             }
 
@@ -79,10 +84,7 @@ class ValidationActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View) {
-        val stoneCodeList: MutableList<String> = ArrayList()
-        // Adicione seu Stonecode abaixo, como string.
-        stoneCodeList.add(stoneCodeEditText!!.text.toString())
-
+        val stoneCodeList = listOf(stoneCodeEditText?.text.toString())
         val provider = ActiveApplicationProvider(this)
         provider.dialogMessage = "Ativando o aplicativo..."
         provider.dialogTitle = "Aguarde"
@@ -108,15 +110,14 @@ class ValidationActivity : AppCompatActivity(), View.OnClickListener {
                 /* Chame o metodo abaixo para verificar a lista de erros. Para mais detalhes, leia a documentacao: */
                 Log.e(
                     TAG,
-                    "onError: " + provider.listOfErrors.toString()
+                    "onError: ${provider.listOfErrors}"
                 )
             }
         }
         provider.activate(stoneCodeList)
     }
 
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    fun initiateApp() {
+    private fun initiateApp() {
         val keys: MutableMap<StoneKeyType, String> = HashMap()
         keys[StoneKeyType.QRCODE_PROVIDERID] = "xxxx"
         keys[StoneKeyType.QRCODE_AUTHORIZATION] = "xxx"
@@ -136,23 +137,10 @@ class ValidationActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    @RequiresApi(Build.VERSION_CODES.M)
     fun showDenied() {
-        buildPermissionDialog { dialog, which ->
-            ValidationActivityPermissionsDispatcher.initiateAppWithPermissionCheck(
-                this@ValidationActivity
-            )
-        }
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    fun showNeverAskAgain() {
-        buildPermissionDialog { dialog, which ->
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            val uri = Uri.fromParts("package", packageName, null)
-            intent.setData(uri)
-            startActivityForResult(intent, REQUEST_PERMISSION_SETTINGS)
-        }
+        buildPermissionToast()
+        initiateAppWithPermissionCheck()
     }
 
     private fun continueApplication() {
@@ -161,42 +149,28 @@ class ValidationActivity : AppCompatActivity(), View.OnClickListener {
         finish()
     }
 
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    fun showRationale(request: PermissionRequest) {
-        buildPermissionDialog { dialog, which -> request.proceed() }
-    }
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun initiateAppWithPermissionCheck() {
+        when {
+            checkSelfPermission(this, READ_EXTERNAL_STORAGE) == PERMISSION_GRANTED -> {
+                initiateApp()
+            }
 
-    private fun buildPermissionDialog(listener: DialogInterface.OnClickListener) {
-        val dialog = AlertDialog.Builder(this)
-        dialog.setTitle("Android 6.0")
-            .setCancelable(false)
-            .setMessage(
-                "Com a versão do android igual ou superior ao Android 6.0," +
-                        " é necessário que você aceite as permissões para o funcionamento do app.\n\n"
-            )
-            .setPositiveButton("OK", listener)
-            .create().show()
-    }
+            shouldShowRequestPermissionRationale(READ_EXTERNAL_STORAGE) -> {
+                buildPermissionToast()
+                requestPermissionLauncher?.launch(READ_EXTERNAL_STORAGE)
+            }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_PERMISSION_SETTINGS) {
-            ValidationActivityPermissionsDispatcher.initiateAppWithPermissionCheck(this)
+            else -> requestPermissionLauncher?.launch(READ_EXTERNAL_STORAGE)
         }
-        ValidationActivityPermissionsDispatcher.onRequestPermissionsResult(
-            this,
-            requestCode,
-            grantResults
-        )
+    }
+
+    private fun buildPermissionToast() {
+        Toast.makeText(this, "Android 6 or more needs to give permission", Toast.LENGTH_SHORT)
+            .show()
     }
 
     companion object {
         private const val TAG = "ValidationActivity"
-        private const val REQUEST_PERMISSION_SETTINGS = 100
     }
 }
-

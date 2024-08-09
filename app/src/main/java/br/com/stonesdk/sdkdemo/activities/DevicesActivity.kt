@@ -1,8 +1,11 @@
 package br.com.stonesdk.sdkdemo.activities
 
 import android.Manifest.permission.BLUETOOTH_CONNECT
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
+import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,9 +13,12 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
+import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import br.com.stonesdk.sdkdemo.databinding.ActivityDevicesBinding
 import stone.application.interfaces.StoneCallbackInterface
 import stone.providers.BluetoothConnectionProvider
@@ -24,7 +30,10 @@ class DevicesActivity : AppCompatActivity(), OnItemClickListener {
 
     private val mBluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
     private var btConnected = false
+    private var requestPermissionLauncher: ActivityResultLauncher<String>? = null
 
+    @SuppressLint("MissingPermission")
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,12 +41,64 @@ class DevicesActivity : AppCompatActivity(), OnItemClickListener {
         setContentView(binding.root)
 
         binding.listDevicesActivity.onItemClickListener = this
-        if (ActivityCompat.checkSelfPermission(this, BLUETOOTH_CONNECT) == PERMISSION_GRANTED) {
-            turnBluetoothOn()
-            listBluetoothDevices()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            requestPermissionLauncher =
+                registerForActivityResult(RequestPermission()) { isGranted: Boolean ->
+                    if (isGranted) {
+                        turnBluetoothOn()
+                        listBluetoothDevices()
+                    } else {
+                        if (isBluetoothAvailable()) {
+                            requestBluetoothPermission()
+                        } else {
+                            Toast.makeText(
+                                this,
+                                "Bluetooth not supported on this device",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            checkPermission()
         } else {
-            //Request Bluetooth Permission
+            if (isBluetoothAvailable()) {
+                turnBluetoothOn()
+                listBluetoothDevices()
+            }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun checkPermission() {
+        when {
+            ContextCompat.checkSelfPermission(this, BLUETOOTH_CONNECT) == PERMISSION_GRANTED -> {
+                Log.e("BLUE", "aqui 10")
+                turnBluetoothOn()
+                listBluetoothDevices()
+            }
+
+            shouldShowRequestPermissionRationale(BLUETOOTH_CONNECT) -> {
+                Toast.makeText(
+                    this,
+                    "Bluetooth permission needed",
+                    Toast.LENGTH_SHORT
+                ).show()
+                requestPermissionLauncher?.launch(BLUETOOTH_CONNECT)
+            }
+
+            else -> requestPermissionLauncher?.launch(BLUETOOTH_CONNECT)
+        }
+    }
+
+    private fun isBluetoothAvailable(): Boolean {
+        return packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun requestBluetoothPermission() {
+        // Request the BLUETOOTH_CONNECT permission
+        requestPermissionLauncher?.launch(BLUETOOTH_CONNECT)
     }
 
     @RequiresPermission(BLUETOOTH_CONNECT)
@@ -85,7 +146,8 @@ class DevicesActivity : AppCompatActivity(), OnItemClickListener {
             "Criando conexao com o pinpad selecionado" // Mensagem exibida do dialog.
         bluetoothConnectionProvider.connectionCallback = object : StoneCallbackInterface {
             override fun onSuccess() {
-                Toast.makeText(applicationContext, "Pinpad conectado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Pinpad conectado", Toast.LENGTH_SHORT)
+                    .show()
                 btConnected = true
                 finish()
             }

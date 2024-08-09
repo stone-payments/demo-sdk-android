@@ -1,4 +1,3 @@
-
 def keystorePropertiesFile = rootProject.file("gertec/gertec-keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {

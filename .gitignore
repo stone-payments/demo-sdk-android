@@ -6,4 +6,6 @@
 /captures
 *.iml
 gertec/gertec-keystore.properties
+positivo/positivo-keystore.properties
 gertec/*.jks
+positivo/*.jks

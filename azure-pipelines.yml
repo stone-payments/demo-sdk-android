@@ -22,6 +22,7 @@ extends:
     projectBuildExcludes: '-x test -x lint'
     projectTestTask: 'testDebugUnitTest'
     positivoJks: true
+    gertecJks: true
     hasArchivesToUpload: false
     hasGoogleServices: false
     projectMainModule: 'app'

@@ -24,6 +24,7 @@ import stone.environment.Environment
 import stone.providers.ActiveApplicationProvider
 import stone.utils.Stone
 import stone.utils.keys.StoneKeyType
+import java.util.EnumMap
 
 @RuntimePermissions
 class ValidationActivity : AppCompatActivity(), View.OnClickListener {
@@ -70,7 +71,7 @@ class ValidationActivity : AppCompatActivity(), View.OnClickListener {
                 position: Int,
                 id: Long
             ) {
-                val environment = Environment.valueOf(adapter.getItem(position)!!)
+                //val environment = Environment.valueOf(adapter.getItem(position)!!)
                 //                Stone.setEnvironment(environment);
             }
 
@@ -118,7 +119,7 @@ class ValidationActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initiateApp() {
-        val keys: MutableMap<StoneKeyType, String> = HashMap()
+        val keys: MutableMap<StoneKeyType, String> = EnumMap(StoneKeyType::class.java)
         keys[StoneKeyType.QRCODE_PROVIDERID] = "xxxx"
         keys[StoneKeyType.QRCODE_AUTHORIZATION] = "xxx"
 

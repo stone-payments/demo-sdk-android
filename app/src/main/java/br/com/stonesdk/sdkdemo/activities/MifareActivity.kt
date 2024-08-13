@@ -12,6 +12,8 @@ import br.com.stone.posandroid.hal.api.mifare.MifareKeyType
 import br.com.stone.posandroid.providers.PosMifareProvider
 import br.com.stonesdk.sdkdemo.R
 import br.com.stonesdk.sdkdemo.databinding.ActivityMifareBinding
+import br.com.stonesdk.sdkdemo.databinding.DualInputDialogBinding
+import br.com.stonesdk.sdkdemo.databinding.InputDialogBinding
 import stone.application.interfaces.StoneCallbackInterface
 
 /**
@@ -31,7 +33,7 @@ class MifareActivity : AppCompatActivity() {
         binding = ActivityMifareBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        logTextView = findViewById(R.id.logTextView)
+        logTextView = binding.logTextView
         setCardUUIDText("")
     }
 
@@ -184,46 +186,102 @@ class MifareActivity : AppCompatActivity() {
 
 
     fun readBlockDialog(view: View?) {
-        // Olhe o método executeReadBlock para ver a implementação do provider
-        val dialogView = layoutInflater.inflate(R.layout.dual_input_dialog, null)
-        val keyDialogView = layoutInflater.inflate(R.layout.input_dialog, null)
-        val label1 = dialogView.findViewById<TextView>(R.id.editTextLabel)
-        val label2 = dialogView.findViewById<TextView>(R.id.editTextLabel2)
-        val sectorTextView = dialogView.findViewById<TextView>(R.id.editText)
-        val blockTextView = dialogView.findViewById<TextView>(R.id.editText2)
-        val keyDialogTextView = keyDialogView.findViewById<TextView>(R.id.editText)
-        sectorTextView.inputType = InputType.TYPE_CLASS_NUMBER
-        blockTextView.inputType = InputType.TYPE_CLASS_NUMBER
-        keyDialogTextView.text = "FFFFFFFFFFFF"
-        label1.text = "Sector"
-        label2.text = "Block"
+
+        val binding = DualInputDialogBinding.inflate(layoutInflater)
+
+        val keyDialogBinding = InputDialogBinding.inflate(layoutInflater)
+
+        binding.apply {
+            editText.inputType = InputType.TYPE_CLASS_NUMBER
+            editText2.inputType = InputType.TYPE_CLASS_NUMBER
+            editTextLabel.text = getString(R.string.sector_label)
+            editTextLabel2.text = getString(R.string.block_label)
+        }
+
+        keyDialogBinding.editText.setText(R.string.default_key_text)
+
 
         val keyDialog = AlertDialog.Builder(this)
-            .setView(keyDialogView)
+            .setView(keyDialogBinding.root)
             .setTitle("Chave do setor")
-            .setPositiveButton("OK") { dialogInterface: DialogInterface?, i: Int ->
+            .setPositiveButton("OK") { _, _ ->
                 try {
-                    val sector = sectorTextView.text.toString().toInt()
-                    val block = blockTextView.text.toString().toInt()
-                    val key = hexStringToByteArray(keyDialogTextView.text.toString())
+                    val sector = binding.editText.text.toString().toInt()
+                    val block = binding.editText2.text.toString().toInt()
+                    val key = hexStringToByteArray(keyDialogBinding.editText.text.toString())
                     executeBlockRead(sector, block, key)
                 } catch (e: NumberFormatException) {
+                    e.printStackTrace()
                 }
             }
-            .setNegativeButton("Cancelar") { dialogInterface: DialogInterface?, i: Int -> }.create()
+            .setNegativeButton("Cancelar") { dialogInterface, _ ->
+                dialogInterface.dismiss()
+            }
+            .create()
 
         AlertDialog.Builder(this)
-            .setView(dialogView)
+            .setView(binding.root)
             .setTitle("Definir bloco")
-            .setPositiveButton("OK") { dialogInterface: DialogInterface?, i: Int ->
+            .setPositiveButton("OK") { _, _ ->
                 try {
                     keyDialog.show()
                 } catch (e: NumberFormatException) {
+                    e.printStackTrace()
                 }
             }
-            .setNegativeButton("Cancelar") { dialogInterface: DialogInterface?, i: Int -> }
+            .setNegativeButton("Cancelar") { dialogInterface, _ ->
+                dialogInterface.dismiss()
+            }
             .show()
     }
+
+
+//    fun readBlockDialog(view: View?) {
+//        // Olhe o método executeReadBlock para ver a implementação do provider
+//
+//        val dialogView = layoutInflater.inflate(R.layout.dual_input_dialog, null)
+//        val keyDialogView = layoutInflater.inflate(R.layout.input_dialog, null)
+//
+//
+//        val binding = DualInputDialogBinding.inflate(layoutInflater)
+//
+//        val label1 = binding.editTextLabel
+//        val label2 = binding.editTextLabel2
+//        val sectorTextView = binding.editText
+//        val blockTextView = binding.editText2
+//        val keyDialogTextView = keyDialogView.findViewById<TextView>(R.id.editText)
+//        sectorTextView.inputType = InputType.TYPE_CLASS_NUMBER
+//        blockTextView.inputType = InputType.TYPE_CLASS_NUMBER
+//        keyDialogTextView.text = "FFFFFFFFFFFF"
+//        label1.text = "Sector"
+//        label2.text = "Block"
+//
+//        val keyDialog = AlertDialog.Builder(this)
+//            .setView(keyDialogView)
+//            .setTitle("Chave do setor")
+//            .setPositiveButton("OK") { dialogInterface: DialogInterface?, i: Int ->
+//                try {
+//                    val sector = sectorTextView.text.toString().toInt()
+//                    val block = blockTextView.text.toString().toInt()
+//                    val key = hexStringToByteArray(keyDialogTextView.text.toString())
+//                    executeBlockRead(sector, block, key)
+//                } catch (e: NumberFormatException) {
+//                }
+//            }
+//            .setNegativeButton("Cancelar") { dialogInterface: DialogInterface?, i: Int -> }.create()
+//
+//        AlertDialog.Builder(this)
+//            .setView(dialogView)
+//            .setTitle("Definir bloco")
+//            .setPositiveButton("OK") { dialogInterface: DialogInterface?, i: Int ->
+//                try {
+//                    keyDialog.show()
+//                } catch (e: NumberFormatException) {
+//                }
+//            }
+//            .setNegativeButton("Cancelar") { dialogInterface: DialogInterface?, i: Int -> }
+//            .show()
+//    }
 
 
     fun writeCardDialog(view: View?) {
@@ -249,7 +307,7 @@ class MifareActivity : AppCompatActivity() {
         val valueDialog = AlertDialog.Builder(this)
             .setView(valueDialogView)
             .setTitle("Valor que será escrito")
-            .setPositiveButton("OK") { dialogInterface: DialogInterface?, i: Int ->
+            .setPositiveButton("OK") { _: DialogInterface?, _: Int ->
                 try {
                     val sector = sectorTextView.text.toString().toInt()
                     val block = blockTextView.text.toString().toInt()
@@ -260,14 +318,14 @@ class MifareActivity : AppCompatActivity() {
                     executeBlockWrite(sector, block, key, value)
                 } catch (e: NumberFormatException) {
                 }
-            }.setNegativeButton("Cancelar") { dialogInterface: DialogInterface?, i: Int -> }
+            }.setNegativeButton("Cancelar") { _: DialogInterface?, _: Int -> }
             .create()
 
 
         val keyDialog = AlertDialog.Builder(this)
             .setView(keyDialogView)
             .setTitle("Chave do setor")
-            .setPositiveButton("OK") { dialogInterface: DialogInterface?, i: Int ->
+            .setPositiveButton("OK") { _: DialogInterface?, _: Int ->
                 try {
                     val sector = sectorTextView.text.toString().toInt()
                     val block = blockTextView.text.toString().toInt()
@@ -276,18 +334,18 @@ class MifareActivity : AppCompatActivity() {
                 } catch (e: NumberFormatException) {
                 }
             }
-            .setNegativeButton("Cancelar") { dialogInterface: DialogInterface?, i: Int -> }.create()
+            .setNegativeButton("Cancelar") { _: DialogInterface?, _: Int -> }.create()
 
         AlertDialog.Builder(this)
             .setView(dialogView)
             .setTitle("Definir bloco")
-            .setPositiveButton("OK") { dialogInterface: DialogInterface?, i: Int ->
+            .setPositiveButton("OK") { _: DialogInterface?, _: Int ->
                 try {
                     keyDialog.show()
                 } catch (e: NumberFormatException) {
                 }
             }
-            .setNegativeButton("Cancelar") { dialogInterface: DialogInterface?, i: Int -> }
+            .setNegativeButton("Cancelar") { _: DialogInterface?, _: Int -> }
             .show()
     }
 

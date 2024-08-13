@@ -1,10 +1,11 @@
 package br.com.stonesdk.sdkdemo.activities
 
-import android.R
+
 import android.app.AlertDialog
 import android.widget.Toast
 import br.com.stone.posandroid.providers.PosPrintReceiptProvider
 import br.com.stone.posandroid.providers.PosTransactionProvider
+import br.com.stonesdk.sdkdemo.R
 import br.com.stonesdk.sdkdemo.controller.PrintController
 import stone.application.enums.Action
 import stone.application.enums.ErrorsEnum
@@ -21,7 +22,7 @@ class PosTransactionActivity : BaseTransactionActivity<PosTransactionProvider?>(
         return super.transactionProvider as PosTransactionProvider?
     }
 
-    override fun onSuccess() {
+    override fun onSuccess() =
         if (transactionObject.transactionStatus == TransactionStatusEnum.APPROVED) {
             val printMerchant =
                 PrintController(
@@ -50,7 +51,6 @@ class PosTransactionActivity : BaseTransactionActivity<PosTransactionProvider?>(
             }
 
             builder.setNegativeButton(R.string.no, null)
-
             runOnUiThread { builder.show() }
         } else {
             runOnUiThread {
@@ -61,7 +61,6 @@ class PosTransactionActivity : BaseTransactionActivity<PosTransactionProvider?>(
                 ).show()
             }
         }
-    }
 
     override fun onError() {
         super.onError()

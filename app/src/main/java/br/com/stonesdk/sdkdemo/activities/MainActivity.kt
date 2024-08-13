@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     builder.setTitle("Digite a mensagem para mostrar no pinpad")
                     val editText = EditText(this@MainActivity)
                     builder.setView(editText)
-                    builder.setPositiveButton("OK") { dialog, which ->
+                    builder.setPositiveButton("OK") { _, _ ->
                         val text = editText.text.toString()
                         val displayMessageProvider =
                             DisplayMessageProvider(
@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             )
                         displayMessageProvider.execute()
                     }
-                    builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
+                    builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
 
                     builder.show()
                 } else {

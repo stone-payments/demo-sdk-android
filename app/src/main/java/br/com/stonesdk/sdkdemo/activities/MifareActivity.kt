@@ -235,55 +235,6 @@ class MifareActivity : AppCompatActivity() {
             .show()
     }
 
-
-//    fun readBlockDialog(view: View?) {
-//        // Olhe o método executeReadBlock para ver a implementação do provider
-//
-//        val dialogView = layoutInflater.inflate(R.layout.dual_input_dialog, null)
-//        val keyDialogView = layoutInflater.inflate(R.layout.input_dialog, null)
-//
-//
-//        val binding = DualInputDialogBinding.inflate(layoutInflater)
-//
-//        val label1 = binding.editTextLabel
-//        val label2 = binding.editTextLabel2
-//        val sectorTextView = binding.editText
-//        val blockTextView = binding.editText2
-//        val keyDialogTextView = keyDialogView.findViewById<TextView>(R.id.editText)
-//        sectorTextView.inputType = InputType.TYPE_CLASS_NUMBER
-//        blockTextView.inputType = InputType.TYPE_CLASS_NUMBER
-//        keyDialogTextView.text = "FFFFFFFFFFFF"
-//        label1.text = "Sector"
-//        label2.text = "Block"
-//
-//        val keyDialog = AlertDialog.Builder(this)
-//            .setView(keyDialogView)
-//            .setTitle("Chave do setor")
-//            .setPositiveButton("OK") { dialogInterface: DialogInterface?, i: Int ->
-//                try {
-//                    val sector = sectorTextView.text.toString().toInt()
-//                    val block = blockTextView.text.toString().toInt()
-//                    val key = hexStringToByteArray(keyDialogTextView.text.toString())
-//                    executeBlockRead(sector, block, key)
-//                } catch (e: NumberFormatException) {
-//                }
-//            }
-//            .setNegativeButton("Cancelar") { dialogInterface: DialogInterface?, i: Int -> }.create()
-//
-//        AlertDialog.Builder(this)
-//            .setView(dialogView)
-//            .setTitle("Definir bloco")
-//            .setPositiveButton("OK") { dialogInterface: DialogInterface?, i: Int ->
-//                try {
-//                    keyDialog.show()
-//                } catch (e: NumberFormatException) {
-//                }
-//            }
-//            .setNegativeButton("Cancelar") { dialogInterface: DialogInterface?, i: Int -> }
-//            .show()
-//    }
-
-
     fun writeCardDialog(view: View?) {
         val dialogView = layoutInflater.inflate(R.layout.dual_input_dialog, null)
         val label1 = dialogView.findViewById<TextView>(R.id.editTextLabel)

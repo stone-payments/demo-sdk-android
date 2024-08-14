@@ -45,14 +45,15 @@ abstract class BaseTransactionActivity<T : BaseTransactionProvider?> : AppCompat
 
         spinnerAction()
         radioGroupClick()
-        binding.sendTransactionButton.setOnClickListener { initTransaction() }
-        binding.cancelTransactionButton.setOnClickListener { transactionProvider!!.abortPayment() }
+        binding.apply {
+            sendTransactionButton.setOnClickListener { initTransaction() }
+            cancelTransactionButton.setOnClickListener { transactionProvider?.abortPayment() }
+        }
 
-        builder = Dialog(this)
-        builder!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        builder!!.window!!.setBackgroundDrawable(
-            ColorDrawable(Color.TRANSPARENT)
-        )
+        builder = Dialog(this).apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
     }
 
     private fun radioGroupClick() = with(binding) {
@@ -115,8 +116,8 @@ abstract class BaseTransactionActivity<T : BaseTransactionProvider?> : AppCompat
         transactionObject.amount = amountEditText.text.toString()
 
         transactionProvider = buildTransactionProvider()
-        transactionProvider!!.setConnectionCallback(this@BaseTransactionActivity)
-        transactionProvider!!.execute()
+        transactionProvider?.setConnectionCallback(this@BaseTransactionActivity)
+        transactionProvider?.execute()
     }
 
     protected val authorizationMessage: String?
@@ -125,14 +126,14 @@ abstract class BaseTransactionActivity<T : BaseTransactionProvider?> : AppCompat
     protected abstract fun buildTransactionProvider(): T
 
     protected fun providerHasErrorEnum(errorsEnum: ErrorsEnum?): Boolean {
-        return transactionProvider!!.theListHasError(errorsEnum)
+        return transactionProvider?.theListHasError(errorsEnum) ?: false
     }
 
     override fun onError() {
         runOnUiThread {
             Toast.makeText(
                 this@BaseTransactionActivity,
-                "Erro: " + transactionProvider!!.listOfErrors,
+                "Erro: " + transactionProvider?.listOfErrors,
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -146,16 +147,16 @@ abstract class BaseTransactionActivity<T : BaseTransactionProvider?> : AppCompat
             imageView.setImageBitmap(transactionObject.qrCode)
 
             runOnUiThread {
-                builder!!.addContentView(
+                builder?.addContentView(
                     imageView, RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT
                     )
                 )
-                builder!!.show()
+                builder?.show()
             }
         } else {
-            runOnUiThread { builder!!.dismiss() }
+            runOnUiThread { builder?.dismiss() }
         }
     }
 

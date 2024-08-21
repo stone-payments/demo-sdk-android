@@ -52,7 +52,7 @@
             android:name=".activities.PosTransactionActivity"
             android:label="@string/title_activity_transaction" />
         <activity
-            android:name=".activities.ManageStoneCodeActivity"
+            android:name=".activities.manageStoneCode.ManageStoneCodeActivity"
             android:label="@string/title_activity_manage_stone_codes" />
     </application>
 

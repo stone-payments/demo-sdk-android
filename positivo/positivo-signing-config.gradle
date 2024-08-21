@@ -3,18 +3,15 @@ def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
-
 android {
-
     signingConfigs {
         positivo {
-            storeFile rootProject.file("positivo/${keystoreProperties.getProperty('storeFile', System.env.POSITIVO_KEYSTORE_FILE)}")
+            storeFile file("../positivo/${keystoreProperties.getProperty('storeFile', System.env.POSITIVO_KEYSTORE_FILE)}")
             keyAlias keystoreProperties.getProperty('keyAlias', System.env.POSITIVO_KEYSTORE_ALIAS)
             keyPassword keystoreProperties.getProperty('keyPassword', System.env.POSITIVO_KEYSTORE_KEY_PASSWORD)
             storePassword keystoreProperties.getProperty('storePassword', System.env.POSITIVO_KEYSTORE_PASSWORD)
         }
     }
-
     productFlavors {
         positivo {
             dimension "manufacturer"
@@ -22,7 +19,6 @@ android {
             versionNameSuffix "-positivo"
         }
     }
-
     variantFilter { variant ->
         def manufacturer = variant.getFlavors().get(0).name
         if (manufacturer == 'positivo' && variant.buildType.name == "gertec") {

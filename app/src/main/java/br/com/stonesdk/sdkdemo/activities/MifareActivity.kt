@@ -49,10 +49,10 @@ class MifareActivity : AppCompatActivity() {
     fun detectCard(view: View?) {
         mifareProvider = PosMifareProvider(applicationContext)
 
-        mifareProvider!!.connectionCallback = object : StoneCallbackInterface {
+        mifareProvider?.connectionCallback = object : StoneCallbackInterface {
             override fun onSuccess() {
                 setCardUUIDText(mifareProvider!!.cardUUID.contentToString())
-                logTextView!!.append("Cartão detectado: " + mifareProvider!!.cardUUID.contentToString() + "\n")
+                logTextView?.append("Cartão detectado: " + mifareProvider!!.cardUUID.contentToString() + "\n")
             }
 
             override fun onError() {
@@ -80,19 +80,19 @@ class MifareActivity : AppCompatActivity() {
      * @param key Chave de autenticação do bloco.
      */
     private fun executeBlockRead(sector: Int, block: Int, key: ByteArray) {
-        val mifareProvider = PosMifareProvider(applicationContext)
-        mifareProvider.connectionCallback = object : StoneCallbackInterface {
+         mifareProvider = PosMifareProvider(applicationContext)
+        mifareProvider?.connectionCallback = object : StoneCallbackInterface {
             override fun onSuccess() {
-                setCardUUIDText(mifareProvider.cardUUID.contentToString())
-                logTextView!!.append("Cartão detectado: " + mifareProvider.cardUUID.contentToString() + "\n")
+                setCardUUIDText(mifareProvider?.cardUUID.contentToString())
+                logTextView!!.append("Cartão detectado: " + mifareProvider?.cardUUID.contentToString() + "\n")
 
                 // Autentica o setor
                 try {
-                    mifareProvider.authenticateSector(MifareKeyType.TypeA, key, sector.toByte())
+                    mifareProvider?.authenticateSector(MifareKeyType.TypeA, key, sector.toByte())
                 } catch (e: PosMifareProvider.MifareException) {
                     Toast.makeText(this@MifareActivity, "Erro na autenticação", Toast.LENGTH_SHORT)
                         .show()
-                    logTextView!!.append(mifareProvider.listOfErrors.toString() + "\n")
+                    logTextView!!.append(mifareProvider?.listOfErrors.toString() + "\n")
                     return
                 }
 
@@ -100,7 +100,7 @@ class MifareActivity : AppCompatActivity() {
                 // O valor lido será escrito no byteArray caso a leitura ocorra com sucesso
                 val byteArray = ByteArray(16)
                 try {
-                    mifareProvider.readBlock(sector.toByte(), block.toByte(), byteArray)
+                    mifareProvider?.readBlock(sector.toByte(), block.toByte(), byteArray)
                 } catch (e: PosMifareProvider.MifareException) {
                     Toast.makeText(
                         this@MifareActivity,
@@ -123,12 +123,12 @@ class MifareActivity : AppCompatActivity() {
                 runOnUiThread {
                     Toast.makeText(this@MifareActivity, "Erro na detecção", Toast.LENGTH_SHORT)
                         .show()
-                    logTextView!!.append(mifareProvider.listOfErrors.toString() + "\n")
+                    logTextView!!.append(mifareProvider?.listOfErrors.toString() + "\n")
                 }
             }
         }
 
-        mifareProvider.execute()
+        mifareProvider?.execute()
     }
 
     /**
@@ -139,25 +139,25 @@ class MifareActivity : AppCompatActivity() {
      * @param value Valor que será gravado no bloco. (byte[16]).
      */
     private fun executeBlockWrite(sector: Int, block: Int, key: ByteArray, value: ByteArray) {
-        val mifareProvider = PosMifareProvider(applicationContext)
-        mifareProvider.connectionCallback = object : StoneCallbackInterface {
+         mifareProvider = PosMifareProvider(applicationContext)
+        mifareProvider?.connectionCallback = object : StoneCallbackInterface {
             override fun onSuccess() {
-                setCardUUIDText(mifareProvider.cardUUID.contentToString())
-                logTextView!!.append("Cartão detectado: " + mifareProvider.cardUUID.contentToString() + "\n")
+                setCardUUIDText(mifareProvider?.cardUUID.contentToString())
+                logTextView!!.append("Cartão detectado: " + mifareProvider?.cardUUID.contentToString() + "\n")
 
                 // Autentica o setor
                 try {
-                    mifareProvider.authenticateSector(MifareKeyType.TypeA, key, sector.toByte())
+                    mifareProvider?.authenticateSector(MifareKeyType.TypeA, key, sector.toByte())
                 } catch (e: PosMifareProvider.MifareException) {
                     Toast.makeText(this@MifareActivity, "Erro na autenticação", Toast.LENGTH_SHORT)
                         .show()
-                    logTextView!!.append(mifareProvider.listOfErrors.toString() + "\n")
+                    logTextView!!.append(mifareProvider?.listOfErrors.toString() + "\n")
                     return
                 }
 
                 // Lê o valor de um bloco no setor
                 try {
-                    mifareProvider.writeBlock(sector.toByte(), block.toByte(), value)
+                    mifareProvider?.writeBlock(sector.toByte(), block.toByte(), value)
                 } catch (e: PosMifareProvider.MifareException) {
                     Toast.makeText(
                         this@MifareActivity,
@@ -176,12 +176,12 @@ class MifareActivity : AppCompatActivity() {
                 runOnUiThread {
                     Toast.makeText(this@MifareActivity, "Erro na detecção", Toast.LENGTH_SHORT)
                         .show()
-                    logTextView!!.append(mifareProvider.listOfErrors.toString() + "\n")
+                    logTextView!!.append(mifareProvider?.listOfErrors.toString() + "\n")
                 }
             }
         }
 
-        mifareProvider.execute()
+        mifareProvider?.execute()
     }
 
 

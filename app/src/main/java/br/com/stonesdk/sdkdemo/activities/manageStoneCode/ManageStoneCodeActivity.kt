@@ -10,8 +10,8 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
+import br.com.stonesdk.sdkdemo.FeatureFlag
 import br.com.stonesdk.sdkdemo.R
-import br.com.stonesdk.sdkdemo.activities.FeatureFlag
 import br.com.stonesdk.sdkdemo.databinding.ActivityManageStoneCodeBinding
 import stone.application.interfaces.StoneCallbackInterface
 import stone.providers.ActiveApplicationProvider
@@ -27,7 +27,7 @@ class ManageStoneCodeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (FeatureFlag.refactorEnabled) {
+        if (FeatureFlag.composeRefactorEnabled) {
             setContent {
                 MaterialTheme {
                     ManageStoneCodeScreen()

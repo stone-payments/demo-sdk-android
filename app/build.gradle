@@ -29,6 +29,11 @@ android {
     buildFeatures {
         compose true
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -48,7 +53,16 @@ android {
     packagingOptions {
         exclude 'META-INF/api_release.kotlin_module'
         exclude 'META-INF/client_release.kotlin_module'
+        exclude 'org.slf4j'
+        exclude 'slf4j-log4j12'
+        exclude 'org.slf4j'
+        exclude 'slf4j-jdk14'
+        exclude 'org.slf4j'
+        exclude 'slf4j-simple'
+        exclude 'org.slf4j'
+        exclude 'slf4j-nop'
     }
+
 
     buildFeatures {
         viewBinding true
@@ -66,6 +80,13 @@ dependencies {
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.activity:activity-compose:1.9.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3'
+
+    //configurations.configureEach {
+      //  exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+        //exclude group: 'org.slf4j', module: 'slf4j-jdk14'
+        //exclude group: 'org.slf4j', module: 'slf4j-simple'
+        //exclude group: 'org.slf4j', module: 'slf4j-nop'
+    //}
 
     implementation("io.insert-koin:koin-core:3.1.6")
     implementation("io.insert-koin:koin-android:3.1.6")
@@ -97,4 +118,5 @@ dependencies {
     testImplementation "org.junit.platform:junit-platform-launcher:1.10.0"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:5.10.0"
     testImplementation "org.junit.vintage:junit-vintage-engine:5.10.0"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0-RC"
 }

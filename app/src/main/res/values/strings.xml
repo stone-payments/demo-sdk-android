@@ -80,4 +80,18 @@
     <string name="detect_card">Detectar cartão</string>
     <string name="read_block">Ler bloco</string>
     <string name="write_block">Escrever no bloco</string>
+
+
+
+    <!-- Strings for Dialog Buttons -->
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+
+    <!-- Strings -->
+    <string name="sector_label">Sector</string>
+    <string name="block_label">Block</string>
+
+    <!-- Strings -->
+    <string name="default_key_text">FFFFFFFFFFFF</string>
+
 </resources>

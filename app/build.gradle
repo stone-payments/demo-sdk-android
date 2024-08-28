@@ -4,8 +4,16 @@ apply from: '../gertec/gertec-signing-config.gradle'
 apply from: '../positivo/positivo-signing-config.gradle'
 
 android {
-    compileSdkVersion 34
-    buildToolsVersion '28.0.3'
+
+    flavorDimensions = ["manufacturer"]
+    productFlavors {
+        standard {
+            dimension "manufacturer"
+            signingConfig signingConfigs.debug
+            isDefault true
+        }
+    }
+    compileSdk 34
 
     defaultConfig {
         applicationId "br.com.stonesdk.sdkdemo"
@@ -23,23 +31,32 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     packagingOptions {
         exclude 'META-INF/api_release.kotlin_module'
         exclude 'META-INF/client_release.kotlin_module'
     }
+
+    buildFeatures {
+        viewBinding true
+    }
+    namespace 'br.com.stonesdk.sdkdemo'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.github.permissions-dispatcher:permissionsdispatcher:4.8.0'
     annotationProcessor "com.github.permissions-dispatcher:permissionsdispatcher-processor:4.8.0"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.android.material:material:1.12.0'
 
     debugImplementation "com.github.tony19:logback-android:2.0.0"
     debugImplementation "br.com.stone.sdk.android:debugmode:4.0.3"
@@ -50,11 +67,13 @@ dependencies {
     implementation "br.com.stone:stone-sdk-posandroid-positivo:$stone_sdk_version"
     implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
     implementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
+    implementation "androidx.activity:activity-ktx:1.9.1"
+    implementation "androidx.fragment:fragment-ktx:1.8.2"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    testImplementation "io.mockk:mockk:1.10.6"
-    testImplementation "org.junit.platform:junit-platform-launcher:1.7.1"
-    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.7.1"
-    testImplementation "org.junit.vintage:junit-vintage-engine:5.7.1"
+    testImplementation "io.mockk:mockk:1.13.12"
+    testImplementation "org.junit.platform:junit-platform-launcher:1.10.0"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.10.0"
+    testImplementation "org.junit.vintage:junit-vintage-engine:5.10.0"
 }

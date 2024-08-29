@@ -24,6 +24,11 @@ android {
     }
 
     buildTypes {
+
+        //Necessary for the functioning of Positivo's signature in debug mode.
+        debug {
+            signingConfig null
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

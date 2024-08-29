@@ -11,11 +11,16 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.MaterialTheme
 import androidx.core.content.ContextCompat.checkSelfPermission
+import br.com.stonesdk.sdkdemo.FeatureFlag
+import br.com.stonesdk.sdkdemo.activities.validation.ValidationContent
+import br.com.stonesdk.sdkdemo.activities.validation.ValidationScreen
 import br.com.stonesdk.sdkdemo.databinding.ActivityValidationBinding
 import permissions.dispatcher.RuntimePermissions
 import stone.application.StoneStart.init
@@ -36,8 +41,17 @@ class ValidationActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityValidationBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+
+//        if (FeatureFlag.composeRefactorEnabled){
+//            setContent {
+//                MaterialTheme {
+//                    ValidationScreen()
+//                }
+//            }
+//        }
+            binding = ActivityValidationBinding.inflate(layoutInflater)
+            setContentView(binding.root)
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissionLauncher =

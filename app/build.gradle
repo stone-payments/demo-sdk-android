@@ -7,10 +7,13 @@ android {
 
     flavorDimensions = ["manufacturer"]
     productFlavors {
-        standard {
+        sunmi {
             dimension "manufacturer"
             signingConfig signingConfigs.debug
-            isDefault true
+        }
+        ingenico {
+            dimension "manufacturer"
+            signingConfig signingConfigs.debug
         }
     }
     compileSdk 34
@@ -49,6 +52,10 @@ android {
     }
     namespace 'br.com.stonesdk.sdkdemo'
 }
+configurations {
+    gertecDebugImplementation {}
+    gertecReleaseImplementation {}
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -63,10 +70,10 @@ dependencies {
 
     implementation "br.com.stone:stone-sdk:$stone_sdk_version"
     implementation "br.com.stone:stone-sdk-posandroid:$stone_sdk_version"
-    implementation "br.com.stone:stone-sdk-posandroid-ingenico:$stone_sdk_version"
-    implementation "br.com.stone:stone-sdk-posandroid-positivo:$stone_sdk_version"
-    implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
-    implementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
+    ingenicoImplementation "br.com.stone:stone-sdk-posandroid-ingenico:$stone_sdk_version"
+    positivoImplementation "br.com.stone:stone-sdk-posandroid-positivo:$stone_sdk_version"
+    gertecImplementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
+    sunmiImplementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
     implementation "androidx.activity:activity-ktx:1.9.1"
     implementation "androidx.fragment:fragment-ktx:1.8.2"
 

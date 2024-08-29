@@ -81,13 +81,6 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.9.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3'
 
-    //configurations.configureEach {
-      //  exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-        //exclude group: 'org.slf4j', module: 'slf4j-jdk14'
-        //exclude group: 'org.slf4j', module: 'slf4j-simple'
-        //exclude group: 'org.slf4j', module: 'slf4j-nop'
-    //}
-
     implementation("io.insert-koin:koin-core:3.1.6")
     implementation("io.insert-koin:koin-android:3.1.6")
     implementation("io.insert-koin:koin-androidx-compose:3.1.6")

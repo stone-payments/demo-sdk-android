@@ -53,14 +53,6 @@ android {
     packagingOptions {
         exclude 'META-INF/api_release.kotlin_module'
         exclude 'META-INF/client_release.kotlin_module'
-        exclude 'org.slf4j'
-        exclude 'slf4j-log4j12'
-        exclude 'org.slf4j'
-        exclude 'slf4j-jdk14'
-        exclude 'org.slf4j'
-        exclude 'slf4j-simple'
-        exclude 'org.slf4j'
-        exclude 'slf4j-nop'
     }
 
 

@@ -35,6 +35,11 @@ android {
     }
 
     buildTypes {
+
+        //Necessary for the functioning of Positivo's signature in debug mode.
+        debug {
+            signingConfig null
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -53,14 +58,6 @@ android {
     packagingOptions {
         exclude 'META-INF/api_release.kotlin_module'
         exclude 'META-INF/client_release.kotlin_module'
-        exclude 'org.slf4j'
-        exclude 'slf4j-log4j12'
-        exclude 'org.slf4j'
-        exclude 'slf4j-jdk14'
-        exclude 'org.slf4j'
-        exclude 'slf4j-simple'
-        exclude 'org.slf4j'
-        exclude 'slf4j-nop'
     }
 
 
@@ -94,6 +91,7 @@ dependencies {
     annotationProcessor "com.github.permissions-dispatcher:permissionsdispatcher-processor:4.8.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.accompanist:accompanist-permissions:0.35.0-alpha'
 
     debugImplementation "com.github.tony19:logback-android:2.0.0"
     debugImplementation "br.com.stone.sdk.android:debugmode:4.0.3"

@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.core.content.ContextCompat.checkSelfPermission
 import br.com.stonesdk.sdkdemo.FeatureFlag
-import br.com.stonesdk.sdkdemo.activities.validation.ValidationContent
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationScreen
 import br.com.stonesdk.sdkdemo.databinding.ActivityValidationBinding
 import permissions.dispatcher.RuntimePermissions
@@ -42,15 +41,22 @@ class ValidationActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        if (FeatureFlag.composeRefactorEnabled){
-//            setContent {
-//                MaterialTheme {
-//                    ValidationScreen()
-//                }
-//            }
-//        }
-            binding = ActivityValidationBinding.inflate(layoutInflater)
-            setContentView(binding.root)
+        if (FeatureFlag.composeRefactorEnabled) {
+            setContent {
+                MaterialTheme {
+                    ValidationScreen(
+                        navigateToMain = ::continueApplication
+                    )
+                }
+            }
+        } else {
+            onCreateStart()
+        }
+    }
+
+    private fun onCreateStart() {
+        binding = ActivityValidationBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -78,25 +84,27 @@ class ValidationActivity : AppCompatActivity(), View.OnClickListener {
         for (env in Environment.entries) {
             adapter.add(env.name)
         }
-        environmentSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View,
-                position: Int,
-                id: Long
-            ) {
-                //val environment = Environment.valueOf(adapter.getItem(position)!!)
-                //                Stone.setEnvironment(environment);
-            }
+        environmentSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
+                    //val environment = Environment.valueOf(adapter.getItem(position)!!)
+                    //                Stone.setEnvironment(environment);
+                }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
 //                Stone.setEnvironment(PRODUCTION);
+                }
             }
-        }
         environmentSpinner.adapter = adapter
 
         Stone.setAppName("Demo SDK")
     }
+
 
     override fun onClick(v: View) {
         val stoneCodeList = listOf(stoneCodeEditText?.text.toString())

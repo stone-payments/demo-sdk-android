@@ -1,8 +1,6 @@
 package br.com.stonesdk.sdkdemo.activities.validation
 
 import android.Manifest
-import android.app.Activity
-import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,10 +15,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -39,8 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.UserInput
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
@@ -49,7 +43,6 @@ import com.google.accompanist.permissions.rememberPermissionState
 import org.koin.androidx.compose.getViewModel
 import stone.environment.Environment
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ValidationScreen(
     viewModel: ValidationViewModel = getViewModel(),
@@ -87,9 +80,12 @@ internal fun ValidationContent(
     var requestPermission by remember { mutableStateOf(false) }
     val permissionState = rememberPermissionState(Manifest.permission.READ_EXTERNAL_STORAGE)
 
-    if (requestPermission || permissionState.status.isGranted) {
+    if (!permissionState.status.isGranted) {
         RequestStoragePermission(
-            onPermissionGranted = { /*TODO*/ },
+            onPermissionGranted = {
+                requestPermission = false
+                onEvent(ValidationStoneCodeEvent.Permission)
+            },
             permissionState = permissionState
         )
     }
@@ -109,6 +105,7 @@ internal fun ValidationContent(
         )
 
         EnvironmentSpinner(
+            modifier = Modifier.padding(horizontal = 6.dp),
             selectedEnvironment = model.selectedEnvironment,
             onEnvironmentSelected = { environment ->
                 onEvent(ValidationStoneCodeEvent.EnvironmentSelected(environment))
@@ -208,12 +205,4 @@ fun RequestStoragePermission(
         }
 
     }
-}
-
-private fun checkPermission(context: Context, permission: String): Int {
-    return ContextCompat.checkSelfPermission(context, permission)
-}
-
-private fun shouldShowRequestPermissionRationale(context: Context, permission: String): Boolean {
-    return ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, permission)
 }

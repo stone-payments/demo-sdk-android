@@ -7,9 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEffects.NavigateToMain
-import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.Activate
-import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.EnvironmentSelected
-import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.UserInput
+import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -39,6 +37,7 @@ class ValidationViewModel(
             )
 
             is Activate -> activateStoneCode()
+            is Permission -> checkApp()
         }
     }
 
@@ -76,6 +75,7 @@ sealed interface ValidationStoneCodeEvent {
     data class UserInput(val stoneCode: String) : ValidationStoneCodeEvent
     data class EnvironmentSelected(val environment: Environment) : ValidationStoneCodeEvent
     data object Activate : ValidationStoneCodeEvent
+    data object Permission: ValidationStoneCodeEvent
 }
 
 sealed interface ValidationStoneCodeEffects {

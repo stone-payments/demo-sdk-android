@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import br.com.stone.posandroid.providers.PosPrintProvider
 import br.com.stone.posandroid.providers.PosValidateTransactionByCardProvider
 import br.com.stonesdk.sdkdemo.R
+import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeActivity
 import br.com.stonesdk.sdkdemo.databinding.ActivityMainBinding
 import stone.application.enums.Action
 import stone.application.interfaces.StoneActionCallback

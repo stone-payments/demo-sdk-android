@@ -35,6 +35,7 @@ class DevicesActivity : AppCompatActivity(), OnItemClickListener {
     private var btConnected = false
     private var requestPermissionLauncher: ActivityResultLauncher<String>? = null
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (FeatureFlag.composeRefactorEnabled) {

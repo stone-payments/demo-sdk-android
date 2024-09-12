@@ -30,7 +30,6 @@ import org.junit.runners.JUnit4
 class DevicesViewModelTest {
 
     private val providerWrapper: BluetoothProviderWrapper = mockk(relaxed = true)
-    private val bluetoothAdapter: BluetoothAdapter = mockk(relaxed = true)
 
     private lateinit var viewModel: DevicesViewModel
     private val testScheduler = TestCoroutineScheduler()

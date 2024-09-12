@@ -14,8 +14,6 @@ import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -30,8 +28,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class DevicesViewModelTest {
-    //        @get:Rule
-//    val rule: TestRule = InstantTaskExecutorRule()
+
     private val providerWrapper: BluetoothProviderWrapper = mockk(relaxed = true)
     private val bluetoothAdapter: BluetoothAdapter = mockk(relaxed = true)
 
@@ -58,7 +55,7 @@ class DevicesViewModelTest {
     fun `onEvent DeviceItemClick should connect to pinpad and close screen on success`() = runTest {
         // given
         coEvery { providerWrapper.connectPinpad(any(), any()) } returns true
-        coEvery { providerWrapper.listBluetoothDevices() } returns listOf("pinpad_2")
+        coEvery { providerWrapper.listBluetoothDevices() } returns listOf(BluetoothInfo("pinpad1", "123:456"))
 
         viewModel.onEvent(DevicesEvent.Permission)
 

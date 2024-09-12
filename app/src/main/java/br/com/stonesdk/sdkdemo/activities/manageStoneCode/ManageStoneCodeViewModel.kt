@@ -5,9 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeEvent.ActivateStoneCode
-import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeEvent.StoneCodeItemClick
-import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeEvent.UserInput
+import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeEvent.*
 import kotlinx.coroutines.launch
 import stone.application.SessionApplication
 
@@ -27,8 +25,8 @@ class ManageStoneCodeViewModel(
         when (event) {
             is ActivateStoneCode -> activateStoneCode()
             is UserInput -> viewState = viewState.copy(stoneCodeToBeActivated = event.stoneCode)
-            ManageStoneCodeEvent.AddStoneCode -> viewState = viewState.copy(showBottomSheet = true)
-            ManageStoneCodeEvent.OnDismiss -> viewState = viewState.copy(showBottomSheet = false)
+            AddStoneCode -> viewState = viewState.copy(showBottomSheet = true)
+            OnDismiss -> viewState = viewState.copy(showBottomSheet = false)
             is StoneCodeItemClick -> deactivateStoneCode(position = event.position)
         }
     }

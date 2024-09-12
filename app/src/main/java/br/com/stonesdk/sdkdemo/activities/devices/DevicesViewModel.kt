@@ -1,5 +1,6 @@
 package br.com.stonesdk.sdkdemo.activities.devices
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -20,17 +21,22 @@ class DevicesViewModel(
     private val _sideEffects = MutableStateFlow<DeviceEffects?>(null)
     val sideEffects: StateFlow<DeviceEffects?> = _sideEffects
 
+    @SuppressLint("MissingPermission")
     fun onEvent(event: DevicesEvent) {
         when (event) {
             is DevicesEvent.DeviceItemClick -> connectToPinpad(event.position)
             DevicesEvent.EnableBluetooth -> providerWrapper.turnBluetoothOn()
-            DevicesEvent.Permission ->
-                viewState = viewState.copy(
-                    bluetoothDevices = providerWrapper.listBluetoothDevices()
-                )
+            DevicesEvent.Permission -> listBluetoothDevices()
         }
     }
 
+    private fun listBluetoothDevices() {
+        val devices = providerWrapper.listBluetoothDevices()
+        viewState = viewState.copy(bluetoothDevices = devices)
+        if (devices.isEmpty()) {
+            viewState = viewState.copy(errorMessage = "Nenhum dispositivo pareado encontrado")
+        }
+    }
 
     private fun connectToPinpad(position: Int) {
         viewModelScope.launch {
@@ -40,14 +46,12 @@ class DevicesViewModel(
             if (isSuccess) {
                 _sideEffects.emit(CloseScreen)
             } else {
-                viewState =
-                    viewState.copy(
-                        errorMessage = "Erro durante a conexao. Verifique a lista de erros " +
-                                "do provider para mais informações",
-                        loading = false,
-                        pinpadConnected = false
-                    )
-
+                viewState = viewState.copy(
+                    errorMessage = "Erro durante a conexao. Verifique a lista de erros " +
+                            "do provider para mais informações",
+                    loading = false,
+                    pinpadConnected = false
+                )
             }
         }
     }
@@ -55,7 +59,7 @@ class DevicesViewModel(
     data class DevicePinpadUiModel(
         val loading: Boolean = false,
         val pinpadConnected: Boolean = false,
-        val bluetoothDevices: List<String> = emptyList(),
+        val bluetoothDevices: List<BluetoothInfo> = emptyList(),
         //val selectedPinpad: PinpadObject? = null,
         val errorMessage: String? = null
     )

@@ -1,6 +1,7 @@
 package br.com.stonesdk.sdkdemo.activities.devices
 
 import android.Manifest.permission.BLUETOOTH_CONNECT
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import androidx.annotation.RequiresPermission
@@ -15,7 +16,7 @@ class BluetoothProviderWrapper(
     private val bluetoothAdapter: BluetoothAdapter
 ) {
     suspend fun connectPinpad(
-        pinpad: String,
+        pinpad: BluetoothInfo,
         provider: BluetoothConnectionProvider = bluetoothProvider(pinpad)
     ): Boolean {
         return bluetoothConnection(provider)
@@ -37,22 +38,25 @@ class BluetoothProviderWrapper(
             continuation.invokeOnCancellation {}
         }
 
-    private fun bluetoothProvider(pinpad: String) =
+    private fun bluetoothProvider(pinpad: BluetoothInfo) =
         BluetoothConnectionProvider(context, getPinpadObject(pinpad))
 
-    private fun getPinpadObject(pinpad: String): PinpadObject {
-        val pinpadInfo = pinpad
-            .split("_".toRegex())
-            .dropLastWhile { it.isEmpty() }
-        return PinpadObject(pinpadInfo[0], pinpadInfo[1], false)
+    private fun getPinpadObject(pinpad: BluetoothInfo): PinpadObject {
+        return PinpadObject(pinpad.name, pinpad.address, false)
     }
 
-    fun listBluetoothDevices(): List<String> {
+    @SuppressLint("MissingPermission")
+    fun listBluetoothDevices(): List<BluetoothInfo> {
 
-        val bluetoothAdapter = bluetoothAdapter.bondedDevices
-            .map { device -> "${device.name}_${device.address}" }
-            .toList()
-        return bluetoothAdapter
+        val adapter = BluetoothAdapter.getDefaultAdapter()
+        val bluetoothAdapter = adapter.bondedDevices
+
+        return bluetoothAdapter.map { device ->
+            BluetoothInfo(
+                name = device.name,
+                address = device.address
+            )
+        }
     }
 
     @RequiresPermission(BLUETOOTH_CONNECT)
@@ -65,3 +69,8 @@ class BluetoothProviderWrapper(
     }
 
 }
+
+data class BluetoothInfo(
+    val name: String,
+    val address: String,
+)

@@ -2,7 +2,6 @@
 
 package br.com.stonesdk.sdkdemo.activities.devices
 
-import android.bluetooth.BluetoothAdapter
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

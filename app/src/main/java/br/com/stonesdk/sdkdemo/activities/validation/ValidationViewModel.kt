@@ -7,15 +7,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEffects.NavigateToMain
-import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.*
+import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.Activate
+import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.EnvironmentReturned
+import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.Permission
+import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.UserInput
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import stone.environment.Environment
+import stone.utils.Stone
 
 class ValidationViewModel(
     private val providerWrapper: ActivationProviderWrapper,
-    private val appInitializer: AppInitializer
+    private val appInitializer: AppInitializer,
 ) : ViewModel() {
 
     var viewState by mutableStateOf(ValidationStoneCodeUiModel())
@@ -32,8 +36,8 @@ class ValidationViewModel(
                 stoneCodeToBeValidated = event.stoneCode
             )
 
-            is EnvironmentSelected -> viewState = viewState.copy(
-                selectedEnvironment = event.environment
+            is EnvironmentReturned -> viewState = viewState.copy(
+                getEnvironment = event.environment
             )
 
             is Activate -> activateStoneCode()
@@ -66,16 +70,16 @@ class ValidationViewModel(
 
 data class ValidationStoneCodeUiModel(
     val stoneCodeToBeValidated: String = "",
-    val selectedEnvironment: Environment = Environment.PRODUCTION,
+    val getEnvironment: Environment = Stone.getEnvironment(),
     val activationInProgress: Boolean = false,
     val loading: Boolean = true
 )
 
 sealed interface ValidationStoneCodeEvent {
     data class UserInput(val stoneCode: String) : ValidationStoneCodeEvent
-    data class EnvironmentSelected(val environment: Environment) : ValidationStoneCodeEvent
+    data class EnvironmentReturned(val environment: Environment) : ValidationStoneCodeEvent
     data object Activate : ValidationStoneCodeEvent
-    data object Permission: ValidationStoneCodeEvent
+    data object Permission : ValidationStoneCodeEvent
 }
 
 sealed interface ValidationStoneCodeEffects {

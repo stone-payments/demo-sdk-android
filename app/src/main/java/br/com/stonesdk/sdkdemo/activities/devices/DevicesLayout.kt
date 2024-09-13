@@ -82,13 +82,19 @@ fun DevicesContent(
         if (viewState.loading) {
             CircularProgressIndicator(modifier = Modifier.padding(16.dp))
         }
-
-        BluetoothDeviceList(
-            modifier = Modifier.weight(1f),
-            bluetoothDevices = viewState.bluetoothDevices,
-            onEvent = onEvent
-        )
-
+        if (viewState.bluetoothDevices.isEmpty()) {
+            Text(
+                textAlign = TextAlign.Center,
+                text = "Nenhum dispositivo Bluetooth disponível.",
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+        } else {
+            BluetoothDeviceList(
+                modifier = Modifier.weight(1f),
+                bluetoothDevices = viewState.bluetoothDevices,
+                onEvent = onEvent
+            )
+        }
         viewState.errorMessage?.let { errorMessage ->
             Text(
                 text = errorMessage,

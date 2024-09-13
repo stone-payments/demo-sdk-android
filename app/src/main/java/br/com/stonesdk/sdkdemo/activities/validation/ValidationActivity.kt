@@ -188,9 +188,17 @@ class ValidationActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    private var hasShownToast = false
+
     private fun buildPermissionToast() {
-        Toast.makeText(this, "Android 6 or more needs to give permission", Toast.LENGTH_SHORT)
-            .show()
+
+        if (!hasShownToast) {
+            Toast.makeText(this, "Android 6 or more needs to give permission", Toast.LENGTH_SHORT)
+                .show()
+            hasShownToast = true
+
+        }
+
     }
 
     companion object {

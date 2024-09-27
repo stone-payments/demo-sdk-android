@@ -5,12 +5,13 @@ package br.com.stonesdk.sdkdemo.activities.validation
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEffects.NavigateToMain
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.Activate
-import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.EnvironmentSelected
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.UserInput
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.unmockkStatic
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,6 +29,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import stone.environment.Environment
+import stone.utils.Stone
 
 @RunWith(JUnit4::class)
 class ValidationViewModelTest {
@@ -41,6 +43,10 @@ class ValidationViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
+
+        mockkStatic(Stone::class)
+        every { Stone.getEnvironment() } returns Environment.SANDBOX
+
         viewModel = ValidationViewModel(
             providerWrapper = providerWrapper,
             appInitializer = appInitializer
@@ -51,6 +57,7 @@ class ValidationViewModelTest {
 
     @After
     fun tearDown() {
+        unmockkStatic(Stone::class)
         Dispatchers.resetMain()
     }
 
@@ -84,13 +91,11 @@ class ValidationViewModelTest {
     }
 
     @Test
-    fun `given EnvironmentSelected event, should update environment in viewState`() = runTest {
-        val selectedEnvironment = Environment.PRODUCTION
+    fun `given EnvironmentReturned event, test getEnvironment should returns correct environment`() =
+        runTest {
 
-        viewModel.onEvent(EnvironmentSelected(selectedEnvironment))
+            assertEquals(Environment.SANDBOX, viewModel.viewState.getEnvironment)
 
-        assertEquals(selectedEnvironment, viewModel.viewState.selectedEnvironment)
-
-    }
+        }
 
 }

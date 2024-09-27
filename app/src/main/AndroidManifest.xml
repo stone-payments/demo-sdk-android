@@ -25,7 +25,7 @@
             android:name=".activities.MainActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".activities.DevicesActivity"
+            android:name=".activities.devices.DevicesActivity"
             android:label="@string/title_activity_devices" />
         <activity
             android:name=".activities.TransactionActivity"
@@ -38,7 +38,7 @@
             android:label="@string/title_activity_disconnect_pinpad"
             android:theme="@style/AppThemeWithoutBar" />
         <activity
-            android:name=".activities.ValidationActivity"
+            android:name=".activities.validation.ValidationActivity"
             android:label="@string/title_activity_validation"
             android:exported="true"
             android:theme="@style/AppTheme">

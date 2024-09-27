@@ -1,4 +1,4 @@
-package br.com.stonesdk.sdkdemo.activities
+package br.com.stonesdk.sdkdemo.activities.validation
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.Intent
@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.core.content.ContextCompat.checkSelfPermission
 import br.com.stonesdk.sdkdemo.FeatureFlag
-import br.com.stonesdk.sdkdemo.activities.validation.ValidationScreen
+import br.com.stonesdk.sdkdemo.activities.MainActivity
 import br.com.stonesdk.sdkdemo.databinding.ActivityValidationBinding
 import permissions.dispatcher.RuntimePermissions
 import stone.application.StoneStart.init
@@ -188,9 +188,17 @@ class ValidationActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    private var hasShownToast = false
+
     private fun buildPermissionToast() {
-        Toast.makeText(this, "Android 6 or more needs to give permission", Toast.LENGTH_SHORT)
-            .show()
+
+        if (!hasShownToast) {
+            Toast.makeText(this, "Android 6 or more needs to give permission", Toast.LENGTH_SHORT)
+                .show()
+            hasShownToast = true
+
+        }
+
     }
 
     companion object {

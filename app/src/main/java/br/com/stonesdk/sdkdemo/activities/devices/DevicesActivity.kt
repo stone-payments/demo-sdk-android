@@ -1,4 +1,4 @@
-package br.com.stonesdk.sdkdemo.activities
+package br.com.stonesdk.sdkdemo.activities.devices
 
 import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.annotation.SuppressLint
@@ -13,12 +13,15 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.MaterialTheme
 import androidx.core.content.ContextCompat
+import br.com.stonesdk.sdkdemo.FeatureFlag
 import br.com.stonesdk.sdkdemo.databinding.ActivityDevicesBinding
 import stone.application.interfaces.StoneCallbackInterface
 import stone.providers.BluetoothConnectionProvider
@@ -32,10 +35,25 @@ class DevicesActivity : AppCompatActivity(), OnItemClickListener {
     private var btConnected = false
     private var requestPermissionLauncher: ActivityResultLauncher<String>? = null
 
-    @SuppressLint("MissingPermission")
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (FeatureFlag.composeRefactorEnabled) {
+            setContent {
+                MaterialTheme {
+                    DevicesScreen(
+                        closeScreen = ::finish
+                    )
+                }
+            }
+        } else {
+            onCreateStart()
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun onCreateStart() {
 
         binding = ActivityDevicesBinding.inflate(layoutInflater)
         setContentView(binding.root)

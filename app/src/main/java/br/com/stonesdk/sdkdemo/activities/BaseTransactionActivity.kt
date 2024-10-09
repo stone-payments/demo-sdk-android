@@ -11,8 +11,13 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.MaterialTheme
+import br.com.stonesdk.sdkdemo.FeatureFlag
 import br.com.stonesdk.sdkdemo.R
+import br.com.stonesdk.sdkdemo.activities.transaction.TransactionContent
+import br.com.stonesdk.sdkdemo.activities.transaction.TransactionScreen
 import br.com.stonesdk.sdkdemo.databinding.ActivityTransactionBinding
 import stone.application.enums.Action
 import stone.application.enums.ErrorsEnum
@@ -40,6 +45,18 @@ abstract class BaseTransactionActivity<T : BaseTransactionProvider?> : AppCompat
     public override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+        if (FeatureFlag.composeRefactorEnabled){
+            setContent {
+                MaterialTheme {
+                    TransactionScreen()
+                }
+            }
+        } else {
+            onCreateConfig()
+        }
+    }
+
+    fun onCreateConfig(){
         binding = ActivityTransactionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

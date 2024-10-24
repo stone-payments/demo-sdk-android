@@ -75,7 +75,6 @@ class ValidationActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         //        Stone.setEnvironment(SANDBOX);
-        Stone.setAppName("DEMO APP") // Setando o nome do APP (obrigatorio)
         binding.activateButton.setOnClickListener(this)
         stoneCodeEditText = binding.stoneCodeEditText
         val environmentSpinner = binding.environmentSpinner
@@ -101,8 +100,6 @@ class ValidationActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
         environmentSpinner.adapter = adapter
-
-        Stone.setAppName("Demo SDK")
     }
 
 

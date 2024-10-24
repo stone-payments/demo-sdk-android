@@ -1,28 +1,26 @@
+
 def keystorePropertiesFile = rootProject.file("positivo/positivo-keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
+
 android {
+
     signingConfigs {
         positivo {
-            storeFile file("../positivo/${keystoreProperties.getProperty('storeFile', System.env.POSITIVO_KEYSTORE_FILE)}")
-            keyAlias keystoreProperties.getProperty('keyAlias', System.env.POSITIVO_KEYSTORE_ALIAS)
-            keyPassword keystoreProperties.getProperty('keyPassword', System.env.POSITIVO_KEYSTORE_KEY_PASSWORD)
-            storePassword keystoreProperties.getProperty('storePassword', System.env.POSITIVO_KEYSTORE_PASSWORD)
+            storeFile file("../positivo/${keystoreProperties['storeFile']}")
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storePassword keystoreProperties['storePassword']
         }
     }
-    productFlavors {
+
+    buildTypes {
         positivo {
-            dimension "manufacturer"
+            initWith debug
             signingConfig signingConfigs.positivo
-            versionNameSuffix "-positivo"
-        }
-    }
-    variantFilter { variant ->
-        def manufacturer = variant.getFlavors().get(0).name
-        if (manufacturer == 'positivo' && variant.buildType.name == "gertec") {
-            setIgnore(true)
+            matchingFallbacks = ['debug']
         }
     }
 }

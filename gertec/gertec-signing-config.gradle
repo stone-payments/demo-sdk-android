@@ -1,3 +1,4 @@
+
 def keystorePropertiesFile = rootProject.file("gertec/gertec-keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
@@ -8,18 +9,18 @@ android {
 
     signingConfigs {
         gertec {
-            storeFile rootProject.file("gertec/${keystoreProperties.getProperty('storeFile', System.env.GERTEC_KEYSTORE_FILE)}")
-            keyAlias keystoreProperties.getProperty('keyAlias', System.env.GERTEC_KEYSTORE_ALIAS)
-            keyPassword keystoreProperties.getProperty('keyPassword', System.env.GERTEC_KEYSTORE_KEY_PASSWORD)
-            storePassword keystoreProperties.getProperty('storePassword', System.env.GERTEC_KEYSTORE_PASSWORD)
+            storeFile file("../gertec/${keystoreProperties['storeFile']}")
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storePassword keystoreProperties['storePassword']
         }
     }
 
-    productFlavors {
+    buildTypes {
         gertec {
-            dimension "manufacturer"
+            initWith debug
             signingConfig signingConfigs.gertec
-            versionNameSuffix "-gertec"
+            matchingFallbacks = ['debug']
         }
     }
 }

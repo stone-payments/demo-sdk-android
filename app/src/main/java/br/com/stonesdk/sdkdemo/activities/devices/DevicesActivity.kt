@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.core.content.ContextCompat
 import br.com.stonesdk.sdkdemo.FeatureFlag
 import br.com.stonesdk.sdkdemo.databinding.ActivityDevicesBinding
+import co.stone.posmobile.sdk.provider.BluetoothProvider
 import stone.application.interfaces.StoneCallbackInterface
 import stone.providers.BluetoothConnectionProvider
 import stone.utils.PinpadObject
@@ -34,6 +35,8 @@ class DevicesActivity : AppCompatActivity(), OnItemClickListener {
     private val mBluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
     private var btConnected = false
     private var requestPermissionLauncher: ActivityResultLauncher<String>? = null
+
+    private lateinit var bluetoothProvider:BluetoothProvider
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {

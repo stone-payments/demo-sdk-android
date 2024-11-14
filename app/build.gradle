@@ -69,6 +69,8 @@ android {
 
 dependencies {
 
+    implementation fileTree(include: ['*.aar', '*.jar'], dir: 'libs')
+
     def composeBom = platform('androidx.compose:compose-bom:2024.06.00')
     implementation composeBom
     implementation 'androidx.compose.material3:material3'

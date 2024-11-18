@@ -34,7 +34,7 @@ class DevicesViewModel(
         val devices = providerWrapper.listBluetoothDevices()
         viewState = viewState.copy(bluetoothDevices = devices)
         if (devices.isEmpty()) {
-            viewState = viewState.copy(errorMessage = "Nenhum dispositivo pareado encontrado")
+            viewState = viewState.copy(statusMessage = "Nenhum dispositivo pareado encontrado")
         }
     }
 
@@ -43,11 +43,15 @@ class DevicesViewModel(
             viewState = viewState.copy(loading = true)
             val pinpad = viewState.bluetoothDevices[position]
             val isSuccess = providerWrapper.connectPinpad(pinpad)
-            if (isSuccess) {
-                _sideEffects.emit(CloseScreen)
+            viewState = if (isSuccess) {
+                viewState.copy(
+                    statusMessage = "Conexão com pinpad bem sucedida",
+                    loading = false,
+                    pinpadConnected = true
+                )
             } else {
-                viewState = viewState.copy(
-                    errorMessage = "Erro durante a conexao. Verifique a lista de erros " +
+                viewState.copy(
+                    statusMessage = "Erro durante a conexao. Verifique a lista de erros " +
                             "do provider para mais informações",
                     loading = false,
                     pinpadConnected = false
@@ -60,8 +64,7 @@ class DevicesViewModel(
         val loading: Boolean = false,
         val pinpadConnected: Boolean = false,
         val bluetoothDevices: List<BluetoothInfo> = emptyList(),
-        //val selectedPinpad: PinpadObject? = null,
-        val errorMessage: String? = null
+        val statusMessage: String? = null
     )
 
 }

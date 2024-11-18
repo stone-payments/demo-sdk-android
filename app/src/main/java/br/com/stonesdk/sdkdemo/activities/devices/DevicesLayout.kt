@@ -95,7 +95,7 @@ fun DevicesContent(
                 onEvent = onEvent
             )
         }
-        viewState.errorMessage?.let { errorMessage ->
+        viewState.statusMessage?.let { errorMessage ->
             Text(
                 text = errorMessage,
                 color = MaterialTheme.colorScheme.error,

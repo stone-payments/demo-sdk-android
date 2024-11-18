@@ -4,46 +4,41 @@ import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
+import android.util.Log
 import androidx.annotation.RequiresPermission
+import co.stone.posmobile.sdk.domain.core.model.response.StoneResultCallback
+import co.stone.posmobile.sdk.provider.BluetoothProvider
 import kotlinx.coroutines.suspendCancellableCoroutine
-import stone.application.interfaces.StoneCallbackInterface
-import stone.providers.BluetoothConnectionProvider
-import stone.utils.PinpadObject
+
 import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class BluetoothProviderWrapper(
-    private val context: Context,
-    private val bluetoothAdapter: BluetoothAdapter
+    private val bluetoothAdapter: BluetoothAdapter,
+    private val bluetoothProvider: BluetoothProvider
 ) {
     suspend fun connectPinpad(
         pinpad: BluetoothInfo,
-        provider: BluetoothConnectionProvider = bluetoothProvider(pinpad)
     ): Boolean {
-        return bluetoothConnection(provider)
-    }
-
-    private suspend fun bluetoothConnection(provider: BluetoothConnectionProvider): Boolean =
-        suspendCancellableCoroutine { continuation ->
-
-            provider.connectionCallback = object : StoneCallbackInterface {
-                override fun onSuccess() {
-                    continuation.resume(true)
+        return suspendCoroutine { cont ->
+            bluetoothProvider.connect(pinpad.address, object : StoneResultCallback<Boolean> {
+                override fun onSuccess(result: Boolean) {
+                    cont.resume(true)
                 }
 
-                override fun onError() {
-                    continuation.resume(false)
+                override fun onError(
+                    stoneStatus: br.com.stone.sdk.android.error.StoneStatus,
+                    throwable: Throwable
+                ) {
+                    Log.i("log", throwable.message, throwable)
+                    cont.resume(false)
                 }
-            }
-            provider.execute()
-            continuation.invokeOnCancellation {}
+
+            })
         }
 
-    private fun bluetoothProvider(pinpad: BluetoothInfo) =
-        BluetoothConnectionProvider(context, getPinpadObject(pinpad))
-
-    private fun getPinpadObject(pinpad: BluetoothInfo): PinpadObject {
-        return PinpadObject(pinpad.name, pinpad.address, false)
     }
+
 
     @SuppressLint("MissingPermission")
     fun listBluetoothDevices(): List<BluetoothInfo> {

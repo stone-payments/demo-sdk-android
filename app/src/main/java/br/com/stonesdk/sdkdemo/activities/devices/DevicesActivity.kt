@@ -23,20 +23,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.core.content.ContextCompat
 import br.com.stonesdk.sdkdemo.FeatureFlag
 import br.com.stonesdk.sdkdemo.databinding.ActivityDevicesBinding
+import co.stone.posmobile.sdk.domain.core.model.response.StoneResultCallback
 import co.stone.posmobile.sdk.provider.BluetoothProvider
-import stone.application.interfaces.StoneCallbackInterface
-import stone.providers.BluetoothConnectionProvider
-import stone.utils.PinpadObject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
+import org.koin.java.KoinJavaComponent.inject
 
 class DevicesActivity : AppCompatActivity(), OnItemClickListener {
 
     private lateinit var binding: ActivityDevicesBinding
 
     private val mBluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-    private var btConnected = false
     private var requestPermissionLauncher: ActivityResultLauncher<String>? = null
 
-    private lateinit var bluetoothProvider:BluetoothProvider
+    private val providerWrapper: BluetoothProviderWrapper by inject()
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,40 +153,20 @@ class DevicesActivity : AppCompatActivity(), OnItemClickListener {
 
 
     override fun onItemClick(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
-        // Pega o pinpad selecionado do ListView.
-
         val pinpadInfo = binding.listDevicesActivity.adapter.getItem(position)
             .toString()
             .split("_".toRegex())
             .dropLastWhile { it.isEmpty() }
             .toTypedArray()
-        val pinpadSelected = PinpadObject(pinpadInfo[0], pinpadInfo[1], false)
 
-        // Passa o pinpad selecionado para o provider de conexão bluetooth.
-        val bluetoothConnectionProvider =
-            BluetoothConnectionProvider(this@DevicesActivity, pinpadSelected)
-        bluetoothConnectionProvider.dialogMessage =
-            "Criando conexao com o pinpad selecionado" // Mensagem exibida do dialog.
-        bluetoothConnectionProvider.connectionCallback = object : StoneCallbackInterface {
-            override fun onSuccess() {
-                Toast.makeText(applicationContext, "Pinpad conectado", Toast.LENGTH_SHORT)
-                    .show()
-                btConnected = true
-                finish()
-            }
-
-            override fun onError() {
-                Toast.makeText(
-                    applicationContext,
-                    "Erro durante a conexao. Verifique a lista de erros do provider para mais informacoes",
-                    Toast.LENGTH_SHORT
-                ).show()
-                Log.e(
-                    "DevicesActivity",
-                    "onError: " + bluetoothConnectionProvider.listOfErrors
+        CoroutineScope(Dispatchers.IO).launch {
+            providerWrapper.connectPinpad(
+                BluetoothInfo(
+                    name = pinpadInfo[0],
+                    address = pinpadInfo[1],
                 )
-            }
+            )
         }
-        bluetoothConnectionProvider.execute() // Executa o provider de conexão bluetooth.
+
     }
 }

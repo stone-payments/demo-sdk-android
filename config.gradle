@@ -1,0 +1,97 @@
+ext {
+    // TODO: Migrate all versions and dependencies to the libs.versions.toml file
+
+    localProp = new Properties()
+
+    if (rootProject.file("local.properties").exists())
+        localProp.load(new FileInputStream(rootProject.file("local.properties")))
+
+    packageCloudReadToken = System.env.PACKAGECLOUD_READ_TOKEN ?: localProp["packageCloudReadToken"]
+    packageCloudReadTokenInternal = System.env.PACKAGECLOUD_READ_TOKEN_INTERNAL ?: localProp["packageCloudReadTokenInternal"]
+
+    buildVariables = [
+            pdmUrl           : System.env.PDM_URL ?: localProp["pdmUrl"],
+    ]
+
+
+    if (System.env.PROJECT_BUILD_IS_DRAFT == "no") {
+        buildVariables["defaultPublishConfig"] = "productionRelease"
+    } else {
+        buildVariables["defaultPublishConfig"] = "certificationDebug"
+    }
+
+    androidVersions = [
+            compileSdk          : 34,
+            minSdkVersion       : 22,
+            targetSdkVersion    : 24,
+            ndkVersion          : "21.2.6472646"
+    ]
+
+    androidModulesVersions = [
+            compileSdk   : androidVersions.compileSdk,
+            minSdkVersion       : 22,
+            targetSdkVersion    : androidVersions.targetSdkVersion,
+            ndkVersion          : androidVersions.ndkVersion
+    ]
+
+    // All versions migrated to gradle/libs.versions.toml
+    versions = [
+            kotlin               : libs.versions.kotlin.get(),
+            supportLibrary       : libs.versions.supportLibrary.get(),
+            permissionsDispatcher: libs.versions.permissionsDispatcher.get(),
+            anko                 : libs.versions.anko.get(),
+            phc                  : libs.versions.phc.get(),
+            pal                  : libs.versions.pal.get(),
+
+            hal                  : libs.versions.halApi.get(),
+            halGertec            : libs.versions.halGertec.get(),
+            halPositivo          : libs.versions.halPositivo.get(),
+            halSunmi             : libs.versions.halSunmi.get(),
+            halIngenico          : libs.versions.halIngenico.get(),
+            halSerial            : libs.versions.halSerial.get(),
+            dataContainer        : libs.versions.dataContainer.get(),
+            serviceContainer     : libs.versions.serviceContainer.get(),
+            gson                 : libs.versions.gson.get(),
+            xstream              : libs.versions.xstream.get(),
+            junit                : libs.versions.junit.get(),
+            espressoCore         : libs.versions.espressoCore.get(),
+            okhttp               : libs.versions.okhttp.get(),
+            constraintLayout     : libs.versions.constraintLayout.get(),
+            receiptGenerator     : libs.versions.receiptGenerator.get(),
+            buildTools           : libs.versions.buildTools.get(),
+            kotpref              : libs.versions.kotpref.get(),
+            mockWebServer        : libs.versions.mockWebServer.get(),
+            koin                 : libs.versions.koin.get(),
+            rxjava               : libs.versions.rxjava.get(),
+            rxkotlin             : libs.versions.rxkotlin.get(),
+            mockk                : libs.versions.mockk.get(),
+            mockitoCore          : libs.versions.mockitoCore.get(),
+            mockitoKotlin        : libs.versions.mockitoKotlin.get(),
+            junit5               : libs.versions.junit5.get(),
+            multidex             : libs.versions.multidex.get(),
+            material             : libs.versions.material.get(),
+            appcompat            : libs.versions.appcompat.get(),
+            annotation           : libs.versions.annotation.get(),
+            xtest                : libs.versions.xtest.get(),
+            slf4j                : libs.versions.slf4j.get(),
+            logback              : libs.versions.logback.get(),
+            wiremockVersion      : libs.versions.wiremockVersion.get(),
+            wiremock             : libs.versions.wiremock.get(),
+            wiremockJunit5       : libs.versions.wiremockJunit5.get(),
+            retrofit             : libs.versions.retrofit.get(),
+            retrofitRxAdapter    : libs.versions.retrofitRxAdapter.get(),
+            retrofitConverterGson: libs.versions.retrofitConverterGson.get(),
+            loggingInterceptor   : libs.versions.loggingInterceptor.get(),
+            coroutines           : libs.versions.coroutines.get(),
+            desugar              : libs.versions.desugar.get(),
+            kotlinxDatetime      : libs.versions.kotlinxDatetime.get(),
+            terminalSettings     : libs.versions.terminalSettings.get(),
+            configApp            : libs.versions.configHelper.get(),
+            android_core         : libs.versions.androidXCore.get(),
+            junitKtx             : libs.versions.junitKtx.get(),
+            androidxTest         : libs.versions.androidxTest.get(),
+            androidxTestCore     : libs.versions.androidxTestCore.get(),
+            androidxTestRunner   : libs.versions.androidxTestRunner.get(),
+            androidxTestRules    : libs.versions.androidxTestRules.get(),
+    ]
+}

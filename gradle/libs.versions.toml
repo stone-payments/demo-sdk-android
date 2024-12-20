@@ -1,10 +1,193 @@
 [versions]
-kotlin = "2.0.0"
-gradlePluginVersion = "8.2.1"
+activation = "3.3.2"
+activationVersion = "4.1.0"
+androidJunit5 = "1.8.2.1"
+androidXCore = "1.9.0"
+androidxTest = "1.4.0"
+androidxTestCore = "1.5.0"
+androidxTestRules = "1.5.0"
+androidxTestRunner = "1.5.2"
+anko = "0.10.1"
+annotation = "1.0.0"
+annotationVersion = "1.8.2"
+appcompat = "1.0.0"
+appcompatVersion = "1.7.0"
+buildTools = "34.0.0"
+configHelper = "0.0.16"
+constraintLayout = "1.1.3"
+constraintlayoutVersion = "2.1.4"
+core = "1.6.1"
+coreKtx = "1.13.1"
+coroutines = "1.5.0"
+dataContainer = "4.4.3"
+dataContainerApiVersion = "5.0.0-RC17"
+desugar = "2.1.3"
+dokka = "1.9.20"
+enumSupport = "2.13.1"
+espressoCore = "3.5.1"
+gson = "2.9.0"
+hal = "2.12.1"
+halApi = "3.0.0-RC14"
+halProvider = "3.0.0-RC14"
+halGertec = "1.28.9"
+halIngenico = "2.1.1"
+halPositivo = "7.98.0"
+halSerial = "3.0.0-RC14"
+halSunmi = "1.34.1"
+junit = "4.13.2"
+junit5 = "5.6.0"
+junitKtx = "1.1.5"
+junitVersion = "1.2.1"
+knit = "0.4.0"
+koin = "4.0.0"
+kotlin = "2.0.20"
+kotlinSerializationJson = "1.7.3"
+ksp = "2.0.20-1.0.24"
+googleServiceVersion = '4.4.2'
+jetbrainsKotlinJvmVersion = "2.0.20"
+kotlinxCoroutines = "1.9.0"
+kotlinxDatetime = "0.6.1"
+kotlinxSerializationJson = "1.7.3"
+kotpref = "2.13.1"
+kotprefVersion = "2.13.1"
+libCommons = "1.0.0-RC3"
+logback = "2.0.0"
+logbackAndroid = "2.0.0"
+logbackClassicVersion = '1.2.11'
+loggingInterceptor = "3.14.9"
+material = "1.0.0"
+materialVersion = "1.12.0"
+mockitoCore = "2.19.0"
+mockitoKotlin = "2.0.0"
+mockk = "1.13.12"
+mockkCommonVersion = "1.12.4"
+mockkInstruVersion = "1.12.2"
+mockWebServer = "3.10.0"
+junit5Version = "5.10.1"
+multidex = "2.0.0"
+multidexVersion = "2.0.1"
+okhttp = "3.14.9"
+pal = "3.7.0"
+permissionsDispatcher = "4.8.0"
+permissionsdispatcherVersion = "4.8.0"
+agp = "8.6.0"
+phcClient = "1.0.0-dev"
+phc = "4.4.4"
+plugin-android = "8.0.2"
+receiptGenerator = "1.9.24"
+retrofit = "2.9.0"
+retrofitConverterGson = "2.9.0"
+retrofitRxAdapter = "2.9.0"
+runner = "1.5.2"
+rxjava = "2.2.10"
+rxkotlin = "2.2.0"
+serviceContainer = "1.24.15"
+slf4j = "1.7.26"
+supportLibrary = "28.0.0"
+terminalSettings = "2.2.6"
+wiremock = "2.23.2"
+wiremockJunit5 = "1.1.1"
+wiremockVersion = "2.23.2"
+xstream = "1.4.7"
+xtest = "1.1.1"
+gradleLoggerVersion = "1.7.0"
+gradleJunitVersion = "1.8.2.1"
+android-compileSdk = "34"
+android-minSdk = "22"
+paymentDomainLib = "3.7.0"
+espressoCoreVersion = "3.6.1"
+kotlinLoggingVersion = "5.1.0"
+annotationJvm = "1.9.0"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.9.3"
+composeBom = "2024.04.01"
 
 [libraries]
-gradlePlugin = {group = "com.android.tools.build", name = "gradle", version.ref = "gradlePluginVersion" }
+activation = { module = "co.stone.foundation:activation", version.ref = "activationVersion" }
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+activation-core = { module = "co.stone.foundation:activation-android", version.ref = "activation" }
+activation-stone = { module = "co.stone.foundation:activation-stone", version.ref = "activation" }
+activation-ton = { module = "co.stone.foundation:activation-ton", version.ref = "activation" }
+androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotationVersion" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayoutVersion" }
+androidx-core = { module = "androidx.test:core", version.ref = "core" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
+androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "multidexVersion" }
+androidx-rules = { module = "androidx.test:rules", version.ref = "core" }
+androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
+enum-support = { module = "com.chibatching.kotpref:enum-support", version.ref = "enumSupport" }
+hal-provider = { module = "br.com.stone.posandroid:hal-provider", version.ref = "halProvider" }
+hal-api = { module = "br.com.stone.posandroid:hal-api", version.ref = "halApi" }
+junit = { module = "junit:junit", version.ref = "junit" }
+kotlin-stdlib = {group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+kotlin-serialization = {group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlin", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name= "kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name= "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+posandroid-manufacturer-gertec = { group = "br.com.stone.posandroid", name= "posandroid-manufacturer-gertec", version.ref = "halGertec" }
+posandroid-manufacturer-ingenico = { group = "br.com.stone.posandroid", name= "posandroid-manufacturer-ingenico", version.ref = "halIngenico" }
+posandroid-manufacturer-positivo = { group = "br.com.stone.posandroid", name= "posandroid-manufacturer-positivo", version.ref = "halPositivo" }
+# posandroid-serial = { group = "br.com.stone.posandroid", name= "posandroid-pinpad-serial", version.ref = "halSerial" }
+posandroid-manufacturer-sunmi = { group = "br.com.stone.posandroid", name= "posandroid-manufacturer-sunmi", version.ref = "halSunmi" }
+posandroid-datacontainer-api = { group = "co.stone.posmobile", name= "data-container-api", version.ref = "dataContainerApiVersion" }
+posandroid-datacontainer-data = { group = "co.stone.posmobile", name= "data-container-data", version.ref = "dataContainerApiVersion" }
+kotpref = { module = "com.chibatching.kotpref:kotpref", version.ref = "kotprefVersion" }
+lib-commons = { module = "co.stone.posmobile:lib-commons", version.ref = "libCommons" }
+logback-android = { module = "com.github.tony19:logback-android", version.ref = "logbackAndroid" }
+material = { module = "com.google.android.material:material", version.ref = "materialVersion" }
+permissionsdispatcher = { module = "com.github.permissions-dispatcher:permissionsdispatcher", version.ref = "permissionsdispatcherVersion" }
+phc-client = { module = "br.com.stone:phc-client", version.ref = "phc" }
+gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+plugin-dokka-core = { module = "org.jetbrains.dokka:dokka-core", version.ref = "dokka" }
+plugin-dokka-gradle = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
+plugin-dokka-pathsaver = { module = "org.jetbrains.kotlinx:dokka-pathsaver-plugin", version.ref = "knit" }
+plugin-knit = { module = "org.jetbrains.kotlinx:kotlinx-knit", version.ref = "knit" }
 kotlinGradlePlugin = {group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+gradleLogger = {group = "com.adarshr", name = "gradle-test-logger-plugin", version.ref = "gradleLoggerVersion" }
+gradleJunit = {group = "de.mannodermaus.gradle.plugins", name = "android-junit5", version.ref = "gradleJunitVersion" }
+googleServices = {group = "com.google.gms", name = "google-services", version.ref = "googleServiceVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCoreVersion" }
+payment-domain-lib = { group = "br.com.stone", name = "payment-domain-lib", version.ref = "paymentDomainLib" }
+logbackClassic = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logbackClassicVersion" }
+androidMockk = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
+mockk-common = { module = "io.mockk:mockk-common", version.ref = "mockkCommonVersion" }
+junitJupiterParams = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "junit5Version" }
+junitJupiterApi = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit5Version" }
+junitVintageEngine = { group = "org.junit.vintage", name = "junit-vintage-engine", version.ref = "junit5Version" }
+junitJupiterEngine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit5Version" }
+kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlinLoggingVersion" }
+koinKotlin = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+datacontainer-api = { module = "co.stone.posmobile:data-container-api", version.ref = "dataContainerApiVersion" }
+androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "annotationJvm" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+
+[bundles]
+activation = [
+    "activation-core"
+]
+
+
 [plugins]
-org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+#id 'com.google.firebase.crashlytics' version '3.0.2' apply false
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+mokkery = { id = "dev.mokkery", version = "2.3.0" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvmVersion" }
+kotlinParcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }

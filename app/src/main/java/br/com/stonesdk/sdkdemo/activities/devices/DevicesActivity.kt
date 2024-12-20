@@ -23,13 +23,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.core.content.ContextCompat
 import br.com.stonesdk.sdkdemo.FeatureFlag
 import br.com.stonesdk.sdkdemo.databinding.ActivityDevicesBinding
-import co.stone.posmobile.sdk.domain.core.model.response.StoneResultCallback
-import co.stone.posmobile.sdk.provider.BluetoothProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import org.koin.java.KoinJavaComponent.inject
 
 class DevicesActivity : AppCompatActivity(), OnItemClickListener {
 

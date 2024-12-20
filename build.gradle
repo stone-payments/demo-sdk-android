@@ -1,40 +1,124 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
+    apply from: 'config.gradle'
     repositories {
         gradlePluginPortal()
         google()
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
+
     dependencies {
         classpath libs.gradlePlugin
-        classpath libs.kotlinGradlePlugin
+        classpath libs.gradleLogger
+        classpath libs.gradleJunit
+        classpath libs.kotlinx.serialization.json
+        classpath libs.googleServices
+
+//        classpath(libs.plugin.knit)
+//        classpath(libs.plugin.dokka.gradle)
     }
 }
 
 plugins {
-    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.kotlinAndroid) apply false
+    alias(libs.plugins.kotlinMultiplatform) apply false
+    alias(libs.plugins.androidApplication) apply false
+    alias(libs.plugins.androidLibrary) apply false
+    alias(libs.plugins.kotlinParcelize) apply false
 }
 
 ext {
-    kotlin_version = '2.0.0'
-    stone_sdk_version = '4.9.4'
-
-    localProp = new Properties()
-    fileName = 'local.properties'
-    if (project.rootProject.file(fileName).exists()) {
-        localProp.load(new FileInputStream(rootProject.file(fileName)))
-    }
-    packageCloudReadToken = System.env.PACKAGECLOUD_READ_TOKEN != null ? System.env.PACKAGECLOUD_READ_TOKEN : localProp["packageCloudReadToken"] ?: ""
-    packageCloudReadTokenInternal = System.env.PACKAGECLOUD_READ_TOKEN_INTERNAL ?: localProp["packageCloudReadTokenInternal"]
+    githubUserName = System.env.GITHUB_PUBLISH_USERNAME ?: localProp["githubUserName"] ?: ""
+    githubToken = System.env.GITHUB_PUBLISH_TOKEN ?: localProp["githubToken"] ?: ""
 }
+
+
 
 allprojects {
     repositories {
-        mavenCentral()
-        maven { url "https://packagecloud.io/priv/${packageCloudReadToken}/stone/pos-android/maven2" }
-        maven { url "https://packagecloud.io/priv/${packageCloudReadTokenInternal}/stone/pos-android-internal/maven2" }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenLocal()
         google()
+        mavenCentral()
+        maven {
+            url "https://packagecloud.io/priv/${packageCloudReadToken}/stone/pos-android/maven2"
+            allowInsecureProtocol = true
+        }
+        maven {
+            url "https://packagecloud.io/priv/${packageCloudReadTokenInternal}/stone/pos-android-internal/maven2"
+            allowInsecureProtocol = true
+        }
+
+        if (!(githubUserName.isEmpty() || githubToken.isEmpty())) {
+            maven {
+                name = "GitHubPackages Hal"
+                credentials {
+                    username(githubUserName)
+                    password(githubToken)
+                }
+                url "https://maven.pkg.github.com/stone-payments/pos-android-hal"
+            }
+
+            maven {
+                name = "GitHubPackages Foundation"
+                credentials {
+                    username(githubUserName)
+                    password(githubToken)
+                }
+                url "https://maven.pkg.github.com/stone-payments/pos-android-hal"
+            }
+        }
+
+        if (!(githubUserName.isEmpty() || githubToken.isEmpty())) {
+            maven {
+                name = "GitHubPackages Hal"
+                credentials {
+                    username(githubUserName)
+                    password(githubToken)
+                }
+                url "https://maven.pkg.github.com/stone-payments/pos-android-hal"
+            }
+            maven {
+                name = "GitHubPackages Foundation"
+                credentials {
+                    username(githubUserName)
+                    password(githubToken)
+                }
+                url "https://maven.pkg.github.com/stone-payments/pos-android-foundation"
+            }
+        }
+
+    }
+    group = "br.com.stone"
+    version = System.env.PACKAGE_VERSION != null ? System.env.PACKAGE_VERSION : localProp["base_version"] ?: "99.0.0-SNAPSHOT"
+
+    configurations.configureEach {
+        resolutionStrategy {
+            preferProjectModules()
+        }
     }
 }
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+//apply plugin: "org.jetbrains.dokka"
+
+//dependencies {
+//    dokkaHtmlMultiModulePlugin(libs.plugin.dokka.pathsaver)
+//}
+
+// --------------- Knit configuration ---------------
+
+//apply plugin: 'kotlinx-knit'
+
+//knit {
+//    siteRoot = "http://0.0.0.0:8000"
+//    moduleRoots = [".", "stone-sdk"]
+//    moduleDocs = "build/dokka/htmlPartial"
+//    moduleMarkers = ["build.gradle", "build.gradle.kts"] // marker files that distinguish module directories
+//    dokkaMultiModuleRoot = "build/dokka/htmlMultiModule/"
+//}

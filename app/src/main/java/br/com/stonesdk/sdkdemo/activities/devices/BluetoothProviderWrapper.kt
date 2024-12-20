@@ -6,8 +6,9 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.util.Log
 import androidx.annotation.RequiresPermission
-import co.stone.posmobile.sdk.domain.core.model.response.StoneResultCallback
-import co.stone.posmobile.sdk.provider.BluetoothProvider
+import br.com.stone.sdk.android.error.StoneStatus
+import co.stone.posmobile.sdk.domain.model.response.StoneResultCallback
+import co.stone.posmobile.sdk.hardware.provider.bluetooth.BluetoothProvider
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 import kotlin.coroutines.resume
@@ -21,19 +22,15 @@ class BluetoothProviderWrapper(
         pinpad: BluetoothInfo,
     ): Boolean {
         return suspendCoroutine { cont ->
-            bluetoothProvider.connect(pinpad.address, object : StoneResultCallback<Boolean> {
+            bluetoothProvider.connect(pinpad.address, "", object : StoneResultCallback<Boolean> {
                 override fun onSuccess(result: Boolean) {
                     cont.resume(true)
                 }
 
-                override fun onError(
-                    stoneStatus: br.com.stone.sdk.android.error.StoneStatus,
-                    throwable: Throwable
-                ) {
+                override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
                     Log.i("log", throwable.message, throwable)
                     cont.resume(false)
                 }
-
             })
         }
 

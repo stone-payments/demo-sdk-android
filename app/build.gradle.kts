@@ -66,6 +66,12 @@ dependencies {
     implementation(libs.posandroid.datacontainer.api)
     implementation(libs.posandroid.activation)
     implementation(libs.posandroid.hal.provider)
+    implementation(libs.posandroid.sdk.core.android)
+    implementation(libs.posandroid.sdk.error)
+    implementation(libs.posandroid.sdk.auth)
+    implementation(libs.posandroid.sdk.auth.gateway)
+    implementation(libs.posandroid.sdk.invoice)
+    implementation(libs.posandroid.sdk.owl)
 
     // android core
     implementation(libs.androidx.core.ktx)
@@ -121,4 +127,8 @@ dependencies {
 
 configurations.implementation {
     exclude(group = "br.com.stone.posandroid", module = "datacontainer-api")
+    exclude(group = "co.stone.posmobile.sdk", module = "auth")
+    exclude(group = "co.stone.posmobile.sdk", module = "auth-gateway")
+    exclude(group = "co.stone.posmobile.sdk", module = "invoice")
+    exclude(group = "co.stone.posmobile.sdk", module = "owl")
 }

@@ -67,6 +67,13 @@ multidex = "2.0.0"
 multidexVersion = "2.0.1"
 okhttp = "3.14.9"
 pal = "3.7.0"
+
+sdkStone = "6.0.0-alpha03"
+sdkAuth = "5.4.15"
+sdkAuthGateway = "5.4.15"
+sdkInvoice = "5.4.15"
+sdkOwl = "5.4.15"
+
 permissionsDispatcher = "4.8.0"
 permissionsdispatcherVersion = "4.8.0"
 agp = "8.6.0"
@@ -103,7 +110,6 @@ activityCompose = "1.9.3"
 composeBom = "2024.04.01"
 
 [libraries]
-
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
@@ -142,6 +148,14 @@ posandroid-manufacturer-ingenico = { group = "br.com.stone.posandroid", name= "p
 posandroid-manufacturer-positivo = { group = "br.com.stone.posandroid", name= "posandroid-manufacturer-positivo", version.ref = "halPositivo" }
 # posandroid-serial = { group = "br.com.stone.posandroid", name= "posandroid-pinpad-serial", version.ref = "halSerial" }
 posandroid-manufacturer-sunmi = { group = "br.com.stone.posandroid", name= "posandroid-manufacturer-sunmi", version.ref = "halSunmi" }
+
+posandroid-sdk-core-android = { group = "co.stone.posmobile.sdk", name= "core-android", version.ref = "sdkStone" }
+posandroid-sdk-error = { group = "co.stone.posmobile.sdk", name= "error", version.ref = "sdkStone" }
+posandroid-sdk-auth = { group = "br.com.stone", name= "auth", version.ref = "sdkAuth" }
+posandroid-sdk-auth-gateway = { group = "br.com.stone", name= "auth-gateway", version.ref = "sdkAuthGateway" }
+posandroid-sdk-invoice = { group = "br.com.stone", name= "invoice", version.ref = "sdkInvoice" }
+posandroid-sdk-owl = { group = "br.com.stone", name= "owl", version.ref = "sdkOwl" }
+
 kotpref = { module = "com.chibatching.kotpref:kotpref", version.ref = "kotprefVersion" }
 logback-android = { module = "com.github.tony19:logback-android", version.ref = "logbackAndroid" }
 material = { module = "com.google.android.material:material", version.ref = "materialVersion" }

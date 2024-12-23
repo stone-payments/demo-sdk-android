@@ -67,27 +67,18 @@ allprojects {
                     username(githubUserName)
                     password(githubToken)
                 }
-                url "https://maven.pkg.github.com/stone-payments/pos-android-hal"
-            }
-        }
-
-        if (!(githubUserName.isEmpty() || githubToken.isEmpty())) {
-            maven {
-                name = "GitHubPackages Hal"
-                credentials {
-                    username(githubUserName)
-                    password(githubToken)
-                }
-                url "https://maven.pkg.github.com/stone-payments/pos-android-hal"
-            }
-            maven {
-                name = "GitHubPackages Foundation"
-                credentials {
-                    username(githubUserName)
-                    password(githubToken)
-                }
                 url "https://maven.pkg.github.com/stone-payments/pos-android-foundation"
             }
+
+            maven {
+                name = "GitHubPackages SDK"
+                credentials {
+                    username(githubUserName)
+                    password(githubToken)
+                }
+                url "https://maven.pkg.github.com/stone-payments/pos-android-sdk"
+            }
+
         }
 
     }

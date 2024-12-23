@@ -29,14 +29,14 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 @OptIn(ExperimentalPermissionsApi::class)
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun DevicesScreen(
-    viewModel: DevicesViewModel = getViewModel(),
+    viewModel: DevicesViewModel = koinViewModel(),
     closeScreen: () -> Unit
 ) {
     val effects by viewModel.sideEffects.collectAsState()

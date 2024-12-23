@@ -52,7 +52,7 @@ class DevicesViewModelTest {
     @Test
     fun `onEvent DeviceItemClick should connect to pinpad and close screen on success`() = runTest {
         // given
-        coEvery { providerWrapper.connectPinpad(any(), any()) } returns true
+        coEvery { providerWrapper.connectPinpad(pinpad = any()) } returns true
         coEvery { providerWrapper.listBluetoothDevices() } returns listOf(BluetoothInfo("pinpad1", "123:456"))
 
         viewModel.onEvent(DevicesEvent.Permission)
@@ -63,7 +63,7 @@ class DevicesViewModelTest {
         advanceUntilIdle()
 
         // assert
-        coVerify { providerWrapper.connectPinpad(any(), any()) }
+        coVerify { providerWrapper.connectPinpad(pinpad = any()) }
         assertEquals(DeviceEffects.CloseScreen, sideEffect)
 
     }

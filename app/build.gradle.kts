@@ -94,6 +94,8 @@ dependencies {
 
     // tests
     testImplementation(libs.androidx.junit)
+    testImplementation(libs.junitJupiterApi)
+    testImplementation(libs.junitJupiterEngine)
     testImplementation(libs.androidx.ui.test.junit4)
     testImplementation(libs.mockk.android)
     testImplementation(libs.mockk.common)

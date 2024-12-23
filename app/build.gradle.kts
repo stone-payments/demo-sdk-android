@@ -27,6 +27,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -36,11 +37,17 @@ android {
         compose = true
         viewBinding = true
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
+    }
+
+    packagingOptions {
+        resources.excludes.add("META-INF/*")
     }
 
 }

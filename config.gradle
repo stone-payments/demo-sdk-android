@@ -49,7 +49,6 @@ ext {
             halSunmi             : libs.versions.halSunmi.get(),
             halIngenico          : libs.versions.halIngenico.get(),
             halSerial            : libs.versions.halSerial.get(),
-            dataContainer        : libs.versions.dataContainer.get(),
             serviceContainer     : libs.versions.serviceContainer.get(),
             gson                 : libs.versions.gson.get(),
             xstream              : libs.versions.xstream.get(),

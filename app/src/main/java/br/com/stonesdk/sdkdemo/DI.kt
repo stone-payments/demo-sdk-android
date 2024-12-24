@@ -3,6 +3,7 @@ package br.com.stonesdk.sdkdemo
 import android.bluetooth.BluetoothAdapter
 import br.com.stonesdk.sdkdemo.activities.devices.BluetoothProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.devices.DevicesViewModel
+import br.com.stonesdk.sdkdemo.activities.main.MainViewModel
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeViewModel
 import br.com.stonesdk.sdkdemo.activities.transaction.InstallmentProvider
@@ -56,5 +57,8 @@ val demoApplicationModule = module {
     }
     viewModel {
         TransactionViewModel(get(),get(), get())
+    }
+    viewModel {
+        MainViewModel()
     }
 }

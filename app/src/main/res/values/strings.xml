@@ -39,6 +39,28 @@
     <string name="list_dialog_cancel">Cancelar transação</string>
     <string name="list_dialog_print">Imprimir transação</string>
 
+    <!-- Main Activity Options-->
+    <string-array name="main_options_generic">
+        <item>Listar Transações</item>
+        <item>Cancelar Transações com Erro</item>
+        <item>Gerenciar Stone Codes</item>
+        <item>Desativar</item>
+    </string-array>
+
+    <string-array name="main_options_pinpad">
+        <item>Dispositivos Pareados</item>
+        <item>Fazer uma Transação</item>
+        <item>Mostrar Mensagem no Display</item>
+        <item>Desconectar dispositivo</item>
+    </string-array>
+
+    <string-array name="main_options_pos">
+        <item>Fazer uma Transação</item>
+        <item>Validar pelo cartão</item>
+        <item>Provider de Impressão</item>
+        <item>Provider de Mifare</item>
+    </string-array>
+
     <!-- Transaction Activity strings -->
     <string-array name="installments_array">
         <item>À Vista</item>

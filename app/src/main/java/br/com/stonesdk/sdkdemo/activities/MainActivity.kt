@@ -7,12 +7,16 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.MaterialTheme
 import br.com.stone.posandroid.providers.PosPrintProvider
 import br.com.stone.posandroid.providers.PosValidateTransactionByCardProvider
+import br.com.stonesdk.sdkdemo.FeatureFlag
 import br.com.stonesdk.sdkdemo.R
 import br.com.stonesdk.sdkdemo.activities.devices.DevicesActivity
+import br.com.stonesdk.sdkdemo.activities.main.MainScreen
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeActivity
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationActivity
 import br.com.stonesdk.sdkdemo.databinding.ActivityMainBinding
@@ -31,6 +35,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (FeatureFlag.composeRefactorEnabled) {
+            onCreateCompose()
+        } else {
+            onCreateVintage()
+        }
+    }
+
+
+    private fun onCreateCompose(){
+        setContent {
+            MaterialTheme {
+                MainScreen()
+            }
+        }
+    }
+
+    private fun onCreateVintage(){
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

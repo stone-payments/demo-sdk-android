@@ -1,5 +1,6 @@
 package br.com.stonesdk.sdkdemo.activities.main
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -17,20 +19,41 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun MainContent(
-    generalItems: List<String>,
-    pinpadItems: List<String>,
-    posItems: List<String>,
-    onItemSelected: () -> Unit
+    generalItems: List<MainNavigationOption>,
+    pinpadItems: List<MainNavigationOption>,
+    posItems: List<MainNavigationOption>,
+    onItemSelected: (MainNavigationOption) -> Unit
 ) {
+
+    val ctx = LocalContext.current
+
     LazyColumn {
-        renderSectionIfNotEmpty("Geral", generalItems, onItemSelected)
-        renderSectionIfNotEmpty("Pinpad", pinpadItems, onItemSelected)
-        renderSectionIfNotEmpty("POS", posItems, onItemSelected)
+        renderSectionIfNotEmpty(
+            title = "Geral",
+            elements = generalItems,
+            onItemSelected = onItemSelected,
+            context = ctx
+        )
+        renderSectionIfNotEmpty(
+            title = "Pinpad",
+            elements = pinpadItems,
+            onItemSelected = onItemSelected,
+            context = ctx
+        )
+        renderSectionIfNotEmpty(
+            title = "POS",
+            elements = posItems,
+            onItemSelected = onItemSelected,
+            context = ctx
+        )
     }
 }
 
 fun LazyListScope.renderSectionIfNotEmpty(
-    title: String, elements: List<String>, onItemSelected: () -> Unit
+    title: String,
+    elements: List<MainNavigationOption>,
+    onItemSelected: (MainNavigationOption) -> Unit,
+    context: Context
 ) {
 
     if (elements.isEmpty()) return
@@ -40,7 +63,9 @@ fun LazyListScope.renderSectionIfNotEmpty(
     }
 
     items(elements) {
-        SelectableItem(text = it, onItemSelected = onItemSelected)
+        SelectableItem(
+            text = context.getString(it.nameResource),
+            onItemSelected = { onItemSelected(it) })
     }
 
 }
@@ -48,9 +73,11 @@ fun LazyListScope.renderSectionIfNotEmpty(
 @Composable
 fun StickHeader(header: String) {
     Text(
-        text = header, style = TextStyle(
+        text = header,
+        style = TextStyle(
             fontWeight = FontWeight.Bold, fontSize = 18.sp
-        ), modifier = Modifier.padding(bottom = 4.dp)
+        ),
+        modifier = Modifier.padding(8.dp),
     )
 }
 

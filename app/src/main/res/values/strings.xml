@@ -40,26 +40,20 @@
     <string name="list_dialog_print">Imprimir transação</string>
 
     <!-- Main Activity Options-->
-    <string-array name="main_options_generic">
-        <item>Listar Transações</item>
-        <item>Cancelar Transações com Erro</item>
-        <item>Gerenciar Stone Codes</item>
-        <item>Desativar</item>
-    </string-array>
+    <string name="main_options_generic_list_transactions">Listar Transações</string>
+    <string name="main_options_generic_cancel_transactions_with_error">Cancelar Transações com Erro</string>
+    <string name="main_options_generic_manage_stone_codes">Gerenciar Stone Codes</string>
+    <string name="main_options_generic_deactivate">Desativar</string>
 
-    <string-array name="main_options_pinpad">
-        <item>Dispositivos Pareados</item>
-        <item>Fazer uma Transação</item>
-        <item>Mostrar Mensagem no Display</item>
-        <item>Desconectar dispositivo</item>
-    </string-array>
+    <string name="main_options_pinpad_paired_devices">Dispositivos Pareados</string>
+    <string name="main_options_pinpad_make_transaction">Fazer uma Transação</string>
+    <string name="main_options_pinpad_show_display_message">Mostrar Mensagem no Display</string>
+    <string name="main_options_pinpad_disconnect_device">Desconectar dispositivo</string>
 
-    <string-array name="main_options_pos">
-        <item>Fazer uma Transação</item>
-        <item>Validar pelo cartão</item>
-        <item>Provider de Impressão</item>
-        <item>Provider de Mifare</item>
-    </string-array>
+    <string name="main_options_pos_make_transaction">Fazer uma Transação</string>
+    <string name="main_options_pos_card_validation">Validar pelo cartão</string>
+    <string name="main_options_pos_printer_provider">Provider de Impressão</string>
+    <string name="main_options_pos_mifare_provider">Provider de Mifare</string>
 
     <!-- Transaction Activity strings -->
     <string-array name="installments_array">

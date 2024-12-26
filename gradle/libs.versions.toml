@@ -1,10 +1,26 @@
 [versions]
+composeBomVersion = "2024.12.01"
+gradlePluginVersion = "8.2.2"
 kotlin = "2.0.0"
-gradlePluginVersion = "8.2.1"
+lifecycleVersion = "2.8.7"
+sdkVersion = "4.9.4"
+sdkDebugVersion = "4.0.3"
 
 [libraries]
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBomVersion" }
 gradlePlugin = {group = "com.android.tools.build", name = "gradle", version.ref = "gradlePluginVersion" }
 kotlinGradlePlugin = {group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+lifecycle-runtime = {group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleVersion" }
+lifecycle-runtime-compose = {group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleVersion" }
+
+pos-android-sdk = {group = "br.com.stone", name = "stone-sdk", version.ref = "sdkVersion" }
+pos-android-sdk-debugmode = {group = "br.com.stone.sdk.android", name = "debugmode", version.ref = "sdkDebugVersion" }
+pos-android-sdk-posandroid = {group = "br.com.stone", name = "stone-sdk-posandroid", version.ref = "sdkVersion" }
+pos-android-sdk-posandroid-ingenico = {group = "br.com.stone", name = "stone-sdk-posandroid-ingenico", version.ref = "sdkVersion" }
+pos-android-sdk-posandroid-positivo = {group = "br.com.stone", name = "stone-sdk-posandroid-positivo", version.ref = "sdkVersion" }
+pos-android-sdk-posandroid-gertec = {group = "br.com.stone", name = "stone-sdk-posandroid-gertec", version.ref = "sdkVersion" }
+pos-android-sdk-posandroid-sunmi = {group = "br.com.stone", name = "stone-sdk-posandroid-sunmi", version.ref = "sdkVersion" }
+
 [plugins]
-org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

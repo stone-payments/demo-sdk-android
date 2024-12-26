@@ -1,6 +1,7 @@
 package br.com.stonesdk.sdkdemo
 
 import android.bluetooth.BluetoothAdapter
+import br.com.stone.posandroid.hal.api.settings.DeviceInfo
 import br.com.stonesdk.sdkdemo.activities.devices.BluetoothProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.devices.DevicesViewModel
 import br.com.stonesdk.sdkdemo.activities.main.MainViewModel
@@ -12,6 +13,7 @@ import br.com.stonesdk.sdkdemo.activities.transaction.TransactionViewModel
 import br.com.stonesdk.sdkdemo.activities.validation.AppInitializer
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.factory
 import org.koin.dsl.module
 import stone.application.SessionApplication
 import stone.database.transaction.TransactionObject
@@ -33,30 +35,34 @@ val demoApplicationModule = module {
     factory<BluetoothProviderWrapper> {
         BluetoothProviderWrapper(get(), get())
     }
-    factory <BluetoothAdapter>{
+    factory<BluetoothAdapter> {
         Stone.bluetoothAdapter
     }
-    factory <TransactionProviderWrapper>{
+    factory<TransactionProviderWrapper> {
         TransactionProviderWrapper(get())
     }
-    factory <InstallmentProvider>{
+    factory<InstallmentProvider> {
         InstallmentProvider()
     }
-    factory <TransactionObject>{
+    factory<TransactionObject> {
         TransactionObject()
     }
 
     viewModel {
-        ManageStoneCodeViewModel(get(), get())
+        ManageStoneCodeViewModel(sessionApplication = get(), providerWrapper = get())
     }
     viewModel {
-        ValidationViewModel(get(), get())
+        ValidationViewModel(providerWrapper = get(), appInitializer = get())
     }
     viewModel {
-        DevicesViewModel(get())
+        DevicesViewModel(providerWrapper = get())
     }
     viewModel {
-        TransactionViewModel(get(),get(), get())
+        TransactionViewModel(
+            installmentProvider = get(),
+            transactionObject = get(),
+            sessionApplication = get()
+        )
     }
     viewModel {
         MainViewModel()

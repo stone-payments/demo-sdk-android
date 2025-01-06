@@ -5,8 +5,7 @@ import br.com.stonesdk.sdkdemo.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class MainViewModel(
-) : ViewModel() {
+class MainViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(
         MainUiState(

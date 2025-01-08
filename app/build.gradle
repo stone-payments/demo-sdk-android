@@ -68,7 +68,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation platform(libs.compose.bom)
 
     implementation(libs.lifecycle.runtime)
@@ -93,19 +92,21 @@ dependencies {
     implementation(libs.koinCompose)
 
     debugImplementation(libs.compose.ui.tooling)
-    debugImplementation(libs.pos.android.sdk.debugmode)
+//    debugImplementation(libs.pos.android.sdk.debugmode)
     androidTestImplementation platform(libs.compose.bom)
 
     implementation (libs.permissiondispatcher)
     annotationProcessor (libs.permissiondispatcher.processor)
     implementation (libs.accompanist.permissions)
 
-    implementation libs.pos.android.sdk
-    implementation libs.pos.android.sdk.posandroid
-    implementation libs.pos.android.sdk.posandroid.ingenico
-    implementation libs.pos.android.sdk.posandroid.positivo
-    implementation libs.pos.android.sdk.posandroid.gertec
-    implementation libs.pos.android.sdk.posandroid.sunmi
+    implementation libs.pos.mobile.sdk.core.android
+
+//    implementation libs.pos.android.sdk
+//    implementation libs.pos.android.sdk.posandroid
+//    implementation libs.pos.android.sdk.posandroid.ingenico
+//    implementation libs.pos.android.sdk.posandroid.positivo
+//    implementation libs.pos.android.sdk.posandroid.gertec
+//    implementation libs.pos.android.sdk.posandroid.sunmi
 
     testImplementation "io.mockk:mockk:1.13.12"
     testImplementation "org.junit.platform:junit-platform-launcher:1.10.0"

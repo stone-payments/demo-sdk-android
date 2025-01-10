@@ -4,6 +4,7 @@ buildscript {
     repositories {
         gradlePluginPortal()
         google()
+        mavenLocal()
         mavenCentral()
     }
     dependencies {
@@ -34,6 +35,7 @@ ext {
 
 allprojects {
     repositories {
+        mavenLocal()
         mavenCentral()
         maven { url "https://packagecloud.io/priv/${packageCloudReadToken}/stone/pos-android/maven2" }
         maven { url "https://packagecloud.io/priv/${packageCloudReadTokenInternal}/stone/pos-android-internal/maven2" }

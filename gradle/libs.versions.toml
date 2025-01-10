@@ -11,7 +11,7 @@ kotlinVersion = "2.0.0"
 lifecycleVersion = "2.8.7"
 materialVersion = "1.12.0"
 permissionDispatcherVersion = "4.8.0"
-sdkVersion = "6.0.0-alpha06"
+sdkVersion = "go-speed-go-2"
 koinVersion = "3.1.6"
 
 [libraries]
@@ -39,8 +39,8 @@ permissiondispatcher = { group = "com.github.permissions-dispatcher", name = "pe
 permissiondispatcher-processor = { group = "com.github.permissions-dispatcher", name = "permissionsdispatcher-processor", version.ref = "permissionDispatcherVersion" }
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompaninsVersion" }
 
-#pos-mobile-sdk-core = { group = "co.stone.posmobile.sdk", name = "sdk-core", version.ref = "sdkVersion" }
-pos-mobile-sdk-core-android = { group = "co.stone.posmobile.sdk", name = "sdk-core-android", version.ref = "sdkVersion" }
+pos-mobile-sdk-core = { group = "co.stone.posmobile.sdk", name = "sdk-core-android", version.ref = "sdkVersion" }
+#pos-mobile-sdk-core-android = { group = "co.stone.posmobile.sdk", name = "sdk-core-android", version.ref = "sdkVersion" }
 
 #pos-android-sdk = { group = "br.com.stone", name = "stone-sdk", version.ref = "sdkVersion" }
 #pos-android-sdk-debugmode = { group = "br.com.stone.sdk.android", name = "debugmode", version.ref = "sdkVersion" }

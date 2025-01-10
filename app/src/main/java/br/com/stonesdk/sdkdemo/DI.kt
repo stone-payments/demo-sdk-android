@@ -12,6 +12,9 @@ import br.com.stonesdk.sdkdemo.activities.transaction.TransactionProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionViewModel
 import br.com.stonesdk.sdkdemo.activities.validation.AppInitializer
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationViewModel
+import co.stone.posmobile.sdk.StoneStart
+import co.stone.posmobile.sdk.domain.model.organization.Organization
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.factory
 import org.koin.dsl.module
@@ -22,7 +25,7 @@ import stone.utils.Stone
 val demoApplicationModule = module {
 
     factory<SessionApplication> {
-        Stone.sessionApplication
+        StoneStart.init(androidContext(), organization = Organization.Stone)
     }
 
     factory<ActivationProviderWrapper> {

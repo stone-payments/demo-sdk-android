@@ -6,13 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.stonesdk.sdkdemo.activities.devices.BluetoothInfo.Companion.toDeviceInfo
 import br.com.stonesdk.sdkdemo.activities.devices.DeviceEffects.CloseScreen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class DevicesViewModel(
-    private val providerWrapper: BluetoothProviderWrapper,
+    private val bluetoothProviderWrapper: BluetoothProviderWrapper,
 ) : ViewModel() {
 
     var viewState by mutableStateOf(DevicePinpadUiModel())
@@ -25,13 +26,38 @@ class DevicesViewModel(
     fun onEvent(event: DevicesEvent) {
         when (event) {
             is DevicesEvent.DeviceItemClick -> connectToPinpad(event.position)
-            DevicesEvent.EnableBluetooth -> providerWrapper.turnBluetoothOn()
+            DevicesEvent.StartDeviceScan -> startDeviceScan()
+            DevicesEvent.StopDeviceScan -> stopDeviceScan()
             DevicesEvent.Permission -> listBluetoothDevices()
         }
     }
 
+    private fun startDeviceScan() {
+        viewModelScope.launch {
+            bluetoothProviderWrapper.startDeviceScan(
+                onDiscover = { device ->
+                    val deviceInfo = device.toDeviceInfo()
+                    val availableDevices = viewState.bluetoothDevices
+                    if (availableDevices.contains(deviceInfo).not()) {
+
+                        availableDevices.toMutableList().add(deviceInfo)
+                        viewState = viewState.copy(bluetoothDevices = availableDevices)
+                    }
+                },
+                onBound = { device ->
+                    val deviceInfo = device.toDeviceInfo()
+                    viewState = viewState.copy(selectedDevice = deviceInfo)
+                }
+            )
+        }
+    }
+
+    private fun stopDeviceScan() {
+        bluetoothProviderWrapper.stopDeviceScan()
+    }
+
     private fun listBluetoothDevices() {
-        val devices = providerWrapper.listBluetoothDevices()
+        val devices = bluetoothProviderWrapper.listBluetoothDevices()
         viewState = viewState.copy(bluetoothDevices = devices)
         if (devices.isEmpty()) {
             viewState = viewState.copy(errorMessage = "Nenhum dispositivo pareado encontrado")
@@ -42,7 +68,7 @@ class DevicesViewModel(
         viewModelScope.launch {
             viewState = viewState.copy(loading = true)
             val pinpad = viewState.bluetoothDevices[position]
-            val isSuccess = providerWrapper.connectPinpad(pinpad)
+            val isSuccess = bluetoothProviderWrapper.connectPinpad(pinpad)
             if (isSuccess) {
                 _sideEffects.emit(CloseScreen)
             } else {
@@ -56,19 +82,21 @@ class DevicesViewModel(
         }
     }
 
-    data class DevicePinpadUiModel(
-        val loading: Boolean = false,
-        val pinpadConnected: Boolean = false,
-        val bluetoothDevices: List<BluetoothInfo> = emptyList(),
-        //val selectedPinpad: PinpadObject? = null,
-        val errorMessage: String? = null
-    )
 
 }
 
+data class DevicePinpadUiModel(
+    val loading: Boolean = false,
+    val pinpadConnected: Boolean = false,
+    val bluetoothDevices: List<BluetoothInfo> = emptyList(),
+    val selectedDevice: BluetoothInfo? = null,
+    val errorMessage: String? = null
+)
+
 sealed interface DevicesEvent {
     data class DeviceItemClick(val position: Int) : DevicesEvent
-    data object EnableBluetooth : DevicesEvent
+    data object StartDeviceScan : DevicesEvent
+    data object StopDeviceScan : DevicesEvent
     data object Permission : DevicesEvent
 
 }

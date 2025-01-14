@@ -7,11 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeEvent.*
 import kotlinx.coroutines.launch
-import stone.application.SessionApplication
 
 class ManageStoneCodeViewModel(
-    private val sessionApplication: SessionApplication,
-    private val providerWrapper: ActivationProviderWrapper,
+    private val activationProviderWrapper: ActivationProviderWrapper,
 ) : ViewModel() {
 
     var viewState by mutableStateOf(ManageStoneCodeUiModel())
@@ -34,7 +32,7 @@ class ManageStoneCodeViewModel(
     private fun activateStoneCode() {
         viewModelScope.launch {
             viewState = viewState.copy(activationInProgress = true)
-            val isSuccess = providerWrapper.activate(viewState.stoneCodeToBeActivated)
+            val isSuccess = activationProviderWrapper.activate(viewState.stoneCodeToBeActivated)
 
             if (isSuccess) {
                 listStoneCodesActivated()
@@ -51,7 +49,7 @@ class ManageStoneCodeViewModel(
 
     private fun deactivateStoneCode(position: Int) {
         viewModelScope.launch {
-            val isSuccess = providerWrapper.deactivate(viewState.stoneCodesActivated[position])
+            val isSuccess = activationProviderWrapper.deactivate(viewState.stoneCodesActivated[position])
 
             if (isSuccess) {
                 listStoneCodesActivated()
@@ -60,11 +58,10 @@ class ManageStoneCodeViewModel(
     }
 
     private fun listStoneCodesActivated() {
-        val stoneCodes = sessionApplication.userModelList
-            .map { userModel -> userModel.stoneCode }
-            .toList()
-
-        viewState = viewState.copy(stoneCodesActivated = stoneCodes)
+        viewModelScope.launch {
+            val activatedStoneCodes = activationProviderWrapper.getActivatedStoneCodes()
+            viewState = viewState.copy(stoneCodesActivated = activatedStoneCodes)
+        }
     }
 }
 

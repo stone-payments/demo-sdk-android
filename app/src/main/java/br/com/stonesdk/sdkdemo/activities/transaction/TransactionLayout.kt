@@ -42,7 +42,6 @@ import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.SendTrans
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.TypeOfTransaction
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.UserInput
 import org.koin.androidx.compose.getViewModel
-import stone.application.enums.TypeOfTransactionEnum
 
 @Composable
 internal fun TransactionScreen(
@@ -151,9 +150,8 @@ fun TransactionContent(
 @Composable
 fun RadioButtonGroup(
     onEvent: (TransactionEvent) -> Unit,
-    typeSelected: TypeOfTransactionEnum,
-
-    ) {
+    typeSelected: TypeOfTransactionEnum
+) {
     val transactionTypes = listOf(
         TypeOfTransactionEnum.DEBIT to "Débito",
         TypeOfTransactionEnum.CREDIT to "Crédito",

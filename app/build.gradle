@@ -92,27 +92,23 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.fragment)
 
+    implementation (libs.permissiondispatcher)
+    annotationProcessor (libs.permissiondispatcher.processor)
+    implementation (libs.accompanist.permissions)
+
     implementation(libs.koinCore)
     implementation(libs.koinAndroid)
     implementation(libs.koinCompose)
-    implementation "co.stone.posmobile.sdk:sdk-core-android:6.0.0-alpha08"
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.3")
+
+    coreLibraryDesugaring(libs.tools.desugar)
+
+    implementation(libs.posmobile.sdk.core.android)
+    implementation(libs.posmobile.sdk.debugmode)
 
     debugImplementation(libs.compose.ui.tooling)
-//    debugImplementation(libs.pos.android.sdk.debugmode)
+
     androidTestImplementation platform(libs.compose.bom)
 
-//    implementation (libs.permissiondispatcher)
-//    annotationProcessor (libs.permissiondispatcher.processor)
-//    implementation (libs.accompanist.permissions)
-
-//    implementation libs.pos.mobile.sdk.core.android
-//    implementation "co.stone.posmobile.sdk:sdk-core-android:go-speed-go"
-
-//    implementation fileTree(dir: 'libs', include: ['*.aar'])
-
-//    implementation libs.pos.android.sdk
-//    implementation libs.pos.android.sdk.posandroid
 //    implementation libs.pos.android.sdk.posandroid.ingenico
 //    implementation libs.pos.android.sdk.posandroid.positivo
 //    implementation libs.pos.android.sdk.posandroid.gertec

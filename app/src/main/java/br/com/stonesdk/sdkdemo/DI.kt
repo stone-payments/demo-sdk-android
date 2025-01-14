@@ -1,64 +1,49 @@
 package br.com.stonesdk.sdkdemo
 
 import android.bluetooth.BluetoothAdapter
-import br.com.stone.posandroid.hal.api.settings.DeviceInfo
 import br.com.stonesdk.sdkdemo.activities.devices.BluetoothProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.devices.DevicesViewModel
 import br.com.stonesdk.sdkdemo.activities.main.MainViewModel
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeViewModel
-import br.com.stonesdk.sdkdemo.activities.transaction.InstallmentProvider
-import br.com.stonesdk.sdkdemo.activities.transaction.TransactionProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionViewModel
-import br.com.stonesdk.sdkdemo.activities.validation.AppInitializer
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationViewModel
-import co.stone.posmobile.sdk.StoneStart
-import co.stone.posmobile.sdk.domain.model.organization.Organization
-import org.koin.android.ext.koin.androidContext
+import co.stone.posmobile.sdk.hardware.provider.bluetooth.BluetoothProvider
+import co.stone.posmobile.sdk.payment.provider.PaymentProvider
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.dsl.factory
 import org.koin.dsl.module
-import stone.application.SessionApplication
-import stone.database.transaction.TransactionObject
-import stone.utils.Stone
+
 
 val demoApplicationModule = module {
 
-    factory<SessionApplication> {
-        StoneStart.init(androidContext(), organization = Organization.Stone)
-    }
-
     factory<ActivationProviderWrapper> {
-        ActivationProviderWrapper(get())
-    }
-    factory<AppInitializer> {
-        AppInitializer(get())
+        ActivationProviderWrapper()
     }
 
-    factory<BluetoothProviderWrapper> {
-        BluetoothProviderWrapper(get(), get())
-    }
     factory<BluetoothAdapter> {
-        Stone.bluetoothAdapter
+        BluetoothAdapter.getDefaultAdapter()
     }
-    factory<TransactionProviderWrapper> {
-        TransactionProviderWrapper(get())
+
+    factory {
+        BluetoothProviderWrapper()
     }
-    factory<InstallmentProvider> {
-        InstallmentProvider()
+
+    single<BluetoothProvider> {
+        BluetoothProvider.create()
     }
-    factory<TransactionObject> {
-        TransactionObject()
+
+    factory<PaymentProvider> {
+        PaymentProvider.create()
     }
 
     viewModel {
-        ManageStoneCodeViewModel(sessionApplication = get(), providerWrapper = get())
+        ManageStoneCodeViewModel(activationProviderWrapper = get())
     }
     viewModel {
-        ValidationViewModel(providerWrapper = get(), appInitializer = get())
+        ValidationViewModel(activationProviderWrapper = get())
     }
     viewModel {
-        DevicesViewModel(providerWrapper = get())
+        DevicesViewModel(bluetoothProviderWrapper = get())
     }
     viewModel {
         TransactionViewModel(
@@ -68,6 +53,9 @@ val demoApplicationModule = module {
         )
     }
     viewModel {
-        MainViewModel()
+        MainViewModel(
+            reversalProvider = get(),
+            activationProviderWrapper = get()
+        )
     }
 }

@@ -1,53 +1,46 @@
 package br.com.stonesdk.sdkdemo.activities.devices
 
-import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
-import android.content.Context
-import androidx.annotation.RequiresPermission
+import br.com.stone.sdk.android.error.StoneStatus
+import co.stone.posmobile.sdk.domain.model.bluetooth.BluetoothDevice
+import co.stone.posmobile.sdk.domain.model.response.StoneResultCallback
+import co.stone.posmobile.sdk.hardware.provider.bluetooth.BluetoothProvider
 import kotlinx.coroutines.suspendCancellableCoroutine
-import stone.application.interfaces.StoneCallbackInterface
-import stone.providers.BluetoothConnectionProvider
-import stone.utils.PinpadObject
 import kotlin.coroutines.resume
 
-class BluetoothProviderWrapper(
-    private val context: Context,
-    private val bluetoothAdapter: BluetoothAdapter
-) {
+class BluetoothProviderWrapper {
+
+    val provider: BluetoothProvider
+        get() = BluetoothProvider.create()
+
     suspend fun connectPinpad(
-        pinpad: BluetoothInfo,
-        provider: BluetoothConnectionProvider = bluetoothProvider(pinpad)
+        pinpad: BluetoothInfo
     ): Boolean {
-        return bluetoothConnection(provider)
+        return bluetoothConnection(pinpad)
     }
 
-    private suspend fun bluetoothConnection(provider: BluetoothConnectionProvider): Boolean =
+    private suspend fun bluetoothConnection(pinpad: BluetoothInfo): Boolean =
         suspendCancellableCoroutine { continuation ->
 
-            provider.connectionCallback = object : StoneCallbackInterface {
-                override fun onSuccess() {
-                    continuation.resume(true)
-                }
+            provider.connect(
+                pinpad.address,
+                pinpad.name,
+                stoneResultCallback = object : StoneResultCallback<Boolean> {
+                    override fun onSuccess(result: Boolean) {
+                        continuation.resume(true)
+                    }
 
-                override fun onError() {
-                    continuation.resume(false)
-                }
-            }
-            provider.execute()
+                    override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                        continuation.resume(false)
+                    }
+                })
+
             continuation.invokeOnCancellation {}
         }
 
-    private fun bluetoothProvider(pinpad: BluetoothInfo) =
-        BluetoothConnectionProvider(context, getPinpadObject(pinpad))
-
-    private fun getPinpadObject(pinpad: BluetoothInfo): PinpadObject {
-        return PinpadObject(pinpad.name, pinpad.address, false)
-    }
-
     @SuppressLint("MissingPermission")
     fun listBluetoothDevices(): List<BluetoothInfo> {
-
         val adapter = BluetoothAdapter.getDefaultAdapter()
         val bluetoothAdapter = adapter.bondedDevices
 
@@ -59,13 +52,12 @@ class BluetoothProviderWrapper(
         }
     }
 
-    @RequiresPermission(BLUETOOTH_CONNECT)
-    fun turnBluetoothOn() {
-        try {
-            bluetoothAdapter.enable()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+    fun startDeviceScan(onDiscover: (BluetoothDevice) -> Unit, onBound: (BluetoothDevice) -> Unit) {
+        provider.discoverPinpad(onDiscover, onBound)
+    }
+
+    fun stopDeviceScan(){
+        provider.stopDiscover()
     }
 
 }
@@ -73,4 +65,13 @@ class BluetoothProviderWrapper(
 data class BluetoothInfo(
     val name: String,
     val address: String,
-)
+){
+    companion object {
+        fun BluetoothDevice.toDeviceInfo(): BluetoothInfo {
+            return BluetoothInfo(
+                name = this.deviceName,
+                address = this.hardwareAddress
+            )
+        }
+    }
+}

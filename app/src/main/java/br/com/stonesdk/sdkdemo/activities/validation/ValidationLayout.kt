@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -92,28 +90,6 @@ internal fun ValidationContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "Ambiente",
-            style = MaterialTheme.typography.titleMedium,
-            fontSize = 18.sp,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp)
-
-        ) {
-            Text(
-                text = "${model.getEnvironment}",
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.CenterHorizontally),
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
 
         Text(
             text = "Digite o Stone Code",

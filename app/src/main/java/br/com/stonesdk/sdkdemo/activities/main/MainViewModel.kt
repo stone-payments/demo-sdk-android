@@ -1,11 +1,20 @@
 package br.com.stonesdk.sdkdemo.activities.main
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import br.com.stone.sdk.android.error.StoneStatus
 import br.com.stonesdk.sdkdemo.R
+import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
+import co.stone.posmobile.sdk.domain.model.response.StoneResultCallback
+import co.stone.posmobile.sdk.reversal.provider.ReversalProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+    private val reversalProvider : ReversalProvider,
+    private val activationProviderWrapper : ActivationProviderWrapper
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
         MainUiState(
@@ -52,6 +61,20 @@ class MainViewModel : ViewModel() {
             MainNavigationOption.PosPrinterProvider,
             MainNavigationOption.PosMifareProvider
         )
+    }
+
+    fun revertTransactionsWithErrors() {
+        viewModelScope.launch {
+            reversalProvider.reverseTransactions(callback = object : StoneResultCallback<Unit> {
+                override fun onSuccess(result: Unit) {
+
+                }
+
+                override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+
+                }
+            })
+        }
     }
 
 }

@@ -13,10 +13,7 @@ import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.StoneCode
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.TypeOfTransaction
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.UserInput
 import kotlinx.coroutines.launch
-import stone.application.SessionApplication
-import stone.application.enums.InstalmentTransactionEnum
-import stone.application.enums.TypeOfTransactionEnum
-import stone.database.transaction.TransactionObject
+
 
 class TransactionViewModel(
     private val installmentProvider: InstallmentProvider,

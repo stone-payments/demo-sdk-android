@@ -12,8 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.lifecycle.lifecycleScope
-import br.com.stone.posandroid.providers.PosPrintProvider
-import br.com.stone.posandroid.providers.PosValidateTransactionByCardProvider
+
 import br.com.stonesdk.sdkdemo.FeatureFlag
 import br.com.stonesdk.sdkdemo.R
 import br.com.stonesdk.sdkdemo.activities.devices.DevicesActivity
@@ -23,6 +22,7 @@ import br.com.stonesdk.sdkdemo.activities.main.MainViewModel
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeActivity
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationActivity
 import br.com.stonesdk.sdkdemo.databinding.ActivityMainBinding
+import co.stone.posmobile.sdk.reversal.provider.ReversalProvider
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -31,7 +31,6 @@ import stone.application.interfaces.StoneActionCallback
 import stone.application.interfaces.StoneCallbackInterface
 import stone.providers.ActiveApplicationProvider
 import stone.providers.DisplayMessageProvider
-import stone.providers.ReversalProvider
 import stone.utils.Stone
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -133,26 +132,27 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun startGenericCancelErrorTransaction() {
-        val reversalProvider = ReversalProvider(this)
-        reversalProvider.dialogMessage = "Cancelando transações com erro"
-        reversalProvider.connectionCallback = object : StoneCallbackInterface {
-            override fun onSuccess() {
-                Toast.makeText(
-                    this@MainActivity,
-                    "Transações canceladas com sucesso",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            override fun onError() {
-                Toast.makeText(
-                    this@MainActivity,
-                    "Ocorreu um erro durante o cancelamento das tabelas: " + reversalProvider.listOfErrors,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-        reversalProvider.execute()
+        mainViewModel.revertTransactionsWithErrors()
+//        val reversalProvider = ReversalProvider(this)
+//        reversalProvider.dialogMessage = "Cancelando transações com erro"
+//        reversalProvider.connectionCallback = object : StoneCallbackInterface {
+//            override fun onSuccess() {
+//                Toast.makeText(
+//                    this@MainActivity,
+//                    "Transações canceladas com sucesso",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//            }
+//
+//            override fun onError() {
+//                Toast.makeText(
+//                    this@MainActivity,
+//                    "Ocorreu um erro durante o cancelamento das tabelas: " + reversalProvider.listOfErrors,
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//            }
+//        }
+//        reversalProvider.execute()
     }
 
     private fun startGenericManageStoneCode() {
@@ -160,6 +160,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun startGenericDeactivate() {
+
         val provider = ActiveApplicationProvider(this@MainActivity)
         provider.dialogMessage = "Desativando o aplicativo..."
         provider.dialogTitle = "Aguarde"

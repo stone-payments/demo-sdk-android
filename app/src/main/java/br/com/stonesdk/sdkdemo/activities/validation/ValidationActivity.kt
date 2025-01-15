@@ -17,14 +17,21 @@ class ValidationActivity : AppCompatActivity() {
         setContent {
             MaterialTheme {
                 ValidationScreen(
-                    navigateToMain = ::continueApplication
+                    navigateToMain = ::navigateToMain,
+                    navigateToActivation = ::navigateToActivation
                 )
             }
         }
     }
 
 
-    private fun continueApplication() {
+    private fun navigateToMain() {
+        val mainIntent = Intent(this@ValidationActivity, MainActivity::class.java)
+        startActivity(mainIntent)
+        finish()
+    }
+
+    private fun navigateToActivation() {
         val mainIntent = Intent(this@ValidationActivity, MainActivity::class.java)
         startActivity(mainIntent)
         finish()

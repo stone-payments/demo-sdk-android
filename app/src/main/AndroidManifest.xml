@@ -18,25 +18,31 @@
         android:theme="@style/AppTheme"
         android:name=".activities.DemoApplication"
         tools:ignore="GoogleAppIndexingWarning">
+
         <activity
             android:name=".activities.MifareActivity"
             android:label="Mifare" />
+
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name" />
+
         <activity
             android:name=".activities.devices.DevicesActivity"
             android:label="@string/title_activity_devices" />
-        <activity
-            android:name=".activities.TransactionActivity"
-            android:label="@string/title_activity_transaction" />
+<!--        <activity-->
+<!--            android:name=".activities.TransactionActivity"-->
+<!--            android:label="@string/title_activity_transaction" />-->
+
         <activity
             android:name=".activities.TransactionListActivity"
             android:label="@string/title_activity_transaction_list" />
+
         <activity
             android:name=".activities.DisconnectPinpadActivity"
             android:label="@string/title_activity_disconnect_pinpad"
             android:theme="@style/AppThemeWithoutBar" />
+
         <activity
             android:name=".activities.validation.ValidationActivity"
             android:label="@string/title_activity_validation"
@@ -48,9 +54,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.PosTransactionActivity"
-            android:label="@string/title_activity_transaction" />
+
+<!--        <activity-->
+<!--            android:name=".activities.PosTransactionActivity"-->
+<!--            android:label="@string/title_activity_transaction" />-->
+
         <activity
             android:name=".activities.manageStoneCode.ManageStoneCodeActivity"
             android:label="@string/title_activity_manage_stone_codes" />

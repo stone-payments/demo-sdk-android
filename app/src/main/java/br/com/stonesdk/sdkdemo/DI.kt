@@ -4,28 +4,38 @@ import android.bluetooth.BluetoothAdapter
 import br.com.stonesdk.sdkdemo.activities.devices.BluetoothProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.devices.DevicesViewModel
 import br.com.stonesdk.sdkdemo.activities.main.MainViewModel
+import br.com.stonesdk.sdkdemo.activities.main.ReversalProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeViewModel
+import br.com.stonesdk.sdkdemo.activities.transaction.PaymentProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionViewModel
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationViewModel
 import co.stone.posmobile.sdk.hardware.provider.bluetooth.BluetoothProvider
 import co.stone.posmobile.sdk.payment.provider.PaymentProvider
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 
 val demoApplicationModule = module {
 
-    factory<ActivationProviderWrapper> {
+    factory {
         ActivationProviderWrapper()
     }
 
-    factory<BluetoothAdapter> {
-        BluetoothAdapter.getDefaultAdapter()
+    factory {
+        PaymentProviderWrapper()
     }
 
     factory {
         BluetoothProviderWrapper()
+    }
+
+    factory {
+        ReversalProviderWrapper()
+    }
+
+    factory<BluetoothAdapter> {
+        BluetoothAdapter.getDefaultAdapter()
     }
 
     single<BluetoothProvider> {
@@ -48,13 +58,12 @@ val demoApplicationModule = module {
     viewModel {
         TransactionViewModel(
             installmentProvider = get(),
-            transactionObject = get(),
-            sessionApplication = get()
+            paymentProviderWrapper = get(),
         )
     }
     viewModel {
         MainViewModel(
-            reversalProvider = get(),
+            reversalProviderWrapper = get(),
             activationProviderWrapper = get()
         )
     }

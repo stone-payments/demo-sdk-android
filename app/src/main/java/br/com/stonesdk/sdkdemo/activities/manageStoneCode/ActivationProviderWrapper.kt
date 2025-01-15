@@ -1,18 +1,23 @@
 package br.com.stonesdk.sdkdemo.activities.manageStoneCode
 
 import co.stone.posmobile.sdk.activation.provider.ActivationProvider
+import co.stone.posmobile.sdk.domain.model.merchant.Merchant
 import co.stone.posmobile.sdk.domain.model.response.StoneResultCallback
+import co.stone.posmobile.sdk.provider.merchant.MerchantProvider
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 class ActivationProviderWrapper {
 
-    val provider: ActivationProvider
+    private val activationProvider: ActivationProvider
         get() = ActivationProvider.create()
+
+    private val merchantProvider : MerchantProvider
+        get() = MerchantProvider.create()
 
     suspend fun activate(stoneCode: String): Boolean = suspendCancellableCoroutine { continuation ->
 
-        provider.activate(stoneCode, object : StoneResultCallback<Unit> {
+        activationProvider.activate(stoneCode, object : StoneResultCallback<Unit> {
             override fun onSuccess(result: Unit) {
                 continuation.resume(true)
             }
@@ -30,7 +35,7 @@ class ActivationProviderWrapper {
 
     suspend fun deactivate(stoneCode: String): Boolean =
         suspendCancellableCoroutine { continuation ->
-            provider.deactivate(stoneCode, object : StoneResultCallback<Boolean> {
+            activationProvider.deactivate(stoneCode, object : StoneResultCallback<Boolean> {
                 override fun onSuccess(result: Boolean) {
                     continuation.resume(true)
                 }
@@ -47,7 +52,18 @@ class ActivationProviderWrapper {
 
     suspend fun getActivatedStoneCodes(): List<String> =
         suspendCancellableCoroutine { continuation ->
-            //
+            merchantProvider.getAllMerchants(object : StoneResultCallback<List<Merchant>> {
+                override fun onSuccess(result: List<Merchant>) {
+                    continuation.resume(result.map { it.affiliationCode })
+                }
+
+                override fun onError(
+                    stoneStatus: br.com.stone.sdk.android.error.StoneStatus?,
+                    throwable: Throwable
+                ) {
+                    continuation.resume(emptyList())
+                }
+            })
             continuation.invokeOnCancellation {}
         }
 }

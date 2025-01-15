@@ -39,12 +39,12 @@ import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeEvent.A
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeEvent.OnDismiss
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeEvent.StoneCodeItemClick
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeEvent.UserInput
-import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ManageStoneCodeScreen(
-    viewModel: ManageStoneCodeViewModel = getViewModel()
+    viewModel: ManageStoneCodeViewModel = koinViewModel()
 ) {
 
     if (viewModel.viewState.showBottomSheet) {

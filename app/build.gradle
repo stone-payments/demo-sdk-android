@@ -38,7 +38,7 @@ android {
 
         //Necessary for the functioning of Positivo's signature in debug mode.
         debug {
-            signingConfig null
+            signingConfig signingConfigs.debug
             matchingFallbacks = ['debug']
         }
         release {

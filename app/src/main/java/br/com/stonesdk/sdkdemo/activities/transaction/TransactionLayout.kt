@@ -41,11 +41,12 @@ import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.Installme
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.SendTransaction
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.TypeOfTransaction
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.UserInput
-import org.koin.androidx.compose.getViewModel
+import co.stone.posmobile.sdk.payment.domain.model.InstallmentTransaction
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun TransactionScreen(
-    viewModel: TransactionViewModel = getViewModel()
+    viewModel: TransactionViewModel = koinViewModel()
 ) {
     TransactionContent(
         model = viewModel.viewState,
@@ -98,7 +99,7 @@ fun TransactionContent(
             Spinner(
                 title = "Nº de parcelas",
                 modifier = Modifier.weight(1f),
-                installmentList = model.installmentList,
+                installments = model.installments,
                 onEvent = onEvent,
                 stoneCodeList = emptyList(),
                 isStoneCode = false
@@ -108,7 +109,7 @@ fun TransactionContent(
                 title = "Stone Code",
                 modifier = Modifier.weight(1f),
                 stoneCodeList = model.selectedStoneCode,
-                installmentList = emptyList(),
+                installments = emptyList(),
                 onEvent = onEvent,
                 isStoneCode = true
             )
@@ -183,14 +184,15 @@ fun Spinner(
     title: String,
     onEvent: (TransactionEvent) -> Unit,
     modifier: Modifier = Modifier,
-    installmentList: List<String>,
+    installments: List<InstallmentTransaction>,
     stoneCodeList: List<String>,
     isStoneCode: Boolean
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember {
+    var selectedItem : String by remember {
         mutableStateOf(
-            if (isStoneCode) stoneCodeList.firstOrNull() ?: "" else installmentList.firstOrNull()
+            if (isStoneCode) stoneCodeList.firstOrNull() ?: "" else installments.firstOrNull()
+                ?.mapInstallmentToPresentation()
                 ?: ""
         )
     }
@@ -217,12 +219,13 @@ fun Spinner(
             onDismissRequest = { expanded = false }
         ) {
             if (!isStoneCode) {
-                installmentList.forEachIndexed { index, installment ->
+                installments.forEach { installment ->
+                    installment.mapInstallmentToPresentation()
                     DropdownMenuItem(
-                        text = { Text(text = installment) },
+                        text = { Text(text = installment.mapInstallmentToPresentation()) },
                         onClick = {
-                            selectedItem = installment
-                            onEvent(InstallmentSelected(index))
+                            selectedItem = installment.mapInstallmentToPresentation()
+                            onEvent(InstallmentSelected(installment))
                             expanded = false
                         }
                     )

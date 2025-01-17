@@ -6,6 +6,8 @@ appcompatVersion = "1.7.0"
 composeBomVersion = "2024.12.01"
 constraintLayoutVersion = "2.2.0"
 desugarVersion = "2.1.3"
+dataContainerDataVersion = "5.0.0-RC18"
+dataContainerContractVersion = "5.0.0-RC18"
 fragmentVersion = "1.8.2"
 gradlePluginVersion = "8.2.2"
 kotlinVersion = "2.0.20"
@@ -41,6 +43,8 @@ permissiondispatcher = { group = "com.github.permissions-dispatcher", name = "pe
 permissiondispatcher-processor = { group = "com.github.permissions-dispatcher", name = "permissionsdispatcher-processor", version.ref = "permissionDispatcherVersion" }
 tools-desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarVersion" }
 
+posmobile-datacontainer-data = { group = "co.stone.posmobile", name = "data-container-data", version.ref = "dataContainerDataVersion" }
+posmobile-datacontainer-contract = { group = "co.stone.posmobile", name = "data-container-contract", version.ref = "dataContainerContractVersion" }
 posmobile-sdk-core = { group = "co.stone.posmobile.sdk", name = "sdk-core", version.ref = "sdkVersion" }
 posmobile-sdk-core-android = { group = "co.stone.posmobile.sdk", name = "sdk-core-android", version.ref = "sdkVersion" }
 posmobile-sdk-debugmode = { group = "br.com.stone", name = "debugmode", version.ref = "sdkVersion" }

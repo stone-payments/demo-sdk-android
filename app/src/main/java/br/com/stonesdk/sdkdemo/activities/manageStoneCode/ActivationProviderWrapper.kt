@@ -1,9 +1,9 @@
 package br.com.stonesdk.sdkdemo.activities.manageStoneCode
 
 import co.stone.posmobile.sdk.activation.provider.ActivationProvider
-import co.stone.posmobile.sdk.domain.model.merchant.Merchant
-import co.stone.posmobile.sdk.domain.model.response.StoneResultCallback
-import co.stone.posmobile.sdk.provider.merchant.MerchantProvider
+import co.stone.posmobile.sdk.callback.StoneResultCallback
+import co.stone.posmobile.sdk.merchant.domain.model.Merchant
+import co.stone.posmobile.sdk.merchant.provider.MerchantProvider
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 

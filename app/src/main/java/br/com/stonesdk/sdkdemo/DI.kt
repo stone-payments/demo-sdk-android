@@ -10,7 +10,7 @@ import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeViewMod
 import br.com.stonesdk.sdkdemo.activities.transaction.PaymentProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionViewModel
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationViewModel
-import co.stone.posmobile.sdk.hardware.provider.bluetooth.BluetoothProvider
+import co.stone.posmobile.sdk.bluetooth.provider.BluetoothProvider
 import co.stone.posmobile.sdk.payment.provider.PaymentProvider
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module

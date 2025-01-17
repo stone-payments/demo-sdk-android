@@ -1,7 +1,6 @@
 package br.com.stonesdk.sdkdemo.activities.validation
 
 import android.Manifest
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -43,8 +42,6 @@ internal fun ValidationScreen(
     navigateToMain: () -> Unit,
     navigateToActivation: () -> Unit
 ) {
-
-    Text("Validation Screen")
 
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 

@@ -3,9 +3,9 @@ package br.com.stonesdk.sdkdemo.activities.devices
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import br.com.stone.sdk.android.error.StoneStatus
-import co.stone.posmobile.sdk.domain.model.bluetooth.BluetoothDevice
-import co.stone.posmobile.sdk.domain.model.response.StoneResultCallback
-import co.stone.posmobile.sdk.hardware.provider.bluetooth.BluetoothProvider
+import co.stone.posmobile.sdk.bluetooth.domain.model.BluetoothDevice
+import co.stone.posmobile.sdk.bluetooth.provider.BluetoothProvider
+import co.stone.posmobile.sdk.callback.StoneResultCallback
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 

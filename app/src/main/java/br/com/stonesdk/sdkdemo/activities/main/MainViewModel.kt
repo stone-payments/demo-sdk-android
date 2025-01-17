@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import br.com.stone.sdk.android.error.StoneStatus
 import br.com.stonesdk.sdkdemo.R
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
-import co.stone.posmobile.sdk.domain.model.response.StoneResultCallback
+import co.stone.posmobile.sdk.callback.StoneResultCallback
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch

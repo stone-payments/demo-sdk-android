@@ -3,9 +3,9 @@ package br.com.stonesdk.sdkdemo.activities
 import android.app.Application
 import android.util.Log
 import br.com.stonesdk.sdkdemo.demoApplicationModule
-import co.stone.posmobile.sdk.StoneStart
-import co.stone.posmobile.sdk.domain.model.merchant.Merchant
-import co.stone.posmobile.sdk.domain.model.response.StoneResultCallback
+import co.stone.posmobile.sdk.callback.StoneResultCallback
+import co.stone.posmobile.sdk.merchant.domain.model.Merchant
+import co.stone.posmobile.sdk.stoneStart.provider.StoneStart
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 

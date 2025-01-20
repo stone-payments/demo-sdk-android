@@ -8,6 +8,7 @@ import br.com.stonesdk.sdkdemo.activities.main.MainViewModel
 import br.com.stonesdk.sdkdemo.activities.main.ReversalProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeViewModel
+import br.com.stonesdk.sdkdemo.activities.transaction.InstallmentProvider
 import br.com.stonesdk.sdkdemo.activities.transaction.PaymentProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionViewModel
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationViewModel
@@ -29,6 +30,10 @@ val demoApplicationModule = module {
 
     factory {
         DeviceInfoProviderWrapper()
+    }
+
+    factory {
+        InstallmentProvider()
     }
 
     factory {

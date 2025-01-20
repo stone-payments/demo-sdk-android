@@ -44,7 +44,6 @@ permissiondispatcher-processor = { group = "com.github.permissions-dispatcher", 
 tools-desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarVersion" }
 
 posmobile-datacontainer-data = { group = "co.stone.posmobile", name = "data-container-data", version.ref = "dataContainerDataVersion" }
-posmobile-datacontainer-contract = { group = "co.stone.posmobile", name = "data-container-contract", version.ref = "dataContainerContractVersion" }
 posmobile-sdk-core = { group = "co.stone.posmobile.sdk", name = "sdk-core", version.ref = "sdkVersion" }
 posmobile-sdk-core-android = { group = "co.stone.posmobile.sdk", name = "sdk-core-android", version.ref = "sdkVersion" }
 posmobile-sdk-debugmode = { group = "br.com.stone", name = "debugmode", version.ref = "sdkVersion" }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.stone.sdk.android.error.StoneStatus
 import br.com.stonesdk.sdkdemo.R
+import br.com.stonesdk.sdkdemo.activities.devices.DeviceInfoProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
 import co.stone.posmobile.sdk.callback.StoneResultCallback
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,8 +12,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val reversalProviderWrapper: ReversalProviderWrapper,
-    private val activationProviderWrapper: ActivationProviderWrapper
+    private val activationProviderWrapper: ActivationProviderWrapper,
+    private val deviceInfoProviderWrapper : DeviceInfoProviderWrapper,
+    private val reversalProviderWrapper: ReversalProviderWrapper
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -53,13 +55,16 @@ class MainViewModel(
     }
 
     private fun getPosOptions(): List<MainNavigationOption> {
-        // TODO,check if device is POS Android
-        return listOf(
-            MainNavigationOption.PosMakeTransaction,
-            MainNavigationOption.PosValidateByCard,
-            MainNavigationOption.PosPrinterProvider,
-            MainNavigationOption.PosMifareProvider
-        )
+        val isPosDevice = deviceInfoProviderWrapper.isPosDevice()
+        return if (isPosDevice) {
+            listOf(
+                MainNavigationOption.PosMakeTransaction,
+                MainNavigationOption.PosValidateByCard,
+                MainNavigationOption.PosPrinterProvider,
+                MainNavigationOption.PosMifareProvider
+            )
+        } else
+            emptyList()
     }
 
     fun revertTransactionsWithErrors() {

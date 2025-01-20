@@ -2,6 +2,7 @@ package br.com.stonesdk.sdkdemo
 
 import android.bluetooth.BluetoothAdapter
 import br.com.stonesdk.sdkdemo.activities.devices.BluetoothProviderWrapper
+import br.com.stonesdk.sdkdemo.activities.devices.DeviceInfoProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.devices.DevicesViewModel
 import br.com.stonesdk.sdkdemo.activities.main.MainViewModel
 import br.com.stonesdk.sdkdemo.activities.main.ReversalProviderWrapper
@@ -23,11 +24,15 @@ val demoApplicationModule = module {
     }
 
     factory {
-        PaymentProviderWrapper()
+        BluetoothProviderWrapper()
     }
 
     factory {
-        BluetoothProviderWrapper()
+        DeviceInfoProviderWrapper()
+    }
+
+    factory {
+        PaymentProviderWrapper()
     }
 
     factory {
@@ -63,8 +68,9 @@ val demoApplicationModule = module {
     }
     viewModel {
         MainViewModel(
-            reversalProviderWrapper = get(),
-            activationProviderWrapper = get()
+            activationProviderWrapper = get(),
+            deviceInfoProviderWrapper = get(),
+            reversalProviderWrapper = get()
         )
     }
 }

@@ -30,12 +30,13 @@
         <activity
             android:name=".activities.devices.DevicesActivity"
             android:label="@string/title_activity_devices" />
-<!--        <activity-->
-<!--            android:name=".activities.TransactionActivity"-->
-<!--            android:label="@string/title_activity_transaction" />-->
 
         <activity
-            android:name=".activities.TransactionListActivity"
+            android:name=".activities.transaction.TransactionActivity"
+            android:label="@string/title_activity_transaction" />
+
+        <activity
+            android:name=".activities.transaction.TransactionListActivity"
             android:label="@string/title_activity_transaction_list" />
 
         <activity

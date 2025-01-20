@@ -1,17 +1,17 @@
-package br.com.stonesdk.sdkdemo.activities
+package br.com.stonesdk.sdkdemo.activities.transaction
 
 
-//import android.app.AlertDialog
-//import android.widget.Toast
+import android.app.AlertDialog
+import android.widget.Toast
 //import br.com.stone.posandroid.providers.PosPrintReceiptProvider
 //import br.com.stone.posandroid.providers.PosTransactionProvider
-//import br.com.stonesdk.sdkdemo.R
-//import br.com.stonesdk.sdkdemo.controller.PrintController
+import br.com.stonesdk.sdkdemo.R
+import br.com.stonesdk.sdkdemo.controller.PrintController
 //import stone.application.enums.Action
 //import stone.application.enums.ErrorsEnum
 //import stone.application.enums.ReceiptType
 //import stone.application.enums.TransactionStatusEnum
-//
+
 //class PosTransactionActivity : BaseTransactionActivity<PosTransactionProvider?>() {
 //
 //    override fun buildTransactionProvider(): PosTransactionProvider {

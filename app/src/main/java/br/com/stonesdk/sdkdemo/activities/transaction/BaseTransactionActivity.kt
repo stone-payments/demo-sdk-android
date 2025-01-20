@@ -1,24 +1,5 @@
-package br.com.stonesdk.sdkdemo.activities
+package br.com.stonesdk.sdkdemo.activities.transaction
 
-import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.Toast
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material3.MaterialTheme
-import br.com.stonesdk.sdkdemo.FeatureFlag
-import br.com.stonesdk.sdkdemo.R
-import br.com.stonesdk.sdkdemo.activities.transaction.TransactionContent
-import br.com.stonesdk.sdkdemo.activities.transaction.TransactionScreen
-import br.com.stonesdk.sdkdemo.databinding.ActivityTransactionBinding
 //import stone.application.enums.Action
 //import stone.application.enums.ErrorsEnum
 //import stone.application.enums.InstalmentTransactionEnum

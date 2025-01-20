@@ -1,21 +1,13 @@
-package br.com.stonesdk.sdkdemo.activities
+package br.com.stonesdk.sdkdemo.activities.transaction
 
-import android.app.AlertDialog
-import android.content.DialogInterface
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 //import br.com.stone.posandroid.providers.PosPrintProvider
 //import br.com.stone.posandroid.providers.PosPrintReceiptProvider
-import br.com.stonesdk.sdkdemo.R
-import br.com.stonesdk.sdkdemo.controller.PrintController
-import br.com.stonesdk.sdkdemo.databinding.ActivityTransactionBinding
 import br.com.stonesdk.sdkdemo.databinding.ActivityTransactionListBinding
 //import stone.application.enums.ReceiptType
 //import stone.application.interfaces.StoneCallbackInterface

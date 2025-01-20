@@ -69,6 +69,7 @@ val demoApplicationModule = module {
         TransactionViewModel(
             installmentProvider = get(),
             paymentProviderWrapper = get(),
+            deviceInfoProviderWrapper = get()
         )
     }
     viewModel {

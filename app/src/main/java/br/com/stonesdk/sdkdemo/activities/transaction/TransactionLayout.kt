@@ -2,6 +2,7 @@
 
 package br.com.stonesdk.sdkdemo.activities.transaction
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +27,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,8 +51,44 @@ import org.koin.androidx.compose.koinViewModel
 internal fun TransactionScreen(
     viewModel: TransactionViewModel = koinViewModel()
 ) {
+    val uiState = viewModel.uiState.collectAsState()
+
+    val desiredAmount = remember { derivedStateOf { uiState.value.amount } }
+
+    val typeOfTransactions = remember {
+        derivedStateOf {
+            uiState.value.typeOfTransactions
+        }
+    }
+    val selectedTypeOfTransaction = remember {
+        derivedStateOf {
+            uiState.value.selectedTypeOfTransaction
+        }
+    }
+    val showInstallmentSelection = remember {
+        derivedStateOf {
+            selectedTypeOfTransaction.value == TypeOfTransactionEnum.CREDIT
+        }
+    }
+
+    val installments = remember { derivedStateOf { uiState.value.installments } }
+    val selectedInstallment = remember { derivedStateOf { uiState.value.selectedInstallment } }
+
+    val shouldCaptureTransaction = remember { derivedStateOf { uiState.value.shouldCaptureTransaction } }
+
+    val stoneCodes = remember { derivedStateOf { uiState.value.stoneCodes } }
+    val selectedStoneCode = remember { derivedStateOf { uiState.value.selectedStoneCode } }
+
     TransactionContent(
-        model = viewModel.viewState,
+        desiredAmount = desiredAmount.value,
+        typeOfTransactions = typeOfTransactions.value,
+        selectedTypeOfTransaction = selectedTypeOfTransaction.value,
+        showInstallmentSelection = showInstallmentSelection.value,
+        installments = installments.value,
+        selectedInstallment = selectedInstallment.value,
+        stoneCodes = stoneCodes.value,
+        selectedStoneCode = selectedStoneCode.value,
+        shouldCaptureTransaction = shouldCaptureTransaction.value,
         onEvent = viewModel::onEvent
     )
 
@@ -57,7 +96,15 @@ internal fun TransactionScreen(
 
 @Composable
 fun TransactionContent(
-    model: TransactionUiModel,
+    desiredAmount: String,
+    typeOfTransactions: List<TypeOfTransactionEnum>,
+    selectedTypeOfTransaction: TypeOfTransactionEnum,
+    showInstallmentSelection: Boolean,
+    installments: List<InstallmentTransaction>,
+    selectedInstallment: InstallmentTransaction,
+    stoneCodes: List<String>,
+    selectedStoneCode: String,
+    shouldCaptureTransaction: Boolean,
     onEvent: (TransactionEvent) -> Unit
 ) {
 
@@ -72,7 +119,7 @@ fun TransactionContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             OutlinedTextField(
-                value = "10",
+                value = desiredAmount,
                 readOnly = false,
                 onValueChange = { amount -> onEvent(UserInput(amount)) },
                 label = { Text(text = stringResource(id = R.string.transaction_enter_value)) },
@@ -81,39 +128,42 @@ fun TransactionContent(
             )
         }
 
-        Row(
+        Column (
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 2.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            RadioButtonGroup(onEvent, typeSelected = model.selectedTransaction)
+            RadioButtonGroup(
+                onEvent = onEvent,
+                selectedTransactionType = selectedTypeOfTransaction,
+                transactionTypes = typeOfTransactions
+            )
+
+            AnimatedVisibility(showInstallmentSelection) {
+                Spacer(modifier = Modifier.width(6.dp))
+                Spinner(
+                    title = "Nº de parcelas",
+                    installments = installments,
+                    selectedInstallment = selectedInstallment,
+                    stoneCodes = emptyList(),
+                    selectedStoneCode = selectedStoneCode,
+                    onEvent = onEvent,
+                    isStoneCode = false
+                )
+            }
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Spinner(
-                title = "Nº de parcelas",
-                modifier = Modifier.weight(1f),
-                installments = model.installments,
-                onEvent = onEvent,
-                stoneCodeList = emptyList(),
-                isStoneCode = false
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            Spinner(
-                title = "Stone Code",
-                modifier = Modifier.weight(1f),
-                stoneCodeList = model.selectedStoneCode,
-                installments = emptyList(),
-                onEvent = onEvent,
-                isStoneCode = true
-            )
-        }
+        Spinner(
+            title = "Stone Code",
+            modifier = Modifier.weight(1f),
+            installments = installments,
+            selectedInstallment = selectedInstallment,
+            stoneCodes = emptyList(),
+            selectedStoneCode = selectedStoneCode,
+            onEvent = onEvent,
+            isStoneCode = true
+        )
 
         Row(
             modifier = Modifier
@@ -123,7 +173,7 @@ fun TransactionContent(
             CheckboxCapture(
                 onEvent = onEvent,
                 label = "Transação com Captura",
-                checked = model.isCheckBox
+                checked = shouldCaptureTransaction
             )
         }
 
@@ -151,27 +201,22 @@ fun TransactionContent(
 @Composable
 fun RadioButtonGroup(
     onEvent: (TransactionEvent) -> Unit,
-    typeSelected: TypeOfTransactionEnum
+    transactionTypes : List<TypeOfTransactionEnum>,
+    selectedTransactionType : TypeOfTransactionEnum
 ) {
-    val transactionTypes = listOf(
-        TypeOfTransactionEnum.DEBIT to "Débito",
-        TypeOfTransactionEnum.CREDIT to "Crédito",
-        TypeOfTransactionEnum.VOUCHER to "Voucher",
-        TypeOfTransactionEnum.PIX to "Pix"
-    )
-    FlowRow {
-        transactionTypes.forEach { (transactionType, text) ->
 
+    FlowRow {
+        transactionTypes.forEach { type ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.weight(1f)
             ) {
                 RadioButton(
-                    selected = (transactionType == typeSelected),
-                    onClick = { onEvent(TypeOfTransaction(transactionType)) }
+                    selected = (type == selectedTransactionType),
+                    onClick = { onEvent(TypeOfTransaction(type)) }
                 )
                 Text(
-                    text = text,
+                    text = type.displayName,
                 )
             }
         }
@@ -185,15 +230,16 @@ fun Spinner(
     onEvent: (TransactionEvent) -> Unit,
     modifier: Modifier = Modifier,
     installments: List<InstallmentTransaction>,
-    stoneCodeList: List<String>,
+    selectedInstallment : InstallmentTransaction,
+    stoneCodes: List<String>,
+    selectedStoneCode : String,
     isStoneCode: Boolean
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedItem : String by remember {
+    var selectedItem: String by remember {
         mutableStateOf(
-            if (isStoneCode) stoneCodeList.firstOrNull() ?: "" else installments.firstOrNull()
-                ?.mapInstallmentToPresentation()
-                ?: ""
+            if (isStoneCode) selectedStoneCode
+            else selectedInstallment.mapInstallmentToPresentation()
         )
     }
 
@@ -220,7 +266,6 @@ fun Spinner(
         ) {
             if (!isStoneCode) {
                 installments.forEach { installment ->
-                    installment.mapInstallmentToPresentation()
                     DropdownMenuItem(
                         text = { Text(text = installment.mapInstallmentToPresentation()) },
                         onClick = {
@@ -231,14 +276,15 @@ fun Spinner(
                     )
                 }
             } else {
-                stoneCodeList.forEachIndexed { index, stoneCode ->
+                stoneCodes.forEachIndexed { index, stoneCode ->
                     DropdownMenuItem(
                         text = { Text(text = stoneCode) },
                         onClick = {
                             selectedItem = stoneCode
                             onEvent(TransactionEvent.StoneCodeItemClick(index))
                             expanded = false
-                        })
+                        }
+                    )
                 }
             }
         }
@@ -250,11 +296,11 @@ fun CheckboxCapture(
     checked: Boolean,
     onEvent: (TransactionEvent) -> Unit,
     label: String,
-    ) {
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Checkbox(
             checked = checked,
-            onCheckedChange = {isChecked -> onEvent(TransactionEvent.CheckBoxChanged(isChecked )) }
+            onCheckedChange = { isChecked -> onEvent(TransactionEvent.CheckBoxChanged(isChecked)) }
         )
         Text(text = label)
     }

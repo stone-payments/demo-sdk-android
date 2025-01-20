@@ -1,28 +1,22 @@
 package br.com.stonesdk.sdkdemo.activities
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.lifecycle.lifecycleScope
 
 import br.com.stonesdk.sdkdemo.FeatureFlag
-import br.com.stonesdk.sdkdemo.R
 import br.com.stonesdk.sdkdemo.activities.devices.DevicesActivity
 import br.com.stonesdk.sdkdemo.activities.main.MainNavigationOption
 import br.com.stonesdk.sdkdemo.activities.main.MainScreen
 import br.com.stonesdk.sdkdemo.activities.main.MainViewModel
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeActivity
-import br.com.stonesdk.sdkdemo.activities.validation.ValidationActivity
+import br.com.stonesdk.sdkdemo.activities.transaction.TransactionActivity
+import br.com.stonesdk.sdkdemo.activities.transaction.TransactionListActivity
 import br.com.stonesdk.sdkdemo.databinding.ActivityMainBinding
-import co.stone.posmobile.sdk.reversal.provider.ReversalProvider
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -90,16 +84,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             binding.listTransactionOption.id -> startGenericTransactionList()
             binding.cancelTransactionsOption.id -> startGenericCancelErrorTransaction()
             binding.manageStoneCodeOption.id -> startGenericManageStoneCode()
-//            binding.deactivateOption.id -> startGenericDeactivate()
+            binding.deactivateOption.id -> startGenericDeactivate()
 
             binding.pairedDevicesOption.id -> startPinpadPairedDevicesActivity()
-//            binding.transactionOption.id -> startPinpadTransaction()
-//            binding.displayMessageOption.id -> startPinpadDisplayMessage()
-//            binding.disconnectDeviceOption.id -> startPinpadDisconnect()
+            binding.transactionOption.id -> startPinpadTransaction()
+            binding.displayMessageOption.id -> startPinpadDisplayMessage()
+            binding.disconnectDeviceOption.id -> startPinpadDisconnect()
 
             binding.posTransactionOption.id -> starPosAndroidTransaction()
-//            binding.posValidateCardOption.id -> startPosAndroidCardValidation()
-//            binding.posPrinterProvider.id -> startPosAndroidPrinter()
+            binding.posValidateCardOption.id -> startPosAndroidCardValidation()
+            binding.posPrinterProvider.id -> startPosAndroidPrinter()
             binding.posMifareProvider.id -> startPosAndroidMifare()
 
             else -> {}
@@ -190,18 +184,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun startPinpadTransaction() {
-//        // Verifica se o bluetooth esta ligado e se existe algum pinpad conectado.
-//        if (Stone.getPinpadListSize() > 0) {
-//            val transactionIntent =
-//                Intent(this@MainActivity, TransactionActivity::class.java)
-//            startActivity(transactionIntent)
-//        } else {
-//            Toast.makeText(
-//                applicationContext,
-//                "Conecte-se a um pinpad.",
-//                Toast.LENGTH_SHORT
-//            ).show()
-//        }
+        val transactionIntent = Intent(this@MainActivity, TransactionActivity::class.java)
+            startActivity(transactionIntent)
     }
 
     private fun startPinpadDisplayMessage() {

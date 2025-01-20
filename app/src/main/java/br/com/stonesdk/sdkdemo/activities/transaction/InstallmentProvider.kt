@@ -6,8 +6,10 @@ class InstallmentProvider {
 
     fun getInstallment(
         transactionType : TypeOfTransactionEnum,
+        isPos : Boolean,
         merchantInterest : Boolean = MERCHANT_INTEREST,
-        maxInstallments : Int = MAX_INSTALLMENTS
+        maxInstallments : Int = MAX_INSTALLMENTS,
+
     ): List<InstallmentTransaction> {
 
         val installments = mutableListOf<InstallmentTransaction>()
@@ -23,10 +25,15 @@ class InstallmentProvider {
                 }
             }
             TypeOfTransactionEnum.DEBIT,
-            TypeOfTransactionEnum.VOUCHER,
-            TypeOfTransactionEnum.PIX -> {
+            TypeOfTransactionEnum.VOUCHER -> {
                 val installment = InstallmentTransaction.None()
                 installments.add(installment)
+            }
+            TypeOfTransactionEnum.PIX -> {
+                if(isPos){
+                    val installment = InstallmentTransaction.None()
+                    installments.add(installment)
+                }
             }
         }
 

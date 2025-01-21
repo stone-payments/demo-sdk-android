@@ -33,7 +33,8 @@
 
         <activity
             android:name=".activities.transaction.TransactionActivity"
-            android:label="@string/title_activity_transaction" />
+            android:label="@string/title_activity_transaction"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".activities.transaction.TransactionListActivity"

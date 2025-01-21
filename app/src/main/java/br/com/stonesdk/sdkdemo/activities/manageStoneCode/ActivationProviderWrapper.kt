@@ -50,7 +50,7 @@ class ActivationProviderWrapper {
             continuation.invokeOnCancellation {}
         }
 
-    suspend fun getActivatedStoneCodes(): List<String> =
+    suspend fun getActivatedAffiliationCodes(): List<String> =
         suspendCancellableCoroutine { continuation ->
             merchantProvider.getAllMerchants(object : StoneResultCallback<List<Merchant>> {
                 override fun onSuccess(result: List<Merchant>) {

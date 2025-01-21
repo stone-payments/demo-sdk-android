@@ -34,11 +34,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeEvent.ActivateStoneCode
-import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeEvent.AddStoneCode
-import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeEvent.OnDismiss
-import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeEvent.StoneCodeItemClick
-import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeEvent.UserInput
+import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageAffiliationCodeEvent.ActivateAffiliationCode
+import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageAffiliationCodeEvent.AddAffiliationCode
+import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageAffiliationCodeEvent.OnDismiss
+import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageAffiliationCodeEvent.AffiliationCodeItemClick
+import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageAffiliationCodeEvent.UserInput
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,7 +69,7 @@ internal fun ManageStoneCodeScreen(
 @Composable
 private fun ManageStoneCodeContent(
     model: ManageStoneCodeUiModel,
-    onEvent: (ManageStoneCodeEvent) -> Unit,
+    onEvent: (ManageAffiliationCodeEvent) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -104,9 +104,9 @@ private fun ManageStoneCodeContent(
                     Column {
                         StoneCodeActivatedItem(
                             modifier = Modifier
-                                .animateItemPlacement()
+                                .animateItem()
                                 .clickable {
-                                    onEvent(StoneCodeItemClick(position = index))
+                                    onEvent(AffiliationCodeItemClick(position = index))
                                 },
                             stoneCode = stoneCode,
                         )
@@ -118,9 +118,9 @@ private fun ManageStoneCodeContent(
             )
         }
         Button(modifier = Modifier.align(Alignment.CenterHorizontally),
-            onClick = { onEvent(AddStoneCode) },
+            onClick = { onEvent(AddAffiliationCode) },
             content = {
-                Text(text = "Adicionar Stone Code")
+                Text(text = "Adicionar Código de Afiliação")
             }
         )
     }
@@ -153,7 +153,7 @@ private fun StoneCodeActivatedItem(
 
 @Composable
 private fun BottomSheetContent(
-    model: ManageStoneCodeUiModel, onEvent: (ManageStoneCodeEvent) -> Unit
+    model: ManageStoneCodeUiModel, onEvent: (ManageAffiliationCodeEvent) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -170,7 +170,7 @@ private fun BottomSheetContent(
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             keyboardActions = KeyboardActions(
-                onDone = { onEvent(ActivateStoneCode) }
+                onDone = { onEvent(ActivateAffiliationCode) }
             )
         )
 
@@ -180,7 +180,7 @@ private fun BottomSheetContent(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .navigationBarsPadding(),
-            onClick = { onEvent(ActivateStoneCode) },
+            onClick = { onEvent(ActivateAffiliationCode) },
             enabled = model.stoneCodeToBeActivated.isNotEmpty() && !model.activationInProgress,
             content = {
                 if (model.activationInProgress) {

@@ -72,7 +72,7 @@ class ValidationViewModel(
                     loading = true
                 )
             }
-            val list = activationProviderWrapper.getActivatedStoneCodes()
+            val list = activationProviderWrapper.getActivatedAffiliationCodes()
             if (list.isNotEmpty()) {
                 _uiState.update {
                     it.copy(
@@ -113,7 +113,8 @@ class ValidationViewModel(
 }
 
 data class ValidationStoneCodeUiModel(
-    val stoneCodeToBeValidated: String = "",
+    // TODO do not commit
+    val stoneCodeToBeValidated: String = "846873720",
     val activationInProgress: Boolean = false,
     val loading: Boolean = true,
     val navigateToMain: Boolean = false,

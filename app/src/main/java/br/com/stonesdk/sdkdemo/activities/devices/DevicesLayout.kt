@@ -1,9 +1,6 @@
 package br.com.stonesdk.sdkdemo.activities.devices
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,21 +22,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import org.koin.androidx.compose.koinViewModel
 
 
 @OptIn(ExperimentalPermissionsApi::class)
-@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun DevicesScreen(
-    viewModel: DevicesViewModel = koinViewModel(),
-    closeScreen: () -> Unit
+    viewModel: DevicesViewModel = koinViewModel(), closeScreen: () -> Unit
 ) {
     val effects by viewModel.sideEffects.collectAsState()
-    val permissionState = rememberPermissionState(Manifest.permission.BLUETOOTH_CONNECT)
+
+    val permissionState = rememberMultiplePermissionsState(
+        viewModel.getBluetoothPermissions()
+    )
 
     LaunchedEffect(effects) {
         effects?.let { event ->
@@ -49,28 +48,26 @@ fun DevicesScreen(
         }
     }
 
-    if (!permissionState.status.isGranted) {
+    if (!permissionState.allPermissionsGranted) {
         RequestBluetoothPermission(
             onPermissionGranted = {
                 viewModel.onEvent(DevicesEvent.StartDeviceScan)
                 viewModel.onEvent(DevicesEvent.Permission)
-            },
-            permissionState = permissionState
+            }, permissionState = permissionState
         )
     } else {
         viewModel.onEvent(DevicesEvent.StartDeviceScan)
         viewModel.onEvent(DevicesEvent.Permission)
     }
+
     DevicesContent(
-        viewState = viewModel.viewState,
-        onEvent = viewModel::onEvent
+        viewState = viewModel.viewState, onEvent = viewModel::onEvent
     )
 }
 
 @Composable
 fun DevicesContent(
-    onEvent: (DevicesEvent) -> Unit,
-    viewState: DevicePinpadUiModel
+    onEvent: (DevicesEvent) -> Unit, viewState: DevicePinpadUiModel
 ) {
     Column(
         modifier = Modifier
@@ -118,10 +115,8 @@ fun BluetoothDeviceList(
         contentPadding = PaddingValues(vertical = 8.dp)
     ) {
         itemsIndexed(bluetoothDevices) { index, device ->
-            BluetoothDeviceItem(
-                deviceName = device.name,
-                onClick = { onEvent(DevicesEvent.DeviceItemClick(index)) }
-            )
+            BluetoothDeviceItem(deviceName = device.name,
+                onClick = { onEvent(DevicesEvent.DeviceItemClick(index)) })
         }
     }
 }
@@ -129,8 +124,7 @@ fun BluetoothDeviceList(
 @SuppressLint("MissingPermission")
 @Composable
 fun BluetoothDeviceItem(
-    deviceName: String,
-    onClick: () -> Unit
+    deviceName: String, onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -150,12 +144,12 @@ fun BluetoothDeviceItem(
 @Composable
 fun RequestBluetoothPermission(
     onPermissionGranted: () -> Unit,
-    permissionState: PermissionState
+    permissionState: MultiplePermissionsState
 ) {
     LaunchedEffect(permissionState) {
         when {
-            permissionState.status.isGranted -> onPermissionGranted()
-            else -> permissionState.launchPermissionRequest()
+            permissionState.allPermissionsGranted -> onPermissionGranted()
+            else -> permissionState.launchMultiplePermissionRequest()
         }
     }
 }

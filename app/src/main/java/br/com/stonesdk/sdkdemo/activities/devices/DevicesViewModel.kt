@@ -1,6 +1,8 @@
 package br.com.stonesdk.sdkdemo.activities.devices
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.os.Build
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -50,6 +52,16 @@ class DevicesViewModel(
                 }
             )
         }
+    }
+
+    fun getBluetoothPermissions() : List<String> {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                listOf(
+                    Manifest.permission.BLUETOOTH_CONNECT,
+                    Manifest.permission.BLUETOOTH_SCAN,
+                )
+            } else
+                listOf(Manifest.permission.BLUETOOTH)
     }
 
     private fun stopDeviceScan() {

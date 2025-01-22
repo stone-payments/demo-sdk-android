@@ -20,6 +20,10 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
+            android:name=".activities.display.DisplayMessageActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".activities.MifareActivity"
             android:label="Mifare" />
 
@@ -35,7 +39,6 @@
             android:name=".activities.transaction.TransactionActivity"
             android:label="@string/title_activity_transaction"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name=".activities.transaction.TransactionListActivity"
             android:label="@string/title_activity_transaction_list" />

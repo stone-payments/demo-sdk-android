@@ -96,8 +96,8 @@
     <string name="detect_card">Detectar cartão</string>
     <string name="read_block">Ler bloco</string>
     <string name="write_block">Escrever no bloco</string>
-
-
+    <!-- -->
+    <string name="display_message_button">Mostrar Mensagem</string>
 
     <!-- Strings for Dialog Buttons -->
     <string name="yes">Sim</string>

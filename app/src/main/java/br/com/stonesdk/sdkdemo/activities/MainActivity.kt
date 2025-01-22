@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 
 import br.com.stonesdk.sdkdemo.FeatureFlag
 import br.com.stonesdk.sdkdemo.activities.devices.DevicesActivity
+import br.com.stonesdk.sdkdemo.activities.display.DisplayMessageActivity
 import br.com.stonesdk.sdkdemo.activities.main.MainNavigationOption
 import br.com.stonesdk.sdkdemo.activities.main.MainScreen
 import br.com.stonesdk.sdkdemo.activities.main.MainViewModel
@@ -189,31 +190,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun startPinpadDisplayMessage() {
-//        if (Stone.getPinpadListSize() > 0) {
-//            val builder = AlertDialog.Builder(this@MainActivity)
-//            builder.setTitle("Digite a mensagem para mostrar no pinpad")
-//            val editText = EditText(this@MainActivity)
-//            builder.setView(editText)
-//            builder.setPositiveButton("OK") { _, _ ->
-//                val text = editText.text.toString()
-//                val displayMessageProvider =
-//                    DisplayMessageProvider(
-//                        this@MainActivity,
-//                        text,
-//                        Stone.getPinpadFromListAt(0)
-//                    )
-//                displayMessageProvider.execute()
-//            }
-//            builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
-//
-//            builder.show()
-//        } else {
-//            Toast.makeText(
-//                applicationContext,
-//                "Conecte-se a um pinpad.",
-//                Toast.LENGTH_SHORT
-//            ).show()
-//        }
+        val displayMessageIntent = Intent(this@MainActivity, DisplayMessageActivity::class.java)
+        startActivity(displayMessageIntent)
     }
 
     private fun startPinpadDisconnect() {

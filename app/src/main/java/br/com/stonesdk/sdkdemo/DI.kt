@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothAdapter
 import br.com.stonesdk.sdkdemo.activities.devices.BluetoothProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.devices.DeviceInfoProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.devices.DevicesViewModel
+import br.com.stonesdk.sdkdemo.activities.display.DisplayMessageProviderWrapper
+import br.com.stonesdk.sdkdemo.activities.display.DisplayMessageViewModel
 import br.com.stonesdk.sdkdemo.activities.main.MainViewModel
 import br.com.stonesdk.sdkdemo.activities.main.ReversalProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
@@ -44,6 +46,10 @@ val demoApplicationModule = module {
         ReversalProviderWrapper()
     }
 
+    factory {
+        DisplayMessageProviderWrapper()
+    }
+
     factory<BluetoothAdapter> {
         BluetoothAdapter.getDefaultAdapter()
     }
@@ -65,6 +71,10 @@ val demoApplicationModule = module {
     viewModel {
         DevicesViewModel(bluetoothProviderWrapper = get())
     }
+    viewModel {
+        DisplayMessageViewModel(displayMessageProviderWrapper = get())
+    }
+
     viewModel {
         TransactionViewModel(
             activationProviderWrapper = get(),

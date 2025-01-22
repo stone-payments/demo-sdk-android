@@ -21,6 +21,7 @@ import br.com.stonesdk.sdkdemo.databinding.ActivityMainBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 //import stone.application.enums.Action
 //import stone.application.interfaces.StoneActionCallback
 //import stone.application.interfaces.StoneCallbackInterface
@@ -186,7 +187,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun startPinpadTransaction() {
         val transactionIntent = Intent(this@MainActivity, TransactionActivity::class.java)
-            startActivity(transactionIntent)
+        startActivity(transactionIntent)
     }
 
     private fun startPinpadDisplayMessage() {

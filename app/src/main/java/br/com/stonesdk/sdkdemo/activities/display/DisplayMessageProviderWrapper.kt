@@ -11,18 +11,28 @@ class DisplayMessageProviderWrapper {
     val provider: DisplayProvider
         get() = DisplayProvider.create()
 
-    suspend fun displayMessage(message: String): Boolean = suspendCancellableCoroutine { continuation ->
+    suspend fun displayMessage(message: String): DisplayMessageStatus =
+        suspendCancellableCoroutine { continuation ->
             provider.show(message = message, object : StoneResultCallback<Unit> {
                 override fun onSuccess(result: Unit) {
-                    continuation.resume(true)
+                    continuation.resume(DisplayMessageStatus.Success)
                 }
 
                 override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                    continuation.resume(false)
+                    continuation.resume(
+                        DisplayMessageStatus.Error(
+                            stoneStatus?.message ?: throwable.message ?: "Erro desconhecido"
+                        )
+                    )
                 }
             })
 
             continuation.invokeOnCancellation {}
 
         }
+}
+
+sealed class DisplayMessageStatus {
+    data object Success : DisplayMessageStatus()
+    data class Error(val errorMessage: String) : DisplayMessageStatus()
 }

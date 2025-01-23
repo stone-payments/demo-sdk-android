@@ -19,21 +19,30 @@ class DisplayMessageViewModel(
 
     fun displayMessage(message: String) {
         viewModelScope.launch {
-            try {
-                _uiState.update {
-                    it.copy(
-                        message = message,
-                    )
-                }
-                displayMessageProviderWrapper.displayMessage(message)
-            } catch (e: Exception) {
-                val errorMessages = _uiState.value.errorMessages.toMutableList()
-                val newErrorMessage = "${getCurrentDateTime()}: $message - ${e.message ?: "Erro desconhecido"}"
-                errorMessages.add(0, newErrorMessage)
 
-                _uiState.value = DisplayMessageUiModel(
-                    errorMessages = errorMessages
+            _uiState.update {
+                it.copy(
+                    message = message,
                 )
+            }
+
+            displayMessageProviderWrapper.displayMessage(message).let { status ->
+                when (status) {
+                    is DisplayMessageStatus.Success -> {
+                        // Do Nothing
+                    }
+
+                    is DisplayMessageStatus.Error -> {
+                        val errorMessages = _uiState.value.errorMessages.toMutableList()
+                        val newErrorMessage =
+                            "${getCurrentDateTime()}: $message - ${status.errorMessage}"
+                        errorMessages.add(0, newErrorMessage)
+
+                        _uiState.value = DisplayMessageUiModel(
+                            errorMessages = errorMessages
+                        )
+                    }
+                }
             }
         }
     }

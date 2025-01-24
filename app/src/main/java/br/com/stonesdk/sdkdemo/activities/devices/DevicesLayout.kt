@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -64,9 +65,9 @@ fun DevicesScreen(
         viewModel.onEvent(DevicesEvent.Permission)
     }
 
-    val isScanning = remember { derivedStateOf{uiModel.value.isScanningDevices} }
-    val availableDevices = remember { derivedStateOf{uiModel.value.bluetoothDevices} }
-    val errorMessages = remember { derivedStateOf{uiModel.value.errorMessages} }
+    val isScanning = remember { derivedStateOf { uiModel.value.isScanningDevices } }
+    val availableDevices = remember { derivedStateOf { uiModel.value.bluetoothDevices } }
+    val errorMessages = remember { derivedStateOf { uiModel.value.errorMessages } }
 
     DevicesContent(
         isScanning = isScanning.value,
@@ -78,8 +79,8 @@ fun DevicesScreen(
 
 @Composable
 fun DevicesContent(
-    isScanning : Boolean,
-    availableDevices : List<BluetoothInfo>,
+    isScanning: Boolean,
+    availableDevices: List<BluetoothInfo>,
     errorMessages: List<String>,
     onEvent: (DevicesEvent) -> Unit
 ) {
@@ -90,20 +91,29 @@ fun DevicesContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (isScanning) {
-            Row{
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
                 Text(
                     text = "Procurando dispositivos...",
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(start = 8.dp)
                         .weight(1f)
                 )
+
+                Button(
+                    modifier = Modifier.padding(end = 8.dp),
+                    onClick = { onEvent(DevicesEvent.StopDeviceScan) }
+                ) {
+                    Text("Stop")
+                }
+
                 CircularProgressIndicator()
             }
         }
 
         BluetoothDeviceList(
-            modifier = Modifier.weight(1f),
             bluetoothDevices = availableDevices,
             onEvent = onEvent
         )
@@ -131,13 +141,13 @@ fun BluetoothDeviceList(
     onEvent: (DevicesEvent) -> Unit
 ) {
 
-    if (bluetoothDevices.isEmpty()){
+    if (bluetoothDevices.isEmpty()) {
         Text(
             textAlign = TextAlign.Center,
             text = "Nenhum dispositivo Bluetooth disponível.",
             modifier = Modifier.padding(16.dp)
         )
-    }else{
+    } else {
         LazyColumn(
             modifier = modifier
                 .fillMaxWidth()

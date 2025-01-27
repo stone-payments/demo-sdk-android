@@ -53,16 +53,18 @@ fun DevicesScreen(
         }
     }
 
-    if (!permissionState.allPermissionsGranted) {
-        RequestBluetoothPermission(
-            onPermissionGranted = {
-                viewModel.onEvent(DevicesEvent.StartDeviceScan)
-                viewModel.onEvent(DevicesEvent.Permission)
-            }, permissionState = permissionState
-        )
-    } else {
-        viewModel.onEvent(DevicesEvent.StartDeviceScan)
-        viewModel.onEvent(DevicesEvent.Permission)
+    LaunchedEffect(true) {
+        if (!permissionState.allPermissionsGranted) {
+            requestBluetoothPermission(
+                onPermissionGranted = {
+                    viewModel.onEvent(DevicesEvent.StartDeviceScan)
+                    viewModel.onEvent(DevicesEvent.Permission)
+                }, permissionState = permissionState
+            )
+        } else {
+            viewModel.onEvent(DevicesEvent.StartDeviceScan)
+            viewModel.onEvent(DevicesEvent.Permission)
+        }
     }
 
     val isScanning = remember { derivedStateOf { uiModel.value.isScanningDevices } }
@@ -182,15 +184,12 @@ fun BluetoothDeviceItem(
 }
 
 @ExperimentalPermissionsApi
-@Composable
-fun RequestBluetoothPermission(
+fun requestBluetoothPermission(
     onPermissionGranted: () -> Unit,
     permissionState: MultiplePermissionsState
 ) {
-    LaunchedEffect(permissionState) {
-        when {
-            permissionState.allPermissionsGranted -> onPermissionGranted()
-            else -> permissionState.launchMultiplePermissionRequest()
-        }
+    when {
+        permissionState.allPermissionsGranted -> onPermissionGranted()
+        else -> permissionState.launchMultiplePermissionRequest()
     }
 }

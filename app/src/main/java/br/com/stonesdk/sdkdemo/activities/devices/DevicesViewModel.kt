@@ -36,32 +36,39 @@ class DevicesViewModel(
     }
 
     private fun startDeviceScan() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isScanningDevices = true) }
-            bluetoothProviderWrapper.startDeviceScan(
-                onStartDiscover = { device ->
-                    val deviceInfo = device.toDeviceInfo()
-                    val availableDevices = _uiState.value.bluetoothDevices
-                    if (availableDevices.contains(deviceInfo).not()) {
-                        availableDevices.toMutableList().add(deviceInfo)
-                        _uiState.update {
-                            it.copy(bluetoothDevices = availableDevices)
-                        }
-                    }
-                },
-                onStopDiscover = { result ->
-                    _uiState.update { it.copy(isScanningDevices = result) }
-                },
-                onBound = { device ->
-                    val deviceInfo = device.toDeviceInfo()
-                    _uiState.update {
-                        it.copy(
-                            selectedDevice = deviceInfo
-                        )
-                    }
-                }
-            )
-        }
+        // TODO in the current version of SDK, the stop discovery is not working as intended
+        // so this method is being marked as not working;
+
+        // TODO discovery is not working as expected, must be fixed in future versions
+
+        return
+//        viewModelScope.launch {
+//            _uiState.update { it.copy(isScanningDevices = true) }
+//
+//            bluetoothProviderWrapper.startDeviceScan(
+//                onStartDiscover = { device ->
+//                    val deviceInfo = device.toDeviceInfo()
+//                    val availableDevices = _uiState.value.bluetoothDevices
+//                    if (availableDevices.contains(deviceInfo).not()) {
+//                        availableDevices.toMutableList().add(deviceInfo)
+//                        _uiState.update {
+//                            it.copy(bluetoothDevices = availableDevices)
+//                        }
+//                    }
+//                },
+//                onStopDiscover = { result ->
+//                    _uiState.update { it.copy(isScanningDevices = result) }
+//                },
+//                onBound = { device ->
+//                    val deviceInfo = device.toDeviceInfo()
+//                    _uiState.update {
+//                        it.copy(
+//                            selectedDevice = deviceInfo
+//                        )
+//                    }
+//                }
+//            )
+//        }
     }
 
     fun getBluetoothPermissions(): List<String> {

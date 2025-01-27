@@ -16,25 +16,28 @@ class BluetoothProviderWrapper {
 
     suspend fun connectPinpad(
         pinpad: BluetoothInfo
-    ): Boolean {
+    ): ConnectPinpadStatus {
         return bluetoothConnection(pinpad)
     }
 
-    private suspend fun bluetoothConnection(pinpad: BluetoothInfo): Boolean =
+    private suspend fun bluetoothConnection(pinpad: BluetoothInfo): ConnectPinpadStatus =
         suspendCancellableCoroutine { continuation ->
 
             provider.connect(
-                pinpad.address,
-                pinpad.name,
+                pinpadAddress = pinpad.address,
+                pinpadModelName = pinpad.name,
                 stoneResultCallback = object : StoneResultCallback<Boolean> {
                     override fun onSuccess(result: Boolean) {
-                        continuation.resume(true)
+                        continuation.resume(ConnectPinpadStatus.Success)
                     }
 
                     override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                        continuation.resume(false)
+                        continuation.resume(ConnectPinpadStatus.Error(
+                            stoneStatus?.message ?: throwable.message ?: "Erro desconhecido"
+                        ))
                     }
-                })
+                }
+            )
 
             continuation.invokeOnCancellation {}
         }
@@ -52,14 +55,27 @@ class BluetoothProviderWrapper {
         }
     }
 
-    fun startDeviceScan(onDiscover: (BluetoothDevice) -> Unit, onBound: (BluetoothDevice) -> Unit) {
-        provider.discoverPinpad(onDiscover, onBound)
+    fun startDeviceScan(
+        onStartDiscover: (BluetoothDevice) -> Unit,
+        onStopDiscover: (Boolean) -> Unit,
+        onBound: (BluetoothDevice) -> Unit
+    ) {
+        provider.discoverPinpad(
+            onStartDiscover = onStartDiscover,
+            onStopDiscover = onStopDiscover,
+            onBound = onBound
+        )
     }
 
     fun stopDeviceScan(){
         provider.stopDiscover()
     }
 
+}
+
+sealed class ConnectPinpadStatus {
+    data object Success : ConnectPinpadStatus()
+    data class Error(val errorMessage: String) : ConnectPinpadStatus()
 }
 
 data class BluetoothInfo(

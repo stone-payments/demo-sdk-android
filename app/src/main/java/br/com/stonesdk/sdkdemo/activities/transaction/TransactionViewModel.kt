@@ -11,6 +11,7 @@ import co.stone.posmobile.sdk.payment.domain.model.PaymentInput
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -117,7 +118,7 @@ class TransactionViewModel(
                 orderId = orderId
             )
 
-            paymentProviderWrapper.startPayment(paymentInput).let { status ->
+            paymentProviderWrapper.startPayment(paymentInput).collectLatest { status ->
                 when (status) {
                     is TransactionStatus.Success -> {
                         _uiState.update {

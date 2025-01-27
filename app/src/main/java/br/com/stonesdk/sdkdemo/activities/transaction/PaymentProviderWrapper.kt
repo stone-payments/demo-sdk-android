@@ -6,35 +6,38 @@ import co.stone.posmobile.sdk.payment.domain.model.PaymentInput
 import co.stone.posmobile.sdk.payment.domain.model.response.PaymentData
 import co.stone.posmobile.sdk.payment.domain.model.response.StonePaymentResultCallback
 import co.stone.posmobile.sdk.payment.provider.PaymentProvider
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 
-class PaymentProviderWrapper(
-
-) {
+class PaymentProviderWrapper {
 
     private val paymentProvider: PaymentProvider
         get() = PaymentProvider.create()
 
-    suspend fun startPayment(paymentInput: PaymentInput): TransactionStatus =
-        suspendCancellableCoroutine { continuation ->
+    fun startPayment(paymentInput: PaymentInput): Flow<TransactionStatus> {
+        return callbackFlow {
+            paymentProvider.startPayment(
+                paymentInput = paymentInput,
+                object : StonePaymentResultCallback<PaymentData> {
+                    override fun onSuccess(result: PaymentData) {
+                        launch { send(TransactionStatus.Success) }
+                    }
 
-            paymentProvider.startPayment(paymentInput = paymentInput, object :
-                StonePaymentResultCallback<PaymentData> {
-                override fun onSuccess(result: PaymentData) {
-                    continuation.resume(TransactionStatus.Success)
+                    override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                        launch { send(TransactionStatus.Error) }
+                    }
+
+                    override fun onEvent(event: PaymentAction) {
+                        launch { send(TransactionStatus.StatusChanged(event)) }
+                    }
                 }
+            )
 
-                override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                    continuation.resume(TransactionStatus.Error)
-                }
-
-                override fun onEvent(event: PaymentAction) {
-                    continuation.resume(TransactionStatus.StatusChanged(event))
-                }
-
-            })
+            awaitClose {  }
         }
+    }
 
     sealed class TransactionStatus {
         data object Success : TransactionStatus()

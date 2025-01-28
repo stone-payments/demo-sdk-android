@@ -3,65 +3,24 @@ package br.com.stonesdk.sdkdemo.activities.transaction
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.ListView
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-//import br.com.stone.posandroid.providers.PosPrintProvider
-//import br.com.stone.posandroid.providers.PosPrintReceiptProvider
-import br.com.stonesdk.sdkdemo.databinding.ActivityTransactionListBinding
-//import stone.application.enums.ReceiptType
-//import stone.application.interfaces.StoneCallbackInterface
-//import stone.database.transaction.TransactionDAO
-//import stone.database.transaction.TransactionObject
-//import stone.providers.CancellationProvider
-//import stone.providers.CaptureTransactionProvider
-//import stone.providers.PrintProvider
-//import stone.providers.SendEmailTransactionProvider
-//import stone.repository.remote.email.pombo.email.Contact
-//import stone.utils.PrintObject
-//import stone.utils.Stone
+import androidx.compose.material3.MaterialTheme
 
-class TransactionListActivity() : AppCompatActivity(), OnItemClickListener {
-
-    private lateinit var binding: ActivityTransactionListBinding
-
-
-
-
-    var listView: ListView? = null
-//    var transactionObjects: List<TransactionObject>? = null
+class TransactionListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityTransactionListBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        listView = binding.listTransactionActivity
+        setContent {
+            MaterialTheme {
+                TransactionListScreen()
+            }
+        }
 
-//        // acessa todas as transacoes do banco de dados
-//        val transactionDAO = TransactionDAO(applicationContext)
-//        // cria uma lista com todas as transacoes
-//        transactionObjects = transactionDAO.getAllTransactionsOrderByIdDesc()
-//
-//        // exibe todas as transações (neste caso valor e status) para o usuario
-//        val rowOfList = arrayOfNulls<String>(
-//            transactionObjects!!.size
-//        )
-//        for (i in transactionObjects!!.indices) {
-//            rowOfList[i] = String.format(
-//                "%s=%s\n%s",
-//                transactionObjects!![i].idFromBase,
-//                transactionObjects!![i].amount,
-//                transactionObjects!![i].transactionStatus
-//            )
-//        }
-//        val adapter =
-//            ArrayAdapter(this, android.R.layout.simple_list_item_1, android.R.id.text1, rowOfList)
-//        listView!!.setAdapter(adapter)
-//        listView!!.setOnItemClickListener(this)
     }
 
-    override fun onItemClick(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+    fun onItemClick(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
 //        val selectedTransaction = transactionObjects!![position]
 //        val optionsList: ArrayList<String?> = object : ArrayList<String?>() {
 //            init {

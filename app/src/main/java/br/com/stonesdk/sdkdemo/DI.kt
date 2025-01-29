@@ -12,10 +12,13 @@ import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrap
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeViewModel
 import br.com.stonesdk.sdkdemo.activities.transaction.InstallmentProvider
 import br.com.stonesdk.sdkdemo.activities.transaction.PaymentProviderWrapper
+import br.com.stonesdk.sdkdemo.activities.transaction.TransactionListProviderWrapper
+import br.com.stonesdk.sdkdemo.activities.transaction.TransactionListViewModel
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionViewModel
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationViewModel
 import co.stone.posmobile.sdk.bluetooth.provider.BluetoothProvider
 import co.stone.posmobile.sdk.payment.provider.PaymentProvider
+import co.stone.posmobile.sdk.transactionList.provider.TransactionListProvider
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -35,6 +38,10 @@ val demoApplicationModule = module {
     }
 
     factory {
+        DisplayMessageProviderWrapper()
+    }
+
+    factory {
         InstallmentProvider()
     }
 
@@ -47,7 +54,7 @@ val demoApplicationModule = module {
     }
 
     factory {
-        DisplayMessageProviderWrapper()
+        TransactionListProviderWrapper()
     }
 
     factory<BluetoothAdapter> {
@@ -58,7 +65,7 @@ val demoApplicationModule = module {
         BluetoothProvider.create()
     }
 
-    factory<PaymentProvider> {
+    single<PaymentProvider> {
         PaymentProvider.create()
     }
 
@@ -83,11 +90,18 @@ val demoApplicationModule = module {
             paymentProviderWrapper = get()
         )
     }
+
     viewModel {
         MainViewModel(
             activationProviderWrapper = get(),
             deviceInfoProviderWrapper = get(),
             reversalProviderWrapper = get()
+        )
+    }
+
+    viewModel {
+        TransactionListViewModel(
+            transactionProvider = get()
         )
     }
 }

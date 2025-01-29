@@ -2,6 +2,7 @@ package br.com.stonesdk.sdkdemo.activities.transaction
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.stonesdk.sdkdemo.utils.parseCentsToCurrency
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,29 +24,40 @@ class TransactionListViewModel(
     private fun getTransactions() {
 
         viewModelScope.launch {
+            _uiState.update { it.copy(loading = true) }
+            transactionProvider.getAllTransactions().collect { status ->
 
-            transactionProvider.getAllTransactions()
+                when (status) {
+                    is TransactionListProviderWrapper.TransactionListStatus.Success -> {
+                        val transactions = status.transactions
+                            .sortedByDescending { it.transactionId }
+                            .map { transaction ->
+                                Transaction(
+                                    id = transaction.transactionId.toString(),
+                                    authorizedAmount = transaction.amountAuthorized.parseCentsToCurrency(),
+                                    authorizationDate = transaction.time,
+                                    atk = transaction.acquirerTransactionKey,
+                                    status = transaction.transactionStatus.name
+                                )
+                            }
+                        _uiState.update {
+                            it.copy(
+                                transactions = transactions,
+                                loading = false
+                            )
+                        }
+                    }
 
-            _uiState.update {
-                it.copy(
-                    transactions = listOf(
-                        Transaction(
-                            transactionId = "1",
-                            transactionAmount = "R$ 100,00",
-                            transactionStatus = "Aprovado"
-                        ),
-                        Transaction(
-                            transactionId = "2",
-                            transactionAmount = "R$ 200,00",
-                            transactionStatus = "Reprovado"
-                        ),
-                        Transaction(
-                            transactionId = "3",
-                            transactionAmount = "R$ 300,00",
-                            transactionStatus = "Aprovado"
-                        )
-                    )
-                )
+                    is TransactionListProviderWrapper.TransactionListStatus.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                transactions = emptyList(),
+                                loading = false,
+                                errorMessage = status.errorMessage
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -56,11 +68,15 @@ class TransactionListViewModel(
 }
 
 data class Transaction(
-    val transactionId: String,
-    val transactionAmount: String,
-    val transactionStatus: String
+    val id: String,
+    val authorizedAmount: String,
+    val authorizationDate: String,
+    val atk: String?,
+    val status: String
 )
 
 data class TransactionListUiModel(
+    val loading: Boolean = false,
+    val errorMessage : String? = null,
     val transactions: List<Transaction> = emptyList()
 )

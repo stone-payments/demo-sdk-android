@@ -23,7 +23,8 @@ class TransactionListProviderWrapper {
                     }
 
                     override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                        launch { send(TransactionListStatus.Error) }
+                        val error = stoneStatus?.message ?: throwable.message ?: "Unknown error"
+                        launch { send(TransactionListStatus.Error(error)) }
                     }
                 }
             )
@@ -33,7 +34,7 @@ class TransactionListProviderWrapper {
 
     sealed class TransactionListStatus {
         data class Success(val transactions: List<PaymentData>) : TransactionListStatus()
-        data object Error : TransactionListStatus()
+        data class Error(val errorMessage: String) : TransactionListStatus()
     }
 
 }

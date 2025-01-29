@@ -4,9 +4,8 @@ apply from: '../gertec/gertec-signing-config.gradle'
 apply from: '../positivo/positivo-signing-config.gradle'
 
 android {
-    compileSdkVersion 34
-    buildToolsVersion '28.0.3'
-
+    compileSdk = 34
+    namespace = "br.com.stonesdk.sdkdemo"
     defaultConfig {
         applicationId "br.com.stonesdk.sdkdemo"
         minSdkVersion 22
@@ -22,10 +21,6 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 
     packagingOptions {
         exclude 'META-INF/api_release.kotlin_module'

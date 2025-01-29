@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="br.com.stonesdk.sdkdemo">
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- Permissoes necessarias para o pleno funcionamento do aplicativo e da SDK -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -36,6 +35,7 @@
             android:label="@string/title_activity_disconnect_pinpad"
             android:theme="@style/AppThemeWithoutBar" />
         <activity
+            android:exported="true"
             android:name=".activities.ValidationActivity"
             android:label="@string/title_activity_validation"
             android:theme="@style/AppTheme">

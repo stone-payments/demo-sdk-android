@@ -40,8 +40,11 @@
             android:label="@string/title_activity_transaction"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.transaction.TransactionListActivity"
+            android:name=".activities.transaction.list.TransactionListActivity"
             android:label="@string/title_activity_transaction_list" />
+        <activity
+            android:name=".activities.transaction.revert.TransactionRevertActivity"
+            android:label="@string/title_activity_transaction_revert" />
 
         <activity
             android:name=".activities.DisconnectPinpadActivity"

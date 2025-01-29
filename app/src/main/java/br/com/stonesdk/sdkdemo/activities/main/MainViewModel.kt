@@ -12,9 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val activationProviderWrapper: ActivationProviderWrapper,
     private val deviceInfoProviderWrapper : DeviceInfoProviderWrapper,
-    private val reversalProviderWrapper: ReversalProviderWrapper
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -65,20 +63,6 @@ class MainViewModel(
             )
         } else
             emptyList()
-    }
-
-    fun revertTransactionsWithErrors() {
-        viewModelScope.launch {
-            reversalProviderWrapper.reverseTransactions(object : StoneResultCallback<Unit> {
-                override fun onSuccess(result: Unit) {
-                    // handle success
-                }
-
-                override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                    // handle error
-                }
-            })
-        }
     }
 
 }

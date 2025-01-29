@@ -12,9 +12,10 @@
     <string name="main_devices_description">Listar os dispositivos pareados</string>
     <string name="main_transaction_description">Realiza uma nova transação</string>
     <string name="main_list_description">Listar todas as transações do banco</string>
-    <string name="title_activity_transaction">Fazer transação</string>
     <string name="title_activity_devices">Dispositivos pareados</string>
+    <string name="title_activity_transaction">Fazer transação</string>
     <string name="title_activity_transaction_list">Lista de transações</string>
+    <string name="title_activity_transaction_revert">Reverter Transações com Erro</string>
     <string name="title_activity_validation">Stone SDK Demo</string>
     <string name="title_activity_main">Stone SDK Demonstração</string>
     <string name="title_activity_send_email">Enviar e-mail</string>

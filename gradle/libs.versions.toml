@@ -16,6 +16,9 @@ materialVersion = "1.12.0"
 permissionDispatcherVersion = "4.8.0"
 sdkVersion = "6.0.0-alpha13"
 koinVersion = "4.0.0"
+slf4jVersion = "2.0.7"
+logbackAndroidVersion = "3.0.0"
+
 
 [libraries]
 activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityVersion" }
@@ -42,6 +45,8 @@ material = { group = "com.google.android.material", name = "material", version.r
 permissiondispatcher = { group = "com.github.permissions-dispatcher", name = "permissionsdispatcher", version.ref = "permissionDispatcherVersion" }
 permissiondispatcher-processor = { group = "com.github.permissions-dispatcher", name = "permissionsdispatcher-processor", version.ref = "permissionDispatcherVersion" }
 tools-desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarVersion" }
+logbackAndroid = { group = "com.github.tony19", name = "logback-android", version.ref = "logbackAndroidVersion" }
+slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4jVersion" }
 
 posmobile-datacontainer-data = { group = "co.stone.posmobile", name = "data-container-data", version.ref = "dataContainerDataVersion" }
 posmobile-sdk-core = { group = "co.stone.posmobile.sdk", name = "sdk-core", version.ref = "sdkVersion" }

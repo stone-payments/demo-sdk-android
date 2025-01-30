@@ -100,6 +100,9 @@ dependencies {
     implementation(libs.koinAndroid)
     implementation(libs.koinCompose)
 
+    implementation(libs.logbackAndroid)
+    implementation(libs.slf4j)
+
     coreLibraryDesugaring(libs.tools.desugar)
 
 //    implementation(libs.posmobile.datacontainer.data)

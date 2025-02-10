@@ -14,7 +14,9 @@ kotlinVersion = "2.0.20"
 lifecycleVersion = "2.8.7"
 materialVersion = "1.12.0"
 permissionDispatcherVersion = "4.8.0"
-sdkVersion = "6.0.0-alpha14"
+sdkVersion = "6.0.0-alpha19"
+sdkDebugVersion = "6.0.0-alpha14"
+
 koinVersion = "4.0.0"
 
 [libraries]
@@ -46,7 +48,7 @@ tools-desugar = { group = "com.android.tools", name = "desugar_jdk_libs", versio
 posmobile-datacontainer-data = { group = "co.stone.posmobile", name = "data-container-data", version.ref = "dataContainerDataVersion" }
 posmobile-sdk-core = { group = "co.stone.posmobile.sdk", name = "sdk-core", version.ref = "sdkVersion" }
 posmobile-sdk-core-android = { group = "co.stone.posmobile.sdk", name = "sdk-core-android", version.ref = "sdkVersion" }
-posmobile-sdk-debugmode = { group = "br.com.stone", name = "debugmode", version.ref = "sdkVersion" }
+posmobile-sdk-debugmode = { group = "br.com.stone", name = "debugmode", version.ref = "sdkDebugVersion" }
 
 #pos-android-sdk = { group = "br.com.stone", name = "stone-sdk", version.ref = "sdkVersion" }
 #pos-android-sdk-debugmode = { group = "br.com.stone.sdk.android", name = "debugmode", version.ref = "sdkVersion" }

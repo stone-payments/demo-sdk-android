@@ -106,13 +106,19 @@ class TransactionViewModel(
             val selectedAffiliationCode = uiState.value.selectedAffiliationCode
             val isContactlessEnabled = true
             val orderId = null
+            val cardPaymentMethod = when (uiState.value.selectedTypeOfTransaction) {
+                TypeOfTransactionEnum.CREDIT -> CardPaymentMethod.Credit(
+                    installmentTransaction = selectedInstallment,
+                )
+                TypeOfTransactionEnum.DEBIT -> CardPaymentMethod.Debit
+                TypeOfTransactionEnum.VOUCHER -> CardPaymentMethod.Voucher
+                else -> throw IllegalArgumentException("Invalid transaction type")
+            }
 
             val paymentInput = PaymentInput.CardPaymentInput(
                 amount = amount,
                 capture = captureTransaction,
-                cardPaymentMethod = CardPaymentMethod.Credit(
-                    installmentTransaction = selectedInstallment,
-                ),
+                cardPaymentMethod = cardPaymentMethod,
                 affiliationCode = selectedAffiliationCode,
                 isContactlessEnabled = isContactlessEnabled,
                 orderId = orderId

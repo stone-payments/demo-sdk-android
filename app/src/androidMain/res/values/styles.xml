@@ -1,0 +1,31 @@
+<resources>
+
+<!--  &lt;!&ndash; Base application theme. &ndash;&gt;-->
+<!--  <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
+<!--    &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+<!--  </style>-->
+
+<!--  <style name="AppThemeWithoutBar" parent="Theme.AppCompat.Light.NoActionBar">-->
+<!--    &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+<!--  </style>-->
+
+<!--  <style name="AppTheme.NoActionBar">-->
+<!--    <item name="windowActionBar">false</item>-->
+<!--    <item name="windowNoTitle">true</item>-->
+<!--  </style>-->
+
+<!--  <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>-->
+
+<!--  <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>-->
+
+  <style name="listItem">
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:background">@drawable/line_border</item>
+    <item name="android:minHeight">?android:attr/listPreferredItemHeightSmall</item>
+    <item name="android:paddingEnd">?android:attr/listPreferredItemPaddingEnd</item>
+    <item name="android:paddingStart">?android:attr/listPreferredItemPaddingStart</item>
+    <item name="android:textAppearance">?android:attr/textAppearanceListItemSmall</item>
+    <item name="android:layout_marginTop">0dp</item>
+    <item name="android:layout_marginBottom">0dp</item>
+  </style>
+</resources>

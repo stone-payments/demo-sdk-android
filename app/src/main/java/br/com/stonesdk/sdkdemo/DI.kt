@@ -19,6 +19,7 @@ import br.com.stonesdk.sdkdemo.activities.validation.ValidationViewModel
 import co.stone.posmobile.sdk.bluetooth.provider.BluetoothProvider
 import co.stone.posmobile.sdk.payment.provider.PaymentProvider
 import co.stone.posmobile.sdk.transactionList.provider.TransactionListProvider
+import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -76,7 +77,7 @@ val demoApplicationModule = module {
         ValidationViewModel(activationProviderWrapper = get())
     }
     viewModel {
-        DevicesViewModel(bluetoothProviderWrapper = get())
+        DevicesViewModel(bluetoothProviderWrapper = get(), context = androidApplication())
     }
     viewModel {
         DisplayMessageViewModel(displayMessageProviderWrapper = get())
@@ -87,7 +88,8 @@ val demoApplicationModule = module {
             activationProviderWrapper = get(),
             deviceInfoProviderWrapper = get(),
             installmentProvider = get(),
-            paymentProviderWrapper = get()
+            paymentProviderWrapper = get(),
+            context = androidApplication()
         )
     }
 

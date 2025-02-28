@@ -2,11 +2,13 @@ package br.com.stonesdk.sdkdemo.activities.devices
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.stonesdk.sdkdemo.activities.devices.BluetoothInfo.Companion.toDeviceInfo
 import br.com.stonesdk.sdkdemo.activities.devices.DeviceEffects.CloseScreen
+import br.com.stonesdk.sdkdemo.utils.PersistBTState
 import br.com.stonesdk.sdkdemo.utils.getCurrentDateTime
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +18,7 @@ import kotlinx.coroutines.launch
 
 class DevicesViewModel(
     private val bluetoothProviderWrapper: BluetoothProviderWrapper,
+    private val context: Context,
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<DevicePinpadUiModel> =
@@ -115,6 +118,14 @@ class DevicesViewModel(
                     is ConnectPinpadStatus.Success -> {
                         _uiState.update { it.copy(pinpadConnected = true) }
                         _sideEffects.emit(CloseScreen)
+
+                        PersistBTState.apply {
+                            saveBTState(
+                                context = context,
+                                stringOne = selectedDevice.name,
+                                stringTwo = selectedDevice.address
+                            )
+                        }
                     }
 
                     is ConnectPinpadStatus.Error -> {

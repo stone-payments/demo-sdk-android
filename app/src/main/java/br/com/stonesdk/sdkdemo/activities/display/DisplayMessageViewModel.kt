@@ -3,6 +3,7 @@ package br.com.stonesdk.sdkdemo.activities.display
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.stonesdk.sdkdemo.utils.getCurrentDateTime
+import co.stone.posmobile.sdk.bluetooth.provider.BluetoothProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

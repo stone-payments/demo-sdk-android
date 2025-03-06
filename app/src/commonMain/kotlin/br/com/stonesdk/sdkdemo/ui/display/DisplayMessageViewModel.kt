@@ -49,9 +49,9 @@ class DisplayMessageViewModel : ViewModel() {
 
 private fun getCurrentFormattedTimestamp(): String {
     val now = Clock.System.now()
-    val timeZone = TimeZone.currentSystemDefault() // Get the user's current time zone
-    val localDateTime = now.toLocalDateTime(timeZone) //Convert the instant to the local Timezone
-    return localDateTime.toString() // Or use any custom format you need
+    val timeZone = TimeZone.currentSystemDefault()
+    val localDateTime = now.toLocalDateTime(timeZone)
+    return localDateTime.toString()
 }
 
 data class DisplayMessageUiModel(

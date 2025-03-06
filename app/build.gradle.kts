@@ -50,6 +50,7 @@ kotlin {
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha12")
             implementation("co.stone.pos.mobile.sdk:sdk-core:6.0.0-alpha19-dev-020")
             implementation("co.stone.pos.mobile.sdk.manufacturer:manufacturer-serial:6.0.0-alpha19-dev-002")
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
             implementation(libs.platform.tools)
             implementation(libs.kotlin.logging)
 

@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+//import co.stone.posmobile.sdk.bluetooth.domain.model.BluetoothDevice
 import co.stone.posmobile.sdk.bluetooth.domain.model.BluetoothDevice
 
 

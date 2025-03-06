@@ -35,7 +35,7 @@ fun DemoApp(context: PlatformContext, appInfo: AppInfo) {
             composable("cancel-error-transactions") { CancelTransactionsScreen(navController) }
             composable("manage-stone-codes") { ManageStateScreen() }
             composable("paired-devices") { DeviceScreen() }
-            composable("display-message") { DisplayMessageScreen(context) }
+            composable("display-message") { DisplayMessageScreen() }
         }
 
     }

@@ -19,12 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.stonesdk.sdkdemo.ui.components.MonospacedText
-import co.stone.posmobile.lib.commons.platform.PlatformContext
-import org.jetbrains.compose.resources.stringResource
+
+private const val DISPLAY_MESSAGE_BUTTON_TEXT = "Mostrar Mensagem"
 
 @Composable
 fun DisplayMessageScreen(
-    context: PlatformContext,
     viewModel: DisplayMessageViewModel = viewModel { DisplayMessageViewModel() }
 ) {
 
@@ -67,7 +66,7 @@ fun DisplayMessageContent(
                 .padding(16.dp),
             onClick = { onDisplayMessage(message) },
         ) {
-            Text(text = stringResource(id = R.string.display_message_button))
+            Text(DISPLAY_MESSAGE_BUTTON_TEXT)
         }
 
         LazyColumn {
@@ -85,3 +84,4 @@ fun DisplayMessageContent(
         }
     }
 }
+

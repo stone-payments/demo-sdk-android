@@ -1,26 +1,24 @@
-
-def keystorePropertiesFile = rootProject.file("positivo/positivo-keystore.properties")
+def keystorePropertiesFile = rootProject.file("sunmi/sunmi-keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
 android {
-
     signingConfigs {
-        positivo {
-            storeFile file("../positivo/${keystoreProperties['storeFile']}")
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storePassword keystoreProperties['storePassword']
+        sunmi {
+            storeFile rootProject.file("$rootDir/sunmi/${keystoreProperties.getProperty('storeFile', System.env.SUNMI_KEYSTORE_FILE)}")
+            keyAlias keystoreProperties.getProperty('keyAlias', System.env.SUNMI_KEYSTORE_ALIAS)
+            keyPassword keystoreProperties.getProperty('keyPassword', System.env.SUNMI_KEYSTORE_KEY_PASSWORD)
+            storePassword keystoreProperties.getProperty('storePassword', System.env.SUNMI_KEYSTORE_PASSWORD)
         }
     }
 
-    buildTypes {
-        positivo {
-            initWith debug
-            signingConfig signingConfigs.positivo
-            matchingFallbacks = ['debug']
+    productFlavors {
+        sunmi {
+            dimension "model"
+            signingConfig signingConfigs.sunmi
+            versionNameSuffix "-sunmi"
         }
     }
 }

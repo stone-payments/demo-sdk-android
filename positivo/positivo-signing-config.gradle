@@ -1,4 +1,4 @@
-def keystorePropertiesFile = rootProject.file("positivo/positivo-keystore.properties")
+def keystorePropertiesFile = rootProject.file("$rootDir/positivo/positivo-keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
@@ -7,7 +7,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     signingConfigs {
         positivoStandard {
-            storeFile rootProject.file("$rootDir/positivo/${keystoreProperties.getProperty('storeFile', System.env.POSITIVO_KEYSTORE_FILE)}")
+            storeFile rootProject.file("positivo/${keystoreProperties.getProperty('storeFile', System.env.POSITIVO_KEYSTORE_FILE)}")
             keyAlias keystoreProperties.getProperty('keyAlias', System.env.POSITIVO_KEYSTORE_ALIAS)
             keyPassword keystoreProperties.getProperty('keyPassword', System.env.POSITIVO_KEYSTORE_KEY_PASSWORD)
             storePassword keystoreProperties.getProperty('storePassword', System.env.POSITIVO_KEYSTORE_PASSWORD)

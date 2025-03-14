@@ -1,4 +1,4 @@
-def keystorePropertiesFile = rootProject.file("sunmi/sunmi-keystore.properties")
+def keystorePropertiesFile = rootProject.file("$rootDir/sunmi/sunmi-keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
@@ -7,7 +7,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     signingConfigs {
         sunmi {
-            storeFile rootProject.file("$rootDir/sunmi/${keystoreProperties.getProperty('storeFile', System.env.SUNMI_KEYSTORE_FILE)}")
+            storeFile rootProject.file("sunmi/${keystoreProperties.getProperty('storeFile', System.env.SUNMI_KEYSTORE_FILE)}")
             keyAlias keystoreProperties.getProperty('keyAlias', System.env.SUNMI_KEYSTORE_ALIAS)
             keyPassword keystoreProperties.getProperty('keyPassword', System.env.SUNMI_KEYSTORE_KEY_PASSWORD)
             storePassword keystoreProperties.getProperty('storePassword', System.env.SUNMI_KEYSTORE_PASSWORD)

@@ -1,4 +1,4 @@
-def keystorePropertiesFile = rootProject.file("tectoy/tectoy-keystore.properties")
+def keystorePropertiesFile = rootProject.file("$rootDir/tectoy/tectoy-keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
@@ -7,7 +7,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     signingConfigs {
         tectoy {
-            storeFile rootProject.file("$rootDir/tectoy/${keystoreProperties.getProperty('storeFile', System.env.TECTOY_KEYSTORE_FILE)}")
+            storeFile rootProject.file("tectoy/${keystoreProperties.getProperty('storeFile', System.env.TECTOY_KEYSTORE_FILE)}")
             keyAlias keystoreProperties.getProperty('keyAlias', System.env.TECTOY_KEYSTORE_ALIAS)
             keyPassword keystoreProperties.getProperty('keyPassword', System.env.TECTOY_KEYSTORE_KEY_PASSWORD)
             storePassword keystoreProperties.getProperty('storePassword', System.env.TECTOY_KEYSTORE_PASSWORD)

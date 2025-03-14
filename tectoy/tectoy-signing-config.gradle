@@ -1,4 +1,4 @@
-def keystorePropertiesFile = rootProject.file("$rootDir/tectoy/tectoy-keystore.properties")
+def keystorePropertiesFile = rootProject.file("tectoy/tectoy-keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))

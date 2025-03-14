@@ -1,4 +1,4 @@
-def keystorePropertiesFile = rootProject.file("$rootDir/sunmi/sunmi-keystore.properties")
+def keystorePropertiesFile = rootProject.file("sunmi/sunmi-keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))

@@ -1,4 +1,4 @@
-def keystorePropertiesFile = rootProject.file("$rootDir/positivo/positivo-keystore.properties")
+def keystorePropertiesFile = rootProject.file("positivo/positivo-keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))

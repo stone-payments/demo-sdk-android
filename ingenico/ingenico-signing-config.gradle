@@ -1,4 +1,4 @@
-def keystorePropertiesFile = rootProject.file("$rootDir/ingenico/ingenico-keystore.properties")
+def keystorePropertiesFile = rootProject.file("ingenico/ingenico-keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))

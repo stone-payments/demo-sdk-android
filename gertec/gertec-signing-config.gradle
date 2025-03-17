@@ -6,7 +6,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     signingConfigs {
-        gertecGpos700 {
+        gertec {
             storeFile rootProject.file("gertec/${keystoreProperties.getProperty('storeFile', System.env.GERTEC_KEYSTORE_FILE)}")
             keyAlias keystoreProperties.getProperty('keyAlias', System.env.GERTEC_KEYSTORE_ALIAS)
             keyPassword keystoreProperties.getProperty('keyPassword', System.env.GERTEC_KEYSTORE_KEY_PASSWORD)
@@ -15,10 +15,10 @@ android {
     }
 
     productFlavors {
-        gertecGpos700 {
+        gertec {
             dimension "model"
-            signingConfig signingConfigs.gertecGpos700
-            versionNameSuffix "-gertecGpos700"
+            signingConfig signingConfigs.gertec
+            versionNameSuffix "-gertec"
         }
     }
 }

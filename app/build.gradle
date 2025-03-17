@@ -1,11 +1,15 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply from: '../gertec/gertec-signing-config.gradle'
 apply from: '../positivo/positivo-signing-config.gradle'
+apply from: '../gertec/gertec-signing-config.gradle'
+apply from: '../ingenico/ingenico-signing-config.gradle'
+apply from: '../sunmi/sunmi-signing-config.gradle'
+apply from: '../tectoy/tectoy-signing-config.gradle'
 
 android {
     compileSdkVersion 34
     buildToolsVersion '28.0.3'
+    flavorDimensions = ["model"]
 
     defaultConfig {
         applicationId "br.com.stonesdk.sdkdemo"
@@ -19,6 +23,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig null
         }
     }
 
@@ -46,10 +53,11 @@ dependencies {
 
     implementation "br.com.stone:stone-sdk:$stone_sdk_version"
     implementation "br.com.stone:stone-sdk-posandroid:$stone_sdk_version"
-    implementation "br.com.stone:stone-sdk-posandroid-ingenico:$stone_sdk_version"
-    implementation "br.com.stone:stone-sdk-posandroid-positivo:$stone_sdk_version"
-    implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
-    implementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
+    ingenicoImplementation "br.com.stone:stone-sdk-posandroid-ingenico:$stone_sdk_version"
+    sunmiImplementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
+    tectoySeriesTImplementation "br.com.stone:stone-sdk-posandroid-tectoy:$stone_sdk_version"
+    gertecGpos700Implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
+    positivoSeriesLImplementation "br.com.stone:stone-sdk-posandroid-positivo:$stone_sdk_version"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 

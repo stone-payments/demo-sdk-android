@@ -14,7 +14,9 @@ kotlinVersion = "2.0.20"
 lifecycleVersion = "2.8.7"
 materialVersion = "1.12.0"
 permissionDispatcherVersion = "4.8.0"
-sdkVersion = "6.0.0-alpha13"
+sdkVersion = "6.0.0-alpha32"
+sdkDebugVersion = "6.0.0-alpha21"
+
 koinVersion = "4.0.0"
 slf4jVersion = "2.0.7"
 logbackAndroidVersion = "3.0.0"
@@ -51,7 +53,7 @@ slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4jVersion" 
 posmobile-datacontainer-data = { group = "co.stone.posmobile", name = "data-container-data", version.ref = "dataContainerDataVersion" }
 posmobile-sdk-core = { group = "co.stone.posmobile.sdk", name = "sdk-core", version.ref = "sdkVersion" }
 posmobile-sdk-core-android = { group = "co.stone.posmobile.sdk", name = "sdk-core-android", version.ref = "sdkVersion" }
-posmobile-sdk-debugmode = { group = "br.com.stone", name = "debugmode", version.ref = "sdkVersion" }
+posmobile-sdk-debugmode = { group = "br.com.stone", name = "debugmode", version.ref = "sdkDebugVersion" }
 
 #pos-android-sdk = { group = "br.com.stone", name = "stone-sdk", version.ref = "sdkVersion" }
 #pos-android-sdk-debugmode = { group = "br.com.stone.sdk.android", name = "debugmode", version.ref = "sdkVersion" }

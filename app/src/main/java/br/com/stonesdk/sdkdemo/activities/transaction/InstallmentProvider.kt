@@ -17,7 +17,7 @@ class InstallmentProvider {
         when (transactionType) {
             TypeOfTransactionEnum.CREDIT -> {
                 repeat(maxInstallments){ index ->
-                    val installment = if(merchantInterest)
+                    val installment = if (merchantInterest)
                         InstallmentTransaction.Merchant(index + 1)
                     else
                         InstallmentTransaction.Issuer(index + 1)

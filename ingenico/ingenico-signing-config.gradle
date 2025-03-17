@@ -5,19 +5,10 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    signingConfigs {
-        ingenico {
-            storeFile rootProject.file("ingenico/${keystoreProperties.getProperty('storeFile', System.env.INGENICO_KEYSTORE_FILE)}")
-            keyAlias keystoreProperties.getProperty('keyAlias', System.env.INGENICO_KEYSTORE_ALIAS)
-            keyPassword keystoreProperties.getProperty('keyPassword', System.env.INGENICO_KEYSTORE_KEY_PASSWORD)
-            storePassword keystoreProperties.getProperty('storePassword', System.env.INGENICO_KEYSTORE_PASSWORD)
-        }
-    }
-
     productFlavors {
         ingenico {
             dimension "model"
-            signingConfig signingConfigs.ingenico
+            signingConfig signingConfigs.debug
             versionNameSuffix "-ingenico"
         }
     }

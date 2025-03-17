@@ -20,7 +20,8 @@ extends:
   parameters:
     projectBuildExcludes: '-x test -x lint'
     projectTestTask: 'testDebugUnitTest'
-    positivoJks: false
+    positivoJks: true
+    gertecJks: true
     hasArchivesToUpload: false
     preBuildSteps:
       - task: JavaToolInstaller@0

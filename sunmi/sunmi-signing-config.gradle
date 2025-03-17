@@ -5,19 +5,10 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    signingConfigs {
-        sunmi {
-            storeFile rootProject.file("sunmi/${keystoreProperties.getProperty('storeFile', System.env.SUNMI_KEYSTORE_FILE)}")
-            keyAlias keystoreProperties.getProperty('keyAlias', System.env.SUNMI_KEYSTORE_ALIAS)
-            keyPassword keystoreProperties.getProperty('keyPassword', System.env.SUNMI_KEYSTORE_KEY_PASSWORD)
-            storePassword keystoreProperties.getProperty('storePassword', System.env.SUNMI_KEYSTORE_PASSWORD)
-        }
-    }
-
     productFlavors {
         sunmi {
             dimension "model"
-            signingConfig signingConfigs.sunmi
+            signingConfig signingConfigs.debug
             versionNameSuffix "-sunmi"
         }
     }

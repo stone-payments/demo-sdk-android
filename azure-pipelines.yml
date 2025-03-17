@@ -23,5 +23,12 @@ extends:
     projectTestTask: 'testDebugUnitTest'
     positivoJks: false
     hasArchivesToUpload: false
+    preBuildSteps:
+      - task: JavaToolInstaller@0
+        displayName: Install Java 17
+        inputs:
+          versionSpec: '17'
+          jdkArchitectureOption: 'x64'
+          jdkSourceOption: 'PreInstalled'
     hasGoogleServices: false
     projectMainModule: 'app'

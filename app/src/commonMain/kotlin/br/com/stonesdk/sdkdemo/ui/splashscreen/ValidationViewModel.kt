@@ -13,12 +13,10 @@ import co.stone.posmobile.sdk.stoneStart.domain.model.Organization
 import co.stone.posmobile.sdk.stoneStart.provider.StoneStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ValidationViewModel() : ViewModel() {
 
@@ -56,73 +54,73 @@ class ValidationViewModel() : ViewModel() {
 
     fun initializeSDK(context: PlatformContext, info: AppInfo) {
         viewModelScope.launch {
-            if (StoneStart.isInitialized) {
-                MerchantProvider.create()
-                    .getAllMerchants(object : StoneResultCallback<List<Merchant>> {
-                        override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                            viewModelScope.launch {
-                                println(">>> stoneStatus: $stoneStatus, throwable: $throwable")
-                                _uiState.emit(
-                                    SplashScreenState.Error(
-                                        stoneStatus?.code ?: "",
-                                        stoneStatus?.message ?: ""
-                                    )
-                                )
-                            }
-                        }
-
-                        override fun onSuccess(result: List<Merchant>) {
-                            if (result.isEmpty()) {
-                                viewModelScope.launch {
-                                    _uiState.emit(SplashScreenState.NotActivated)
-                                }
-                            } else {
-                                viewModelScope.launch {
-                                    _uiState.emit(SplashScreenState.Activated)
-                                }
-                            }
-                        }
-
-                    })
-            } else {
-                val callback = object : StoneResultCallback<List<Merchant>> {
-                    override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                        viewModelScope.launch {
-                            println(">>> stoneStatus: $stoneStatus, throwable: $throwable")
-                            _uiState.emit(
-                                SplashScreenState.Error(
-                                    stoneStatus?.code ?: "",
-                                    stoneStatus?.message ?: ""
-                                )
-                            )
-                        }
-                    }
-
-                    override fun onSuccess(result: List<Merchant>) {
-                        if (result.isEmpty()) {
-                            viewModelScope.launch {
-                                _uiState.emit(SplashScreenState.NotActivated)
-                            }
-                        } else {
-                            viewModelScope.launch {
-                                _uiState.emit(SplashScreenState.Activated)
-                            }
-                        }
-                    }
-
-                }
-
-                StoneStart.init(
-                    context,
-                    Organization.Stone,
-                    info.appName,
-                    info.appVersion,
-                    info.packageName,
-                    callback,
-                    StoneStart.StoneEnvironment.STAGING
-                )
-
-            }
+//            if (StoneStart.isInitialized) {
+//                MerchantProvider.create()
+//                    .getAllMerchants(object : StoneResultCallback<List<Merchant>> {
+//                        override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+//                            viewModelScope.launch {
+//                                println(">>> stoneStatus: $stoneStatus, throwable: $throwable")
+//                                _uiState.emit(
+//                                    SplashScreenState.Error(
+//                                        stoneStatus?.code ?: "",
+//                                        stoneStatus?.message ?: ""
+//                                    )
+//                                )
+//                            }
+//                        }
+//
+//                        override fun onSuccess(result: List<Merchant>) {
+//                            if (result.isEmpty()) {
+//                                viewModelScope.launch {
+//                                    _uiState.emit(SplashScreenState.NotActivated)
+//                                }
+//                            } else {
+//                                viewModelScope.launch {
+//                                    _uiState.emit(SplashScreenState.Activated)
+//                                }
+//                            }
+//                        }
+//
+//                    })
+//            } else {
+//                val callback = object : StoneResultCallback<List<Merchant>> {
+//                    override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+//                        viewModelScope.launch {
+//                            println(">>> stoneStatus: $stoneStatus, throwable: $throwable")
+//                            _uiState.emit(
+//                                SplashScreenState.Error(
+//                                    stoneStatus?.code ?: "",
+//                                    stoneStatus?.message ?: ""
+//                                )
+//                            )
+//                        }
+//                    }
+//
+//                    override fun onSuccess(result: List<Merchant>) {
+//                        if (result.isEmpty()) {
+//                            viewModelScope.launch {
+//                                _uiState.emit(SplashScreenState.NotActivated)
+//                            }
+//                        } else {
+//                            viewModelScope.launch {
+//                                _uiState.emit(SplashScreenState.Activated)
+//                            }
+//                        }
+//                    }
+//
+//                }
+//
+//                StoneStart.init(
+//                    context,
+//                    Organization.Stone,
+//                    info.appName,
+//                    info.appVersion,
+//                    info.packageName,
+//                    callback,
+//                    StoneStart.StoneEnvironment.STAGING
+//                )
+//
+//            }
         }
     }
 }

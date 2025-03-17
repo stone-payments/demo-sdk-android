@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.stone.sdk.android.error.StoneStatus
 import co.stone.posmobile.sdk.callback.StoneResultCallback
-import co.stone.posmobile.sdk.payment.domain.model.response.PaymentData
+//import co.stone.posmobile.sdk.payment.domain.model.response.PaymentData
 import co.stone.posmobile.sdk.transactionList.provider.TransactionListProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,40 +26,41 @@ class TransactionListViewModel() : ViewModel() {
 
         viewModelScope.launch {
             _uiState.update { it.copy(loading = true) }
-            val provider = TransactionListProvider.create()
-            provider.getAllTransactions(object : StoneResultCallback<List<PaymentData>> {
-                override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                    _uiState.update {
-                        it.copy(
-                            transactions = emptyList(),
-                            loading = false,
-                            errorMessage = stoneStatus?.message ?: throwable.message
-                        )
-                    }
-                }
 
-                override fun onSuccess(result: List<PaymentData>) {
-                    val transactions =
-                        result.sortedByDescending { it.transactionId }
-                            .map { transaction ->
-                                Transaction(
-                                    id = transaction.transactionId.toString(),
-                                    authorizedAmount = transaction.amountAuthorized.parseCentsToCurrency(),
-                                    authorizationDate = transaction.time,
-                                    atk = transaction.acquirerTransactionKey,
-                                    status = transaction.transactionStatus.name
-                                )
-                            }
-
-                    _uiState.update {
-                        it.copy(
-                            transactions = transactions,
-                            loading = false
-                        )
-                    }
-
-                }
-            })
+//            val provider = TransactionListProvider.create()
+//            provider.getAllTransactions(object : StoneResultCallback<List<PaymentData>> {
+//                override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+//                    _uiState.update {
+//                        it.copy(
+//                            transactions = emptyList(),
+//                            loading = false,
+//                            errorMessage = stoneStatus?.message ?: throwable.message
+//                        )
+//                    }
+//                }
+//
+//                override fun onSuccess(result: List<PaymentData>) {
+//                    val transactions =
+//                        result.sortedByDescending { it.transactionId }
+//                            .map { transaction ->
+//                                Transaction(
+//                                    id = transaction.transactionId.toString(),
+//                                    authorizedAmount = transaction.amountAuthorized.parseCentsToCurrency(),
+//                                    authorizationDate = transaction.time,
+//                                    atk = transaction.acquirerTransactionKey,
+//                                    status = transaction.transactionStatus.name
+//                                )
+//                            }
+//
+//                    _uiState.update {
+//                        it.copy(
+//                            transactions = transactions,
+//                            loading = false
+//                        )
+//                    }
+//
+//                }
+//            })
         }
     }
 

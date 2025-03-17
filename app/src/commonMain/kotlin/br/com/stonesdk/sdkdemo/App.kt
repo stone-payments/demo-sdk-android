@@ -22,7 +22,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun DemoApp(context: PlatformContext, appInfo: AppInfo) {
     MaterialTheme {
         val navController = rememberNavController()
-        NavHost(navController = navController, startDestination = "paired-devices") {
+        NavHost(navController = navController, startDestination = "home") {
             composable("splash-screen") {
                 ValidationScreen(
                     context,

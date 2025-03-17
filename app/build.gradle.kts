@@ -100,6 +100,7 @@ configurations.all {
 }
 
 dependencies {
+    implementation(libs.androidx.lifecycle.viewmodel.android)
     debugImplementation(compose.uiTooling)
     coreLibraryDesugaring(libs.tools.desugar)
 }

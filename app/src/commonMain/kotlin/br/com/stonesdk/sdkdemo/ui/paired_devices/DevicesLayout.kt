@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 //import co.stone.posmobile.sdk.bluetooth.domain.model.BluetoothDevice
-import co.stone.posmobile.sdk.bluetooth.domain.model.BluetoothDevice
+//import co.stone.posmobile.sdk.bluetooth.domain.model.BluetoothDevice
 
 
 data class BluetoothInfo(
@@ -23,8 +23,8 @@ data class BluetoothInfo(
     companion object {
         fun BluetoothDevice.toDeviceInfo(): BluetoothInfo {
             return BluetoothInfo(
-                name = this.deviceName,
-                address = this.hardwareAddress
+                name = "",
+                address = ""
             )
         }
     }

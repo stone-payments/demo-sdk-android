@@ -39,6 +39,7 @@ uiToolingPreviewAndroidVersion = "1.7.8"
 material3AndroidVersion = "1.3.1"
 platformToolsVersion = "1.0.0-RC4"
 kotlinLoggingVersion = "5.1.0"
+lifecycleViewmodelAndroidVersion = "2.8.7"
 
 [libraries]
 #activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityVersion" }
@@ -54,9 +55,10 @@ kotlinLoggingVersion = "5.1.0"
 #constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintLayoutVersion" }
 #fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentVersion" }
 gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "gradlePluginVersion" }
-#koinCore = { group = "io.insert-koin", name = "koin-core", version.ref = "koinVersion" }
-#koinAndroid = { group = "io.insert-koin", name = "koin-android", version.ref = "koinVersion" }
-#koinCompose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koinVersion" }
+koinCore = { group = "io.insert-koin", name = "koin-core", version.ref = "koinVersion" }
+koinAndroid = { group = "io.insert-koin", name = "koin-android", version.ref = "koinVersion" }
+koin-composeVM = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koinVersion" }
+koinCompose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koinVersion" }
 kotlinGradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlinVersion" }
 #lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleVersion" }
 #lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleVersion" }
@@ -78,6 +80,7 @@ androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle
 #androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3AndroidVersion" }
 platform-tools = { module = "co.stone.pos.mobile:platform-tools", version.ref = "platformToolsVersion" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlinLoggingVersion" }
+androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroidVersion" }
 
 #pos-android-sdk = { group = "br.com.stone", name = "stone-sdk", version.ref = "sdkVersion" }
 #pos-android-sdk-debugmode = { group = "br.com.stone.sdk.android", name = "debugmode", version.ref = "sdkVersion" }

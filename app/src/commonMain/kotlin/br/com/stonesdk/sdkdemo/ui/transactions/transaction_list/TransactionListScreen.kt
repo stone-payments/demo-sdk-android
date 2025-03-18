@@ -1,4 +1,4 @@
-package br.com.stonesdk.sdkdemo.ui.transactions
+package br.com.stonesdk.sdkdemo.ui.transactions.transaction_list
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

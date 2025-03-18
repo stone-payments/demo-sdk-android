@@ -11,7 +11,8 @@ import br.com.stonesdk.sdkdemo.ui.display.DisplayMessageScreen
 import br.com.stonesdk.sdkdemo.ui.main.MainScreen
 import br.com.stonesdk.sdkdemo.ui.paired_devices.DeviceScreen
 import br.com.stonesdk.sdkdemo.ui.splashscreen.ValidationScreen
-import br.com.stonesdk.sdkdemo.ui.transactions.TransactionListScreen
+import br.com.stonesdk.sdkdemo.ui.transactions.TransactionScreen
+import br.com.stonesdk.sdkdemo.ui.transactions.transaction_list.TransactionListScreen
 import br.com.stonesdk.sdkdemo.utils.AppInfo
 import co.stone.posmobile.lib.commons.platform.PlatformContext
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -22,7 +23,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun DemoApp(context: PlatformContext, appInfo: AppInfo) {
     MaterialTheme {
         val navController = rememberNavController()
-        NavHost(navController = navController, startDestination = "home") {
+        NavHost(navController = navController, startDestination = "splash-screen") {
             composable("splash-screen") {
                 ValidationScreen(
                     context,
@@ -35,8 +36,8 @@ fun DemoApp(context: PlatformContext, appInfo: AppInfo) {
             composable("cancel-error-transactions") { CancelTransactionsScreen(navController) }
             composable("manage-stone-codes") { ManageStateScreen() }
             composable("paired-devices") { DeviceScreen() }
-            composable("display-message") { DisplayMessageScreen() }
+            composable("show-message") { DisplayMessageScreen() }
+            composable("make-transaction") { TransactionScreen() }
         }
-
     }
 }

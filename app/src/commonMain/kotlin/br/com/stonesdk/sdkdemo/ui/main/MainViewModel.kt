@@ -51,7 +51,6 @@ class MainViewModel(
             MainNavigationOption.PinpadPairedDevices,
             MainNavigationOption.PinpadMakeTransaction,
             MainNavigationOption.PinpadShowMessage,
-            MainNavigationOption.PinpadDisconnect
         )
     }
 

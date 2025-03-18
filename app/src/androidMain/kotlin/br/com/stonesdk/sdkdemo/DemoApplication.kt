@@ -4,7 +4,6 @@ import android.app.Application
 import android.util.Log
 import co.stone.posmobile.sdk.callback.StoneResultCallback
 import co.stone.posmobile.sdk.merchant.domain.model.Merchant
-Z
 class DemoApplication : Application() {
 
     override fun onCreate() {

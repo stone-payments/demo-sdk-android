@@ -115,9 +115,16 @@ class TransactionViewModel(
             val isContactlessEnabled = true
             val orderId = null
             val cardPaymentMethod = when (uiState.value.selectedTypeOfTransaction) {
-                TypeOfTransactionEnum.CREDIT -> CardPaymentMethod.Credit(
-                    installmentTransaction = selectedInstallment,
-                )
+                TypeOfTransactionEnum.CREDIT -> {
+                    val installmentType = if(selectedInstallment.installmentNumber <= 1) {
+                        InstallmentTransaction.None()
+                    } else {
+                        selectedInstallment
+                    }
+                    CardPaymentMethod.Credit(
+                        installmentTransaction = installmentType,
+                    )
+                }
                 TypeOfTransactionEnum.DEBIT -> CardPaymentMethod.Debit
                 TypeOfTransactionEnum.VOUCHER -> CardPaymentMethod.Voucher
                 else -> throw IllegalArgumentException("Invalid transaction type")
@@ -212,7 +219,7 @@ data class TransactionUiModel(
     val typeOfTransactions: List<TypeOfTransactionEnum> = emptyList(),
     val selectedTypeOfTransaction: TypeOfTransactionEnum = TypeOfTransactionEnum.CREDIT,
     val installments: List<InstallmentTransaction> = emptyList(),
-    val selectedInstallment: InstallmentTransaction = InstallmentTransaction.Merchant(1),
+    val selectedInstallment: InstallmentTransaction = InstallmentTransaction.Merchant(0),
     val affiliationCodes: List<String> = emptyList(),
     val selectedAffiliationCode: String = "",
     val logMessages: List<String> = emptyList(),

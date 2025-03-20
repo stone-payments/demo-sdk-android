@@ -8,8 +8,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class BluetoothDeviceRepository() {
     val provider: BluetoothProvider
@@ -17,18 +22,26 @@ class BluetoothDeviceRepository() {
 
     val scope = CoroutineScope(Dispatchers.IO)
 
-    fun startScan() = callbackFlow<List<BluetoothDevice>> {
+    fun startScan() : Flow<List<BluetoothDevice>> = channelFlow{
         println(">>> startScan")
-
         provider.discoverPinpad(object : StoneResultCallback<List<BluetoothDevice>>{
             override fun onSuccess(result: List<BluetoothDevice>) {
-                trySend(result)
+                runBlocking {
+                    trySend(result)
+                }
             }
 
             override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-
+                println(">>> onError")
+                throwable.printStackTrace()
             }
         })
+
+        awaitClose {
+            println(">>> awaitClose")
+            provider.stopDiscover()
+        }
+
     }
 
     fun stopScan() {

@@ -109,18 +109,18 @@ class TransactionViewModel(
             val orderId = null
 
             val paymentInput = PaymentInput.CardPaymentInput(
-                amount = amount,
-                cardPaymentMethod = CardPaymentMethod.Credit(
-                    installmentTransaction = selectedInstallment,
+                amount,
+                captureTransaction,
+                CardPaymentMethod.Credit(
+                     selectedInstallment,
                 ),
-                affiliationCode = selectedAffiliationCode,
-                isContactlessEnabled = isContactlessEnabled,
-                orderId = orderId,
-                capture = captureTransaction,
-                initiatorTransactionKey = null,
-                emailClient = null,
-                shortName = null,
-                subMerchant = null
+                null,
+                null,
+                null,
+                null,
+                selectedAffiliationCode,
+                isContactlessEnabled,
+                orderId,
             )
 
             paymentProviderWrapper.startPayment(paymentInput).collectLatest { status ->

@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 
 
@@ -20,14 +21,16 @@ data class DevicePinpadUiModel(
     }
 }
 
-class DevicesViewModel : ViewModel() {
+class DevicesViewModel() : ViewModel() {
 
     var state by mutableStateOf(DevicePinpadUiModel())
         private set
 
+    var repository = BluetoothDeviceRepository()
+
     fun startDevicesScan() {
         viewModelScope.launch(Dispatchers.IO) {
-            BluetoothDevice().startScan().collect { bluetoothDeviceList ->
+            repository.startScan().collect { bluetoothDeviceList ->
                 state = state.copy(
                     bluetoothDevices = bluetoothDeviceList.map {
                         BluetoothInfo(
@@ -42,12 +45,12 @@ class DevicesViewModel : ViewModel() {
 
 
     fun stopScan() {
-        BluetoothDevice().stopScan()
+        repository.stopScan()
     }
 
     fun connect(bluetoothInfo: BluetoothInfo) {
         viewModelScope.launch(Dispatchers.IO) {
-            BluetoothDevice().connect(bluetoothInfo.address).onSuccess {
+            repository.connect(bluetoothInfo.address).onSuccess {
                 state = state.copy(
                     pinpadConnected = true
                 )
@@ -56,7 +59,7 @@ class DevicesViewModel : ViewModel() {
     }
 
     fun disconnect() {
-        BluetoothDevice().disconnect()
+        repository.disconnect()
         state = state.copy(
             pinpadConnected = false
         )

@@ -48,7 +48,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
 //            implementation(libs.androidx.material3.android)
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha12")
-            implementation("co.stone.pos.mobile.sdk:sdk-core:6.0.0-alpha19-dev-033")
+            implementation("co.stone.pos.mobile.sdk:sdk-core:6.0.0-alpha19-dev-034")
             implementation("co.stone.pos.mobile.sdk.manufacturer:manufacturer-serial:6.0.0-alpha19-dev-026")
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
             implementation(libs.platform.tools)

@@ -5,16 +5,7 @@ import androidx.compose.runtime.Composable
 data class BluetoothInfo(
     val name: String,
     val address: String,
-) {
-    companion object {
-        fun BluetoothDevice.toDeviceInfo(): BluetoothInfo {
-            return BluetoothInfo(
-                name = "",
-                address = ""
-            )
-        }
-    }
-}
+)
 
 
 @Composable

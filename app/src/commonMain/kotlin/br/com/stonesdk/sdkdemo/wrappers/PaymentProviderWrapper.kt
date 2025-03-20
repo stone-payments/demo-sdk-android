@@ -19,7 +19,7 @@ class PaymentProviderWrapper {
     fun startPayment(paymentInput: PaymentInput): Flow<TransactionStatus> {
         return callbackFlow {
             paymentProvider.startPayment(
-                paymentInput = paymentInput,
+                paymentInput,
                 object : StonePaymentResultCallback<PaymentData> {
                     override fun onSuccess(result: PaymentData) {
                         launch { send(TransactionStatus.Success) }

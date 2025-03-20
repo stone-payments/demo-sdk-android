@@ -27,7 +27,9 @@ class DevicesViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(DevicePinpadUiModel())
 
     fun startDevicesScan() {
-       BluetoothDevice().startScan()
+        viewModelScope.launch {
+//            BluetoothManager().start()
+        }
     }
 
 

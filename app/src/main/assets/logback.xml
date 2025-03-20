@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+    <property name="log_path" value="${EXTERNAL_STORAGE}"/>
+    <property name="logcat_pattern" value="%thread %msg%n"/>
+    <property name="file_pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %1.-1level/%logger{36}: [%thread] %msg%n"/>
+
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="Logcat" class="ch.qos.logback.classic.android.LogcatAppender">
+        <tagEncoder>
+            <pattern>%logger{12}</pattern>
+        </tagEncoder>
+        <encoder>
+            <pattern>${logcat_pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <root level="trace">
+        <appender-ref ref="Logcat" />
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

@@ -54,35 +54,36 @@ class ValidationViewModel() : ViewModel() {
 
     fun initializeSDK(context: PlatformContext, info: AppInfo) {
         viewModelScope.launch {
-            if (StoneStart.isInitialized) {
-                MerchantProvider.create()
-                    .getAllMerchants(object : StoneResultCallback<List<Merchant>> {
-                        override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                            viewModelScope.launch {
-                                println(">>> stoneStatus: $stoneStatus, throwable: $throwable")
-                                _uiState.emit(
-                                    SplashScreenState.Error(
-                                        stoneStatus?.code ?: "",
-                                        stoneStatus?.message ?: ""
-                                    )
-                                )
-                            }
-                        }
-
-                        override fun onSuccess(result: List<Merchant>) {
-                            if (result.isEmpty()) {
-                                viewModelScope.launch {
-                                    _uiState.emit(SplashScreenState.NotActivated)
-                                }
-                            } else {
-                                viewModelScope.launch {
-                                    _uiState.emit(SplashScreenState.Activated)
-                                }
-                            }
-                        }
-
-                    })
-            } else {
+            //TODO Ver a inicialização do sdk não esta legal
+//            if (false) {
+//                MerchantProvider.create()
+//                    .getAllMerchants(object : StoneResultCallback<List<Merchant>> {
+//                        override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+//                            viewModelScope.launch {
+//                                println(">>> stoneStatus: $stoneStatus, throwable: $throwable")
+//                                _uiState.emit(
+//                                    SplashScreenState.Error(
+//                                        stoneStatus?.code ?: "",
+//                                        stoneStatus?.message ?: ""
+//                                    )
+//                                )
+//                            }
+//                        }
+//
+//                        override fun onSuccess(result: List<Merchant>) {
+//                            if (result.isEmpty()) {
+//                                viewModelScope.launch {
+//                                    _uiState.emit(SplashScreenState.NotActivated)
+//                                }
+//                            } else {
+//                                viewModelScope.launch {
+//                                    _uiState.emit(SplashScreenState.Activated)
+//                                }
+//                            }
+//                        }
+//
+//                    })
+//            } else {
                 val callback = object : StoneResultCallback<List<Merchant>> {
                     override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
                         viewModelScope.launch {
@@ -121,7 +122,7 @@ class ValidationViewModel() : ViewModel() {
                 )
 
             }
-        }
+//        }
     }
 }
 

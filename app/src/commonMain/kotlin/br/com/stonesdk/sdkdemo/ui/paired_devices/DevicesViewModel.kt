@@ -35,7 +35,8 @@ class DevicesViewModel() : ViewModel() {
                     bluetoothDevices = bluetoothDeviceList.map {
                         BluetoothInfo(
                             name = it.deviceName,
-                            address = it.hardwareAddress
+                            address = it.hardwareAddress,
+                            isConnected = it.isConnected
                         )
                     }.distinctBy { it.address }
                 )

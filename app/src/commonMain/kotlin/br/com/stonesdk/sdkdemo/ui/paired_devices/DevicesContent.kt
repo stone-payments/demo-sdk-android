@@ -26,7 +26,8 @@ fun DevicesContent(
     onStopClick: () -> Unit,
     onScanClick: () -> Unit,
     onDisconnectClick: () -> Unit,
-    onConnectClick: (BluetoothInfo) -> Unit
+    onConnectClick: (BluetoothInfo) -> Unit,
+    onBackPressed: () -> Unit
 ) {
     var isDeviceConnected = false
     Column(modifier = Modifier.fillMaxSize()) {
@@ -58,6 +59,14 @@ fun DevicesContent(
             ) {
                 Text("Disconnect")
             }
+            Button(
+                modifier = Modifier.padding(end = 8.dp),
+                onClick = {
+                    onBackPressed.invoke()
+                }
+            ) {
+                Text("Voltar")
+            }
         }
 
         Text(
@@ -83,6 +92,7 @@ fun DevicesContent(
                     Column {
                         Text(it.name)
                         Text(it.address)
+                        Text("Conectado: ${it.isConnected}")
                     }
                 }
             }

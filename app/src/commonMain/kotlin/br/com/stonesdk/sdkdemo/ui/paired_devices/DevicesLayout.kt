@@ -1,15 +1,18 @@
 package br.com.stonesdk.sdkdemo.ui.paired_devices
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 
 data class BluetoothInfo(
     val name: String,
     val address: String,
+    val isConnected : Boolean
 )
 
 
 @Composable
 fun DeviceScreen(
+    navController: NavController,
     viewModel: DevicesViewModel = androidx.lifecycle.viewmodel.compose.viewModel { DevicesViewModel() },
 ) {
     DevicesContent(
@@ -26,6 +29,9 @@ fun DeviceScreen(
         },
         onConnectClick = {
             viewModel.connect(it)
+        },
+        onBackPressed = {
+            navController.popBackStack()
         }
     )
 }

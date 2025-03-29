@@ -1,12 +1,15 @@
 package br.com.stonesdk.sdkdemo.activities.transaction
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.stone.sdk.android.error.StoneStatus
 import br.com.stonesdk.sdkdemo.utils.parseCentsToCurrency
+import co.stone.posmobile.datacontainer.data.migration.Migration31to32.Companion.logger
 import co.stone.posmobile.sdk.callback.StoneResultCallback
 import co.stone.posmobile.sdk.merchant.domain.model.Merchant
 import co.stone.posmobile.sdk.merchant.provider.MerchantProvider
+import co.stone.posmobile.sdk.payment.domain.model.CardPaymentMethod
 import co.stone.posmobile.sdk.payment.domain.model.InstallmentTransaction
 import co.stone.posmobile.sdk.payment.domain.model.response.PaymentData
 import co.stone.posmobile.sdk.sendEmail.domain.model.Contact
@@ -22,13 +25,14 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resumeWithException
 
 class TransactionListViewModel(
-    val transactionProvider: TransactionListProviderWrapper,
-    val merchantProvider: MerchantProvider
+    val transactionProvider: TransactionListProviderWrapper
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<TransactionListUiModel> =
         MutableStateFlow(TransactionListUiModel())
     val uiState: StateFlow<TransactionListUiModel> = _uiState.asStateFlow()
+    private val merchantProvider: MerchantProvider
+        get() = MerchantProvider.create()
 
     init {
         getTransactions()
@@ -88,7 +92,13 @@ class TransactionListViewModel(
     }
 
     fun onItemClick(transaction: Transaction) {
-/*        viewModelScope.launch {
+        viewModelScope.launch {
+            val installmentTransaction: InstallmentTransaction =
+                (transaction.data as? PaymentData.CardPaymentData)
+                    ?.cardPaymentMethod
+                    ?.takeIf { it is CardPaymentMethod.Credit }
+                    ?.let { (it as CardPaymentMethod.Credit).installmentTransaction }
+                    ?: InstallmentTransaction.None()
             EmailProvider.create().sendEmail(
                 config = EmailConfig(
                     Contact("", ""),
@@ -98,9 +108,10 @@ class TransactionListViewModel(
                 data = transaction.data,
                 receiptType = EmailReceiptType.MERCHANT,
                 merchant = transaction.merchant,
-                installmentTransaction = TODO()
+                installmentTransaction = installmentTransaction
+
             )
-        }*/
+        }
     }
 }
 

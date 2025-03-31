@@ -157,7 +157,9 @@ fun TransactionListItemPreview() {
         authorizedAmount = "R$ 100,00",
         authorizationDate = "2021-12-25T18:59:59.000Z",
         atk = "12345678901234",
-        status = "Aprovado"
+        status = "Aprovado",
+        data = TODO(),
+        merchant = TODO()
     )
 
     TransactionListItem(

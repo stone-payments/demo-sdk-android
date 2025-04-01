@@ -100,15 +100,21 @@ dependencies {
     implementation(libs.koinAndroid)
     implementation(libs.koinCompose)
 
+    implementation(libs.logbackAndroid)
+    implementation(libs.slf4j)
+
     coreLibraryDesugaring(libs.tools.desugar)
 
-//    implementation(libs.posmobile.datacontainer.data)
+    implementation(libs.posmobile.datacontainer.data)
     implementation(libs.posmobile.sdk.core.android)
     implementation(libs.posmobile.sdk.debugmode)
 
     debugImplementation(libs.compose.ui.tooling)
 
     androidTestImplementation platform(libs.compose.bom)
+
+    implementation("org.slf4j:slf4j-api:2.0.7")
+    implementation("com.github.tony19:logback-android:3.0.0")
 
 //    implementation libs.pos.android.sdk.posandroid.ingenico
 //    implementation libs.pos.android.sdk.posandroid.positivo
@@ -120,4 +126,10 @@ dependencies {
 //    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.10.0"
 //    testImplementation "org.junit.vintage:junit-vintage-engine:5.10.0"
 //    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0-RC"
+}
+
+configurations.all {
+    resolutionStrategy {
+        exclude group: "br.com.stone.posandroid.phc", module: "client"
+    }
 }

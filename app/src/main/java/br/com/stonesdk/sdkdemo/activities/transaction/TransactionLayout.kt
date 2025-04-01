@@ -82,7 +82,7 @@ internal fun TransactionScreen(
         }
     }
 
-
+    val logMessages = remember { derivedStateOf {uiState.value.logMessages } }
 
     TransactionContent(
         desiredAmount = desiredAmount.value,
@@ -96,7 +96,8 @@ internal fun TransactionScreen(
         showAffiliationCodeSelection = showAffiliationCodeSelection.value,
         shouldCaptureTransaction = shouldCaptureTransaction.value,
         transactionButtonEnabled = transactionButtonEnabled.value,
-        onEvent = viewModel::onEvent
+        logMessages = logMessages.value,
+        onEvent = viewModel::onEvent,
     )
 
 }
@@ -114,6 +115,7 @@ fun TransactionContent(
     showAffiliationCodeSelection: Boolean,
     shouldCaptureTransaction: Boolean,
     transactionButtonEnabled: Boolean,
+    logMessages: List<String>,
     onEvent: (TransactionEvent) -> Unit
 ) {
 
@@ -194,7 +196,14 @@ fun TransactionContent(
             checked = shouldCaptureTransaction
         )
 
-        // push button to bottom of page
+        logMessages.forEach { logMessage ->
+            Text(
+                modifier = Modifier.fillMaxWidth().padding(start = 16.dp),
+                text = logMessage
+
+            )
+        }
+
         Spacer(modifier = Modifier.weight(1f))
 
         Button(

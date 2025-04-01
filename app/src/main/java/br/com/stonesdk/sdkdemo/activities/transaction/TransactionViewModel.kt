@@ -1,10 +1,15 @@
 package br.com.stonesdk.sdkdemo.activities.transaction
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.stone.sdk.android.error.StoneStatus
 import br.com.stonesdk.sdkdemo.activities.devices.DeviceInfoProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.transaction.PaymentProviderWrapper.TransactionStatus
+import br.com.stonesdk.sdkdemo.utils.PersistBTState
+import co.stone.posmobile.sdk.bluetooth.provider.BluetoothProvider
+import co.stone.posmobile.sdk.callback.StoneResultCallback
 import co.stone.posmobile.sdk.payment.domain.model.CardPaymentMethod
 import co.stone.posmobile.sdk.payment.domain.model.InstallmentTransaction
 import co.stone.posmobile.sdk.payment.domain.model.PaymentInput
@@ -14,12 +19,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class TransactionViewModel(
     private val activationProviderWrapper: ActivationProviderWrapper,
     private val deviceInfoProviderWrapper: DeviceInfoProviderWrapper,
     private val installmentProvider: InstallmentProvider,
-    private val paymentProviderWrapper: PaymentProviderWrapper
+    private val paymentProviderWrapper: PaymentProviderWrapper,
+    private val context: Context
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<TransactionUiModel> =
@@ -106,17 +114,45 @@ class TransactionViewModel(
             val selectedAffiliationCode = uiState.value.selectedAffiliationCode
             val isContactlessEnabled = true
             val orderId = null
+            val cardPaymentMethod = when (uiState.value.selectedTypeOfTransaction) {
+                TypeOfTransactionEnum.CREDIT -> {
+                    val installmentType = if(selectedInstallment.installmentNumber <= 1) {
+                        InstallmentTransaction.None()
+                    } else {
+                        selectedInstallment
+                    }
+                    CardPaymentMethod.Credit(
+                        installmentTransaction = installmentType,
+                    )
+                }
+                TypeOfTransactionEnum.DEBIT -> CardPaymentMethod.Debit
+                TypeOfTransactionEnum.VOUCHER -> CardPaymentMethod.Voucher
+                else -> throw IllegalArgumentException("Invalid transaction type")
+            }
 
             val paymentInput = PaymentInput.CardPaymentInput(
                 amount = amount,
                 capture = captureTransaction,
-                cardPaymentMethod = CardPaymentMethod.Credit(
-                    installmentTransaction = selectedInstallment,
-                ),
+                cardPaymentMethod = cardPaymentMethod,
                 affiliationCode = selectedAffiliationCode,
                 isContactlessEnabled = isContactlessEnabled,
                 orderId = orderId
             )
+
+            val state = PersistBTState.getBTState(context)
+            suspendCoroutine { cont ->
+                BluetoothProvider.create().connect(state.second!!, state.first, object :
+                    StoneResultCallback<Boolean> {
+                    override fun onSuccess(result: Boolean) {
+                        cont.resume(Unit)
+                    }
+
+                    override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                        cont.resume(Unit)
+                    }
+
+                })
+            }
 
             paymentProviderWrapper.startPayment(paymentInput).collectLatest { status ->
                 when (status) {
@@ -183,7 +219,7 @@ data class TransactionUiModel(
     val typeOfTransactions: List<TypeOfTransactionEnum> = emptyList(),
     val selectedTypeOfTransaction: TypeOfTransactionEnum = TypeOfTransactionEnum.CREDIT,
     val installments: List<InstallmentTransaction> = emptyList(),
-    val selectedInstallment: InstallmentTransaction = InstallmentTransaction.Merchant(1),
+    val selectedInstallment: InstallmentTransaction = InstallmentTransaction.Merchant(0),
     val affiliationCodes: List<String> = emptyList(),
     val selectedAffiliationCode: String = "",
     val logMessages: List<String> = emptyList(),

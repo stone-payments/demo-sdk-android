@@ -1,4 +1,4 @@
-package br.com.stonesdk.sdkdemo.activities.main
+package br.com.stonesdk.sdkdemo.activities.transaction
 
 import br.com.stone.sdk.android.error.StoneStatus
 import co.stone.posmobile.sdk.callback.StoneResultCallback
@@ -12,12 +12,12 @@ class ReversalProviderWrapper {
     private val reversalProvider: ReversalProvider
         get() = ReversalProvider.create()
 
-    fun reverseTransactions(): Flow<TransactionRevertStatus> =
+    fun reverseTransactions(): Flow<RevertTransactionsStatus> =
         callbackFlow {
             reversalProvider.reverseTransactions(
                 object : StoneResultCallback<Unit> {
                     override fun onSuccess(result: Unit) {
-                        launch { send(TransactionRevertStatus.Success) }
+                        launch { send(RevertTransactionsStatus.Completed) }
                     }
 
                     override fun onError(
@@ -25,18 +25,18 @@ class ReversalProviderWrapper {
                         throwable: Throwable,
                     ) {
                         val error = stoneStatus?.message ?: throwable.message ?: "Unknown error"
-                        launch { send(TransactionRevertStatus.Error(error)) }
+                        launch { send(RevertTransactionsStatus.Error(error)) }
                     }
                 },
             )
             awaitClose { }
         }
 
-    sealed class TransactionRevertStatus {
-        data object Success : TransactionRevertStatus()
+    sealed class RevertTransactionsStatus {
+        data object Completed : RevertTransactionsStatus()
 
         data class Error(
             val errorMessage: String,
-        ) : TransactionRevertStatus()
+        ) : RevertTransactionsStatus()
     }
 }

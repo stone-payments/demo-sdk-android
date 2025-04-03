@@ -9,33 +9,34 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 
 class ReversalProviderWrapper {
-
     private val reversalProvider: ReversalProvider
         get() = ReversalProvider.create()
 
-
-    fun reverseTransactions(): Flow<TransactionRevertStatus> {
-        return callbackFlow {
+    fun reverseTransactions(): Flow<TransactionRevertStatus> =
+        callbackFlow {
             reversalProvider.reverseTransactions(
                 object : StoneResultCallback<Unit> {
-
                     override fun onSuccess(result: Unit) {
                         launch { send(TransactionRevertStatus.Success) }
                     }
 
-                    override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                    override fun onError(
+                        stoneStatus: StoneStatus?,
+                        throwable: Throwable,
+                    ) {
                         val error = stoneStatus?.message ?: throwable.message ?: "Unknown error"
                         launch { send(TransactionRevertStatus.Error(error)) }
                     }
-                }
+                },
             )
             awaitClose { }
         }
-    }
 
     sealed class TransactionRevertStatus {
         data object Success : TransactionRevertStatus()
-        data class Error(val errorMessage: String) : TransactionRevertStatus()
-    }
 
+        data class Error(
+            val errorMessage: String,
+        ) : TransactionRevertStatus()
+    }
 }

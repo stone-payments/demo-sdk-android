@@ -1,4 +1,4 @@
-package br.com.stonesdk.sdkdemo.activities.transaction
+package br.com.stonesdk.sdkdemo.activities.transaction.list
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

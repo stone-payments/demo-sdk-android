@@ -16,7 +16,8 @@ import br.com.stonesdk.sdkdemo.activities.main.MainScreen
 import br.com.stonesdk.sdkdemo.activities.main.MainViewModel
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeActivity
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionActivity
-import br.com.stonesdk.sdkdemo.activities.transaction.TransactionListActivity
+import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListActivity
+import br.com.stonesdk.sdkdemo.activities.transaction.revert.TransactionRevertActivity
 import br.com.stonesdk.sdkdemo.databinding.ActivityMainBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -128,27 +129,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun startGenericCancelErrorTransaction() {
-        mainViewModel.revertTransactionsWithErrors()
-//        val reversalProvider = ReversalProvider(this)
-//        reversalProvider.dialogMessage = "Cancelando transações com erro"
-//        reversalProvider.connectionCallback = object : StoneCallbackInterface {
-//            override fun onSuccess() {
-//                Toast.makeText(
-//                    this@MainActivity,
-//                    "Transações canceladas com sucesso",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
-//
-//            override fun onError() {
-//                Toast.makeText(
-//                    this@MainActivity,
-//                    "Ocorreu um erro durante o cancelamento das tabelas: " + reversalProvider.listOfErrors,
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
-//        }
-//        reversalProvider.execute()
+        val transactionRevertActivity =
+            Intent(this@MainActivity, TransactionRevertActivity::class.java)
+        startActivity(transactionRevertActivity)
     }
 
     private fun startGenericManageStoneCode() {

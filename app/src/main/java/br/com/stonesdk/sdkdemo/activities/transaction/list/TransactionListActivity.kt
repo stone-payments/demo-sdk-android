@@ -1,4 +1,4 @@
-package br.com.stonesdk.sdkdemo.activities.transaction
+package br.com.stonesdk.sdkdemo.activities.transaction.list
 
 import android.os.Bundle
 import android.view.View

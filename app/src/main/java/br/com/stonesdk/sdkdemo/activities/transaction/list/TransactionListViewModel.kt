@@ -2,14 +2,8 @@ package br.com.stonesdk.sdkdemo.activities.transaction.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.stone.sdk.android.error.StoneStatus
+import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListProviderWrapper.TransactionListStatus
 import br.com.stonesdk.sdkdemo.utils.parseCentsToCurrency
-import co.stone.posmobile.sdk.callback.StoneResultCallback
-import co.stone.posmobile.sdk.merchant.domain.model.Merchant
-import co.stone.posmobile.sdk.merchant.provider.MerchantProvider
-import co.stone.posmobile.sdk.payment.domain.model.CardPaymentMethod
-import co.stone.posmobile.sdk.payment.domain.model.InstallmentTransaction
-import co.stone.posmobile.sdk.payment.domain.model.response.PaymentData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,8 +16,6 @@ class TransactionListViewModel(
     private val _uiState: MutableStateFlow<TransactionListUiModel> =
         MutableStateFlow(TransactionListUiModel())
     val uiState: StateFlow<TransactionListUiModel> = _uiState.asStateFlow()
-    private val merchantProvider: MerchantProvider
-        get() = MerchantProvider.create()
 
     init {
         getTransactions()
@@ -31,48 +23,36 @@ class TransactionListViewModel(
 
     private fun getTransactions() {
         viewModelScope.launch {
-            _uiState.update { it.copy(loading = true) }
             transactionProvider.getAllTransactions().collect { status ->
-
                 when (status) {
-                    is TransactionListProviderWrapper.TransactionListStatus.Success -> {
-                        merchantProvider.getFirstMerchant(
-                            object :
-                                StoneResultCallback<Merchant> {
-                                override fun onSuccess(result: Merchant) {
-                                    val transactions =
-                                        status.transactions
-                                            .sortedByDescending { it.transactionId }
-                                            .map { transaction ->
-                                                Transaction(
-                                                    id = transaction.transactionId.toString(),
-                                                    authorizedAmount = transaction.amountAuthorized.parseCentsToCurrency(),
-                                                    authorizationDate = transaction.time,
-                                                    atk = transaction.acquirerTransactionKey,
-                                                    status = transaction.transactionStatus.name,
-                                                    data = transaction,
-                                                    merchant = result,
-                                                )
-                                            }
-                                    _uiState.update {
-                                        it.copy(
-                                            transactions = transactions,
-                                            loading = false,
-                                        )
-                                    }
-                                }
-
-                                override fun onError(
-                                    stoneStatus: StoneStatus?,
-                                    throwable: Throwable,
-                                ) {
-                                    // Handle error
-                                }
-                            },
-                        )
+                    TransactionListStatus.Loading -> {
+                        _uiState.update { it.copy(loading = true) }
                     }
 
-                    is TransactionListProviderWrapper.TransactionListStatus.Error -> {
+                    is TransactionListStatus.Success -> {
+                        val transactions =
+                            status.transactions
+                                .sortedByDescending { it.transactionId }
+                                .map { transaction ->
+
+                                    Transaction(
+                                        id = transaction.transactionId.toString(),
+                                        affiliationCode = transaction.affiliationCode,
+                                        authorizedAmount = transaction.amountAuthorized.parseCentsToCurrency(),
+                                        authorizationDate = transaction.time,
+                                        itk = transaction.initiatorTransactionKey,
+                                        status = transaction.transactionStatus.name,
+                                    )
+                                }
+                        _uiState.update {
+                            it.copy(
+                                transactions = transactions,
+                                loading = false,
+                            )
+                        }
+                    }
+
+                    is TransactionListStatus.Error -> {
                         _uiState.update {
                             it.copy(
                                 transactions = emptyList(),
@@ -88,12 +68,12 @@ class TransactionListViewModel(
 
     fun onItemClick(transaction: Transaction) {
         viewModelScope.launch {
-            val installmentTransaction: InstallmentTransaction =
-                (transaction.data as? PaymentData.CardPaymentData)
-                    ?.cardPaymentMethod
-                    ?.takeIf { it is CardPaymentMethod.Credit }
-                    ?.let { (it as CardPaymentMethod.Credit).installmentTransaction }
-                    ?: InstallmentTransaction.None()
+//            val installmentTransaction: InstallmentTransaction =
+//                (transaction.data as? PaymentData.CardPaymentData)
+//                    ?.cardPaymentMethod
+//                    ?.takeIf { it is CardPaymentMethod.Credit }
+//                    ?.let { (it as CardPaymentMethod.Credit).installmentTransaction }
+//                    ?: InstallmentTransaction.None()
 //            EmailProvider.create().sendEmail(
 //                config = EmailConfig(
 //                    Contact("", ""),
@@ -112,12 +92,11 @@ class TransactionListViewModel(
 
 data class Transaction(
     val id: String,
+    val affiliationCode: String,
     val authorizedAmount: String,
     val authorizationDate: String,
-    val atk: String?,
+    val itk: String,
     val status: String,
-    val data: PaymentData,
-    val merchant: Merchant,
 )
 
 data class TransactionListUiModel(

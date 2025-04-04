@@ -86,6 +86,7 @@ class CancelViewModel(
                     is CancelProviderWrapper.CancelStatus.Error -> {
                         _uiState.update {
                             it.copy(
+                                transactions = emptyList(),
                                 loading = false,
                                 errorMessage = status.error,
                             )

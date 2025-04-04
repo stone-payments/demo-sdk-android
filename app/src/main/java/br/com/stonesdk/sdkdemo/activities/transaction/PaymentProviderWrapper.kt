@@ -9,10 +9,8 @@ import co.stone.posmobile.sdk.payment.provider.PaymentProvider
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.launch
 
 class PaymentProviderWrapper {
-
     private val paymentProvider: PaymentProvider
         get() = PaymentProvider.create()
 
@@ -22,26 +20,29 @@ class PaymentProviderWrapper {
                 paymentInput = paymentInput,
                 object : StonePaymentResultCallback<PaymentData> {
                     override fun onSuccess(result: PaymentData) {
-                        launch { send(TransactionStatus.Success) }
+                        trySend(TransactionStatus.Success)
                     }
 
                     override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                        launch { send(TransactionStatus.Error) }
+                        val error = stoneStatus?.message ?: throwable.message ?: "Unknown error"
+                        trySend(TransactionStatus.Error(error))
                     }
 
                     override fun onEvent(event: PaymentAction) {
-                        launch { send(TransactionStatus.StatusChanged(event)) }
+                        trySend(TransactionStatus.StatusChanged(event))
                     }
-                }
+                },
             )
 
-            awaitClose {  }
+            awaitClose { }
         }
     }
 
     sealed class TransactionStatus {
         data object Success : TransactionStatus()
-        data object Error : TransactionStatus()
+
+        data class Error(val error: String) : TransactionStatus()
+
         data class StatusChanged(val action: PaymentAction) : TransactionStatus()
     }
 }

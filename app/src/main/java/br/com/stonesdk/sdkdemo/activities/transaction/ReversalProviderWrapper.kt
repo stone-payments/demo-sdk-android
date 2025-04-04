@@ -6,7 +6,6 @@ import co.stone.posmobile.sdk.reversal.provider.ReversalProvider
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.launch
 
 class ReversalProviderWrapper {
     private val reversalProvider: ReversalProvider
@@ -14,10 +13,11 @@ class ReversalProviderWrapper {
 
     fun reverseTransactions(): Flow<RevertTransactionsStatus> =
         callbackFlow {
+            trySend(RevertTransactionsStatus.InProgress)
             reversalProvider.reverseTransactions(
                 object : StoneResultCallback<Unit> {
                     override fun onSuccess(result: Unit) {
-                        launch { send(RevertTransactionsStatus.Completed) }
+                        trySend(RevertTransactionsStatus.Completed)
                     }
 
                     override fun onError(
@@ -25,14 +25,17 @@ class ReversalProviderWrapper {
                         throwable: Throwable,
                     ) {
                         val error = stoneStatus?.message ?: throwable.message ?: "Unknown error"
-                        launch { send(RevertTransactionsStatus.Error(error)) }
+                        trySend(RevertTransactionsStatus.Error(error))
                     }
                 },
             )
-            awaitClose { }
+            awaitClose {
+            }
         }
 
     sealed class RevertTransactionsStatus {
+        data object InProgress : RevertTransactionsStatus()
+
         data object Completed : RevertTransactionsStatus()
 
         data class Error(

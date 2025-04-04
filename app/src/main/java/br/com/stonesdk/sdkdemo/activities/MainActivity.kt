@@ -7,8 +7,8 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.lifecycle.lifecycleScope
-
 import br.com.stonesdk.sdkdemo.FeatureFlag
+import br.com.stonesdk.sdkdemo.activities.cancel.CancelActivity
 import br.com.stonesdk.sdkdemo.activities.devices.DevicesActivity
 import br.com.stonesdk.sdkdemo.activities.display.DisplayMessageActivity
 import br.com.stonesdk.sdkdemo.activities.main.MainNavigationOption
@@ -23,15 +23,14 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-//import stone.application.enums.Action
-//import stone.application.interfaces.StoneActionCallback
-//import stone.application.interfaces.StoneCallbackInterface
-//import stone.providers.ActiveApplicationProvider
-//import stone.providers.DisplayMessageProvider
-//import stone.utils.Stone
+// import stone.application.enums.Action
+// import stone.application.interfaces.StoneActionCallback
+// import stone.application.interfaces.StoneCallbackInterface
+// import stone.providers.ActiveApplicationProvider
+// import stone.providers.DisplayMessageProvider
+// import stone.utils.Stone
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
-
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModel()
 
@@ -106,6 +105,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun processNavigationFromViewModel(navigateOption: MainNavigationOption) {
         when (navigateOption) {
             MainNavigationOption.GeneralCancelErrorTransactions -> startGenericCancelErrorTransaction()
+            MainNavigationOption.GeneralCancelTransactions -> startGenericCancelTransaction()
             MainNavigationOption.GeneralDeactivate -> startGenericDeactivate()
             MainNavigationOption.GeneralListTransactions -> startGenericTransactionList()
             MainNavigationOption.GeneralManageStoneCodes -> startGenericManageStoneCode()
@@ -134,12 +134,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         startActivity(transactionRevertActivity)
     }
 
+    private fun startGenericCancelTransaction() {
+        val transactionCancelIntent =
+            Intent(this@MainActivity, CancelActivity::class.java)
+        startActivity(transactionCancelIntent)
+    }
+
     private fun startGenericManageStoneCode() {
         startActivity(Intent(this@MainActivity, ManageStoneCodeActivity::class.java))
     }
 
     private fun startGenericDeactivate() {
-
 //        val provider = ActiveApplicationProvider(this@MainActivity)
 //        provider.dialogMessage = "Desativando o aplicativo..."
 //        provider.dialogTitle = "Aguarde"
@@ -161,7 +166,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 //        }
 //        provider.deactivate()
     }
-
 
     private fun startPinpadPairedDevicesActivity() {
         val devicesIntent = Intent(this@MainActivity, DevicesActivity::class.java)
@@ -187,7 +191,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 //            Toast.makeText(this, "Nenhum device Conectado", Toast.LENGTH_SHORT).show()
 //        }
     }
-
 
     private fun starPosAndroidTransaction() {
 //        startActivity(Intent(this@MainActivity, PosTransactionActivity::class.java))

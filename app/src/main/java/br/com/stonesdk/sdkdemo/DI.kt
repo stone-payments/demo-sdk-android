@@ -1,6 +1,8 @@
 package br.com.stonesdk.sdkdemo
 
 import android.bluetooth.BluetoothAdapter
+import br.com.stonesdk.sdkdemo.activities.cancel.CancelProviderWrapper
+import br.com.stonesdk.sdkdemo.activities.cancel.CancelViewModel
 import br.com.stonesdk.sdkdemo.activities.devices.BluetoothProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.devices.DeviceInfoProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.devices.DevicesViewModel
@@ -58,6 +60,8 @@ val demoApplicationModule =
             TransactionListProviderWrapper()
         }
 
+        factory { CancelProviderWrapper() }
+
         factory<BluetoothAdapter> {
             BluetoothAdapter.getDefaultAdapter()
         }
@@ -108,6 +112,13 @@ val demoApplicationModule =
         viewModel {
             TransactionRevertViewModel(
                 reversalProviderWrapper = get(),
+            )
+        }
+
+        viewModel {
+            CancelViewModel(
+                transactionProvider = get(),
+                cancelProvider = get(),
             )
         }
     }

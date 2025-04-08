@@ -223,7 +223,7 @@ data class TransactionUiModel(
     val affiliationCodes: List<String> = emptyList(),
     val selectedAffiliationCode: String = "",
     val logMessages: List<String> = emptyList(),
-    val shouldCaptureTransaction: Boolean = false
+    val shouldCaptureTransaction: Boolean = true
 )
 
 enum class TypeOfTransactionEnum(val displayName: String) {

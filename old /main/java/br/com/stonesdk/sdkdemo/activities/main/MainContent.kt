@@ -7,15 +7,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.stonesdk.sdkdemo.ui.components.MonospacedText
 
 @Composable
 fun MainContent(
@@ -72,12 +70,11 @@ fun LazyListScope.renderSectionIfNotEmpty(
 
 @Composable
 fun StickHeader(header: String) {
-    Text(
+    MonospacedText(
         text = header,
-        style = TextStyle(
-            fontWeight = FontWeight.Bold, fontSize = 18.sp
-        ),
         modifier = Modifier.padding(8.dp),
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Bold,
     )
 }
 
@@ -87,11 +84,13 @@ fun SelectableItem(
     onItemSelected: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Text(text = text,
+    MonospacedText(
+        text = text,
         modifier = modifier
             .fillMaxWidth()
             .clickable { onItemSelected() }
             .padding(8.dp),
-        textAlign = TextAlign.Start)
+        fontSize = 14.sp
+    )
 }
 

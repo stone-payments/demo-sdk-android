@@ -22,30 +22,24 @@ class BluetoothDeviceRepository() {
 
     val scope = CoroutineScope(Dispatchers.IO)
 
-    fun startScan() : Flow<List<BluetoothDevice>> = channelFlow{
-        println(">>> startScan")
-        provider.discoverPinpad(object : StoneResultCallback<List<BluetoothDevice>>{
-            override fun onSuccess(result: List<BluetoothDevice>) {
+    fun startScan(): Flow<BluetoothDevice> = channelFlow {
+        provider.discoverPinpad(
+            onStartDiscover = {  },
+            onStopDiscover = { },
+            onBound = { device ->
                 runBlocking {
-                    trySend(result)
+                    trySend(device)
                 }
             }
-
-            override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                println(">>> onError")
-                throwable.printStackTrace()
-            }
-        })
+        )
 
         awaitClose {
-            println(">>> awaitClose")
             provider.stopDiscover()
         }
 
     }
 
     fun stopScan() {
-        println(">>> stopScan")
         provider.stopDiscover()
     }
 
@@ -54,21 +48,22 @@ class BluetoothDeviceRepository() {
     }
 
     suspend fun connect(address: String): Result<Unit> {
-        println(">>> connect")
 
         val channel = Channel<Result<Unit>>()
 
         provider.connect(
-            address,
-            object : StoneResultCallback<Boolean> {
-                override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                    scope.launch { channel.trySend(Result.failure(throwable)) }
-                }
-
+            pinpadAddress = address,
+            pinpadModelName = "MP15-50000263", // Replace with the actual model name
+            stoneResultCallback = object : StoneResultCallback<Boolean> {
                 override fun onSuccess(result: Boolean) {
                     scope.launch { channel.trySend(Result.success(Unit)) }
                 }
-            },
+
+                override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                    scope.launch { channel.trySend(Result.failure(throwable)) }
+                }
+            }
+
         )
         return channel.receive()
     }

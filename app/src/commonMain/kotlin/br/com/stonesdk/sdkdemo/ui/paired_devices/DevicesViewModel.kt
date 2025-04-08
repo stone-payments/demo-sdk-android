@@ -36,7 +36,7 @@ class DevicesViewModel() : ViewModel() {
                         BluetoothInfo(
                             name = it.deviceName,
                             address = it.hardwareAddress,
-                            isConnected = it.isConnected
+                            isConnected = true
                         )
                     }.distinctBy { it.address }
                 )

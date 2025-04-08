@@ -17,8 +17,8 @@ class ActivationProviderWrapper {
 
     suspend fun activate(stoneCode: String): Boolean = suspendCancellableCoroutine { continuation ->
 
-        activationProvider.activate(stoneCode, object : StoneResultCallback<Unit> {
-            override fun onSuccess(result: Unit) {
+        activationProvider.activate(stoneCode, object : StoneResultCallback<Any> {
+            override fun onSuccess(result: Any) {
                 continuation.resume(true)
             }
 

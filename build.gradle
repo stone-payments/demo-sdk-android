@@ -4,6 +4,7 @@ buildscript {
     repositories {
         gradlePluginPortal()
         google()
+        mavenLocal()
         mavenCentral()
     }
     dependencies {
@@ -26,14 +27,29 @@ ext {
     }
     packageCloudReadToken = System.env.PACKAGECLOUD_READ_TOKEN != null ? System.env.PACKAGECLOUD_READ_TOKEN : localProp["packageCloudReadToken"] ?: ""
     packageCloudReadTokenInternal = System.env.PACKAGECLOUD_READ_TOKEN_INTERNAL ?: localProp["packageCloudReadTokenInternal"]
+
+    githubUserName = System.env.GITHUB_PUBLISH_USERNAME ?: localProp["githubUserName"] ?: ""
+    githubToken = System.env.GITHUB_PUBLISH_TOKEN ?: localProp["githubToken"] ?: ""
+
 }
 
 allprojects {
     repositories {
+        mavenLocal()
         mavenCentral()
         maven { url "https://packagecloud.io/priv/${packageCloudReadToken}/stone/pos-android/maven2" }
         maven { url "https://packagecloud.io/priv/${packageCloudReadTokenInternal}/stone/pos-android-internal/maven2" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         google()
+
+        maven {
+            name = "GitHubPackages SDK"
+            credentials {
+                username(githubUserName)
+                password(githubToken)
+            }
+            url "https://maven.pkg.github.com/stone-payments/pos-android-sdk"
+        }
+
     }
 }

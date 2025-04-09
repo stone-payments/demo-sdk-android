@@ -1,30 +1,23 @@
 package br.com.stonesdk.sdkdemo.activities.validation
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
-import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEffects.NavigateToMain
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.Activate
-import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.EnvironmentReturned
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.Permission
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationStoneCodeEvent.UserInput
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import stone.environment.Environment
-import stone.utils.Stone
 
 class ValidationViewModel(
-    private val providerWrapper: ActivationProviderWrapper,
-    private val appInitializer: AppInitializer,
+    private val activationProviderWrapper: ActivationProviderWrapper,
 ) : ViewModel() {
 
-    var viewState by mutableStateOf(ValidationStoneCodeUiModel())
-    private val _sideEffects = MutableStateFlow<ValidationStoneCodeEffects?>(null)
-    val sideEffects: StateFlow<ValidationStoneCodeEffects?> = _sideEffects
+    private val _uiState = MutableStateFlow(ValidationStoneCodeUiModel())
+    val uiState: StateFlow<ValidationStoneCodeUiModel> = _uiState.asStateFlow()
 
     init {
         checkApp()
@@ -32,56 +25,104 @@ class ValidationViewModel(
 
     fun onEvent(event: ValidationStoneCodeEvent) {
         when (event) {
-            is UserInput -> viewState = viewState.copy(
-                stoneCodeToBeValidated = event.stoneCode
-            )
-
-            is EnvironmentReturned -> viewState = viewState.copy(
-                getEnvironment = event.environment
-            )
+            is UserInput -> {
+                _uiState.update {
+                    it.copy(
+                        stoneCodeToBeValidated = event.stoneCode
+                    )
+                }
+            }
 
             is Activate -> activateStoneCode()
             is Permission -> checkApp()
         }
     }
 
-
     private fun activateStoneCode() {
         viewModelScope.launch {
-            viewState = viewState.copy(activationInProgress = true)
-            val isSuccess = providerWrapper.activate(viewState.stoneCodeToBeValidated)
+            _uiState.update {
+                it.copy(
+                    activationInProgress = true
+                )
+            }
+            val isSuccess =
+                activationProviderWrapper.activate(_uiState.value.stoneCodeToBeValidated)
             if (isSuccess) {
-                _sideEffects.emit(NavigateToMain)
+                _uiState.update {
+                    it.copy(
+                        activationInProgress = false,
+                        navigateToMain = true
+                    )
+                }
+            } else {
+                // handle activation error
+                _uiState.update {
+                    it.copy(
+                        activationInProgress = false
+                    )
+                }
             }
         }
     }
 
     private fun checkApp() {
         viewModelScope.launch {
-            val success = appInitializer.initiateApp()
-            if (success) {
-                _sideEffects.emit(NavigateToMain)
+            _uiState.update {
+                it.copy(
+                    loading = true
+                )
+            }
+            val list = activationProviderWrapper.getActivatedAffiliationCodes()
+            if (list.isNotEmpty()) {
+                _uiState.update {
+                    it.copy(
+                        loading = false,
+                        navigateToMain = true
+                    )
+                }
             } else {
-                viewState = viewState.copy(loading = false)
+                _uiState.update {
+                    it.copy(
+                        loading = false,
+                        navigateToActivation = true
+                    )
+                }
+            }
+        }
+    }
+
+    fun doneNavigateMain() {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    navigateToMain = false
+                )
+            }
+        }
+    }
+
+    fun doneNavigateActivation() {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    navigateToActivation = false
+                )
             }
         }
     }
 }
 
 data class ValidationStoneCodeUiModel(
-    val stoneCodeToBeValidated: String = "",
-    val getEnvironment: Environment = Stone.getEnvironment(),
+    // TODO do not commit
+    val stoneCodeToBeValidated: String = "846873720",
     val activationInProgress: Boolean = false,
-    val loading: Boolean = true
+    val loading: Boolean = true,
+    val navigateToMain: Boolean = false,
+    val navigateToActivation: Boolean = false
 )
 
 sealed interface ValidationStoneCodeEvent {
     data class UserInput(val stoneCode: String) : ValidationStoneCodeEvent
-    data class EnvironmentReturned(val environment: Environment) : ValidationStoneCodeEvent
     data object Activate : ValidationStoneCodeEvent
     data object Permission : ValidationStoneCodeEvent
-}
-
-sealed interface ValidationStoneCodeEffects {
-    data object NavigateToMain : ValidationStoneCodeEffects
 }

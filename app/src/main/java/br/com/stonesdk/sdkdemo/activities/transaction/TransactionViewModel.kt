@@ -1,142 +1,250 @@
 package br.com.stonesdk.sdkdemo.activities.transaction
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.CancelTransaction
-import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.CheckBoxChanged
-import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.InstallmentSelected
-import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.SendTransaction
-import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.StoneCodeItemClick
-import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.TypeOfTransaction
-import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.UserInput
+import br.com.stone.sdk.android.error.StoneStatus
+import br.com.stonesdk.sdkdemo.activities.devices.DeviceInfoProviderWrapper
+import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
+import br.com.stonesdk.sdkdemo.activities.transaction.PaymentProviderWrapper.TransactionStatus
+import br.com.stonesdk.sdkdemo.utils.PersistBTState
+import co.stone.posmobile.sdk.bluetooth.provider.BluetoothProvider
+import co.stone.posmobile.sdk.callback.StoneResultCallback
+import co.stone.posmobile.sdk.payment.domain.model.CardPaymentMethod
+import co.stone.posmobile.sdk.payment.domain.model.InstallmentTransaction
+import co.stone.posmobile.sdk.payment.domain.model.PaymentInput
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import stone.application.SessionApplication
-import stone.application.enums.InstalmentTransactionEnum
-import stone.application.enums.TypeOfTransactionEnum
-import stone.database.transaction.TransactionObject
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class TransactionViewModel(
+    private val activationProviderWrapper: ActivationProviderWrapper,
+    private val deviceInfoProviderWrapper: DeviceInfoProviderWrapper,
     private val installmentProvider: InstallmentProvider,
-    // private val providerWrapper: TransactionProviderWrapper,
-    private val transactionObject: TransactionObject,
-    private val sessionApplication: SessionApplication,
+    private val paymentProviderWrapper: PaymentProviderWrapper,
+    private val context: Context
+) : ViewModel() {
 
-    ) : ViewModel() {
-
-    var viewState by mutableStateOf(TransactionUiModel())
-        private set
+    private val _uiState: MutableStateFlow<TransactionUiModel> =
+        MutableStateFlow(TransactionUiModel())
+    val uiState: StateFlow<TransactionUiModel> = _uiState.asStateFlow()
 
     init {
-        val installments = installmentProvider
-            .getInstallment(transaction = TypeOfTransactionEnum.CREDIT)
-            .mapInstallmentsToPresentation()
-//
-//        viewState = viewState.copy(
-//            selectedTransaction = TypeOfTransactionEnum.CREDIT,
-//            installmentList = installments
-//        )
-//        viewState = viewState.copy(
-//            selectedTransaction = TypeOfTransactionEnum.CREDIT,
-//            installmentList = installments,
-//            selectedStoneCode =
-//        )
+        val isPosDevice = deviceInfoProviderWrapper.isPosDevice()
+
+        val typeOfTransactions = if (isPosDevice) {
+            listOf(
+                TypeOfTransactionEnum.CREDIT,
+                TypeOfTransactionEnum.DEBIT,
+                TypeOfTransactionEnum.VOUCHER,
+                TypeOfTransactionEnum.PIX
+            )
+        } else {
+            listOf(
+                TypeOfTransactionEnum.CREDIT,
+                TypeOfTransactionEnum.DEBIT,
+                TypeOfTransactionEnum.VOUCHER
+            )
+        }
+
+        viewModelScope.launch {
+            val activatedAffiliationCodes = activationProviderWrapper.getActivatedAffiliationCodes()
+            val selectedAffiliationCode = activatedAffiliationCodes.firstOrNull().toString()
+            _uiState.update {
+                it.copy(
+                    affiliationCodes = activatedAffiliationCodes,
+                    selectedAffiliationCode = selectedAffiliationCode,
+                    typeOfTransactions = typeOfTransactions
+                )
+            }
+        }
+
         updateInstallments(TypeOfTransactionEnum.CREDIT)
-        updateSelectedStoneCode()
     }
 
-    //[]
     fun onEvent(event: TransactionEvent) {
         when (event) {
-            is UserInput -> viewState = viewState.copy(amount = event.amount)
-            CancelTransaction -> {
+            is TransactionEvent.UserInput -> {
+                _uiState.update { it.copy(amount = event.amount) }
+            }
+
+            is TransactionEvent.CancelTransaction -> {
                 //providerWrapper.cancelTransaction()
             }
 
-            is InstallmentSelected -> onInstallmentSelected(event.position)
-            SendTransaction -> startTransaction()
-            is StoneCodeItemClick -> updateSelectedStoneCode()
-            is TypeOfTransaction -> updateTransactionType(event.type)
-            is CheckBoxChanged -> viewState = viewState.copy(isCheckBox = event.isChecked)
-        }
-    }
-
-    private fun List<InstalmentTransactionEnum>.mapInstallmentsToPresentation(): List<String> {
-        return this.map { installment ->
-            when (installment == InstalmentTransactionEnum.ONE_INSTALMENT) {
-                true -> "À Vista"
-                false -> {
-                    "${installment.count}x ${if (installment.interest) "com juros" else "sem juros"}"
+            is TransactionEvent.OnInstallmentSelected -> onInstallmentSelected(event.installmentTransaction)
+            is TransactionEvent.SendTransaction -> startTransaction()
+            is TransactionEvent.OnAffiliationCodeSelected -> updateSelectedStoneCode(event.affiliationCode)
+            is TransactionEvent.TypeOfTransaction -> updateTransactionType(event.type)
+            is TransactionEvent.CheckBoxChanged -> {
+                _uiState.update {
+                    it.copy(shouldCaptureTransaction = event.isChecked)
                 }
             }
         }
     }
 
-    private fun updateInstallments(type: TypeOfTransactionEnum) {
-        val installments = installmentProvider
-            .getInstallment(type)
-            .mapInstallmentsToPresentation()
 
-        viewState = viewState.copy(
-            selectedTransaction = type,
-            installmentList = installments
+    private fun updateInstallments(type: TypeOfTransactionEnum) {
+        val installments = installmentProvider.getInstallment(
+            transactionType = type,
+            isPos = deviceInfoProviderWrapper.isPosDevice()
         )
+
+        _uiState.update {
+            it.copy(
+                selectedTypeOfTransaction = type,
+                installments = installments,
+                selectedInstallment = installments.first()
+            )
+        }
     }
 
     fun startTransaction() {
         viewModelScope.launch {
-//            providerWrapper.startTransaction().apply { status ->
-//                when (status) {
-//                    is TransactionStatus.Success -> viewState = viewState.copy(success = true)
-//                    is TransactionStatus.Error -> viewState = viewState.copy(error = true)
-//                    is TransactionStatus.StatusChanged -> viewState = viewState.copy(
-//                        logMessages = viewState.logMessages
-//                        "\n" + status.action.name
-//                    )
-//                }
-//            }
+
+            val amount = uiState.value.amount.toLongOrNull() ?: 0
+            val captureTransaction = uiState.value.shouldCaptureTransaction
+            val selectedInstallment = uiState.value.selectedInstallment
+            val selectedAffiliationCode = uiState.value.selectedAffiliationCode
+            val isContactlessEnabled = true
+            val orderId = null
+            val cardPaymentMethod = when (uiState.value.selectedTypeOfTransaction) {
+                TypeOfTransactionEnum.CREDIT -> {
+                    val installmentType = if(selectedInstallment.installmentNumber <= 1) {
+                        InstallmentTransaction.None()
+                    } else {
+                        selectedInstallment
+                    }
+                    CardPaymentMethod.Credit(
+                        installmentTransaction = installmentType,
+                    )
+                }
+                TypeOfTransactionEnum.DEBIT -> CardPaymentMethod.Debit
+                TypeOfTransactionEnum.VOUCHER -> CardPaymentMethod.Voucher
+                else -> throw IllegalArgumentException("Invalid transaction type")
+            }
+
+            val paymentInput = PaymentInput.CardPaymentInput(
+                amount = amount,
+                capture = captureTransaction,
+                cardPaymentMethod = cardPaymentMethod,
+                affiliationCode = selectedAffiliationCode,
+                isContactlessEnabled = isContactlessEnabled,
+                orderId = orderId
+            )
+
+            val state = PersistBTState.getBTState(context)
+            suspendCoroutine { cont ->
+                BluetoothProvider.create().connect(state.second!!, state.first, object :
+                    StoneResultCallback<Boolean> {
+                    override fun onSuccess(result: Boolean) {
+                        cont.resume(Unit)
+                    }
+
+                    override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                        cont.resume(Unit)
+                    }
+
+                })
+            }
+
+            paymentProviderWrapper.startPayment(paymentInput).collectLatest { status ->
+                when (status) {
+                    is TransactionStatus.Success -> {
+                        _uiState.update {
+                            it.copy(success = true, error = false)
+                        }
+                    }
+
+                    is TransactionStatus.Error -> {
+                        _uiState.update {
+                            it.copy(success = false, error = true)
+                        }
+                    }
+
+                    is TransactionStatus.StatusChanged -> {
+                        val newLogMessage = status.action.toString()
+                        val previousLogMessages: MutableList<String> =
+                            uiState.value.logMessages.toMutableList()
+                        previousLogMessages.add(newLogMessage)
+                        _uiState.update {
+                            it.copy(logMessages = previousLogMessages.toList())
+                        }
+                    }
+                }
+            }
         }
     }
 
     private fun updateTransactionType(type: TypeOfTransactionEnum) {
         updateInstallments(type)
-        transactionObject.typeOfTransaction = type
     }
 
-    private fun onInstallmentSelected(position: Int) {
-        val installment = InstalmentTransactionEnum.getAt(position)
-        viewState = viewState.copy(selectedInstallment = installment)
-        transactionObject.instalmentTransaction = installment
+    private fun onInstallmentSelected(installmentTransaction: InstallmentTransaction) {
+        _uiState.update {
+            it.copy(selectedInstallment = installmentTransaction)
+        }
     }
 
-    private fun updateSelectedStoneCode() {
-        val stoneCode = sessionApplication.userModelList
-            .map { userModel -> userModel.stoneCode }
-            .toList()
-//            Stone.getUserModel(position)
-        viewState = viewState.copy(selectedStoneCode = stoneCode)
+    private fun updateSelectedStoneCode(affiliationCode : String) {
+        _uiState.update {
+            it.copy(selectedAffiliationCode = affiliationCode)
+        }
+    }
+}
+
+fun List<InstallmentTransaction>.mapInstallmentsToPresentation(): List<String> {
+    return this.map { installmentTransaction -> installmentTransaction.mapInstallmentToPresentation() }
+}
+
+fun InstallmentTransaction.mapInstallmentToPresentation(): String {
+    val installmentCount = this.installmentNumber
+    val installmentInterest = if (this.interest) "com juros" else "sem juros"
+    return when (installmentCount == 1) {
+        true -> "À Vista"
+        false -> "${installmentCount}x $installmentInterest"
     }
 }
 
 data class TransactionUiModel(
     val error: Boolean = false,
     val success: Boolean = false,
-    val installmentList: List<String> = emptyList(),
-    val selectedTransaction: TypeOfTransactionEnum = TypeOfTransactionEnum.CREDIT,
-    val selectedInstallment: InstalmentTransactionEnum = InstalmentTransactionEnum.ONE_INSTALMENT,
     val amount: String = "",
-    val selectedStoneCode: List<String> = emptyList(),
-    val logMessages: String = "",
-    val isCheckBox: Boolean = false
+    val typeOfTransactions: List<TypeOfTransactionEnum> = emptyList(),
+    val selectedTypeOfTransaction: TypeOfTransactionEnum = TypeOfTransactionEnum.CREDIT,
+    val installments: List<InstallmentTransaction> = emptyList(),
+    val selectedInstallment: InstallmentTransaction = InstallmentTransaction.Merchant(0),
+    val affiliationCodes: List<String> = emptyList(),
+    val selectedAffiliationCode: String = "",
+    val logMessages: List<String> = emptyList(),
+    val shouldCaptureTransaction: Boolean = true
 )
+
+enum class TypeOfTransactionEnum(val displayName: String) {
+
+    CREDIT("Crédito"), DEBIT("Débito"), VOUCHER("Voucher"), PIX("Pix");
+
+    companion object {
+
+        fun fromType(type: String): TypeOfTransactionEnum? {
+            return entries.firstOrNull { it.name == type }
+        }
+    }
+}
 
 sealed interface TransactionEvent {
     data class UserInput(val amount: String) : TransactionEvent
-    data class InstallmentSelected(val position: Int) : TransactionEvent
+    data class OnInstallmentSelected(val installmentTransaction: InstallmentTransaction) :
+        TransactionEvent
+
     data class TypeOfTransaction(val type: TypeOfTransactionEnum) : TransactionEvent
-    data class StoneCodeItemClick(val position: Int) : TransactionEvent
+    data class OnAffiliationCodeSelected(val affiliationCode: String) : TransactionEvent
     data object SendTransaction : TransactionEvent
     data object CancelTransaction : TransactionEvent
     data class CheckBoxChanged(val isChecked: Boolean) : TransactionEvent

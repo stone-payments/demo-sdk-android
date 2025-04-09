@@ -1,70 +1,124 @@
 package br.com.stonesdk.sdkdemo
 
 import android.bluetooth.BluetoothAdapter
-import br.com.stone.posandroid.hal.api.settings.DeviceInfo
+import br.com.stonesdk.sdkdemo.activities.cancel.CancelProviderWrapper
+import br.com.stonesdk.sdkdemo.activities.cancel.CancelViewModel
 import br.com.stonesdk.sdkdemo.activities.devices.BluetoothProviderWrapper
+import br.com.stonesdk.sdkdemo.activities.devices.DeviceInfoProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.devices.DevicesViewModel
+import br.com.stonesdk.sdkdemo.activities.display.DisplayMessageProviderWrapper
+import br.com.stonesdk.sdkdemo.activities.display.DisplayMessageViewModel
 import br.com.stonesdk.sdkdemo.activities.main.MainViewModel
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeViewModel
 import br.com.stonesdk.sdkdemo.activities.transaction.InstallmentProvider
-import br.com.stonesdk.sdkdemo.activities.transaction.TransactionProviderWrapper
+import br.com.stonesdk.sdkdemo.activities.transaction.PaymentProviderWrapper
+import br.com.stonesdk.sdkdemo.activities.transaction.ReversalProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionViewModel
-import br.com.stonesdk.sdkdemo.activities.validation.AppInitializer
+import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListProviderWrapper
+import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListViewModel
+import br.com.stonesdk.sdkdemo.activities.transaction.revert.TransactionRevertViewModel
 import br.com.stonesdk.sdkdemo.activities.validation.ValidationViewModel
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.dsl.factory
+import co.stone.posmobile.sdk.bluetooth.provider.BluetoothProvider
+import co.stone.posmobile.sdk.payment.provider.PaymentProvider
+import org.koin.android.ext.koin.androidApplication
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
-import stone.application.SessionApplication
-import stone.database.transaction.TransactionObject
-import stone.utils.Stone
 
-val demoApplicationModule = module {
+val demoApplicationModule =
+    module {
 
-    factory<SessionApplication> {
-        Stone.sessionApplication
-    }
+        factory {
+            ActivationProviderWrapper()
+        }
 
-    factory<ActivationProviderWrapper> {
-        ActivationProviderWrapper(get())
-    }
-    factory<AppInitializer> {
-        AppInitializer(get())
-    }
+        factory {
+            BluetoothProviderWrapper()
+        }
 
-    factory<BluetoothProviderWrapper> {
-        BluetoothProviderWrapper(get(), get())
-    }
-    factory<BluetoothAdapter> {
-        Stone.bluetoothAdapter
-    }
-    factory<TransactionProviderWrapper> {
-        TransactionProviderWrapper(get())
-    }
-    factory<InstallmentProvider> {
-        InstallmentProvider()
-    }
-    factory<TransactionObject> {
-        TransactionObject()
-    }
+        factory {
+            DeviceInfoProviderWrapper()
+        }
 
-    viewModel {
-        ManageStoneCodeViewModel(sessionApplication = get(), providerWrapper = get())
+        factory {
+            DisplayMessageProviderWrapper()
+        }
+
+        factory {
+            InstallmentProvider()
+        }
+
+        factory {
+            PaymentProviderWrapper()
+        }
+
+        factory {
+            ReversalProviderWrapper()
+        }
+
+        factory {
+            TransactionListProviderWrapper()
+        }
+
+        factory { CancelProviderWrapper() }
+
+        factory<BluetoothAdapter> {
+            BluetoothAdapter.getDefaultAdapter()
+        }
+
+        single<BluetoothProvider> {
+            BluetoothProvider.create()
+        }
+
+        single<PaymentProvider> {
+            PaymentProvider.create()
+        }
+
+        viewModel {
+            ManageStoneCodeViewModel(activationProviderWrapper = get())
+        }
+        viewModel {
+            ValidationViewModel(activationProviderWrapper = get())
+        }
+        viewModel {
+            DevicesViewModel(bluetoothProviderWrapper = get(), context = androidApplication())
+        }
+        viewModel {
+            DisplayMessageViewModel(displayMessageProviderWrapper = get())
+        }
+
+        viewModel {
+            TransactionViewModel(
+                activationProviderWrapper = get(),
+                deviceInfoProviderWrapper = get(),
+                installmentProvider = get(),
+                paymentProviderWrapper = get(),
+                context = androidApplication(),
+            )
+        }
+
+        viewModel {
+            MainViewModel(
+                deviceInfoProviderWrapper = get(),
+            )
+        }
+
+        viewModel {
+            TransactionListViewModel(
+                transactionProvider = get(),
+            )
+        }
+
+        viewModel {
+            TransactionRevertViewModel(
+                reversalProviderWrapper = get(),
+            )
+        }
+
+        viewModel {
+            CancelViewModel(
+                transactionProvider = get(),
+                cancelProvider = get(),
+            )
+        }
     }
-    viewModel {
-        ValidationViewModel(providerWrapper = get(), appInitializer = get())
-    }
-    viewModel {
-        DevicesViewModel(providerWrapper = get())
-    }
-    viewModel {
-        TransactionViewModel(
-            installmentProvider = get(),
-            transactionObject = get(),
-            sessionApplication = get()
-        )
-    }
-    viewModel {
-        MainViewModel()
-    }
-}

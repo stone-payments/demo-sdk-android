@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="12dp"
-        android:textColor="@color/black"
+        android:textColor="#000000"
         android:text="@string/uuid_s"
         android:textAlignment="center"
         android:textSize="22sp"/>

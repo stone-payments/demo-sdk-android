@@ -5,39 +5,37 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeEvent.*
+import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageAffiliationCodeEvent.*
 import kotlinx.coroutines.launch
-import stone.application.SessionApplication
 
 class ManageStoneCodeViewModel(
-    private val sessionApplication: SessionApplication,
-    private val providerWrapper: ActivationProviderWrapper,
+    private val activationProviderWrapper: ActivationProviderWrapper,
 ) : ViewModel() {
 
     var viewState by mutableStateOf(ManageStoneCodeUiModel())
         private set
 
     init {
-        listStoneCodesActivated()
+        listActivatedAffiliationCodes()
     }
 
-    fun onEvent(event: ManageStoneCodeEvent) {
+    fun onEvent(event: ManageAffiliationCodeEvent) {
         when (event) {
-            is ActivateStoneCode -> activateStoneCode()
-            is UserInput -> viewState = viewState.copy(stoneCodeToBeActivated = event.stoneCode)
-            AddStoneCode -> viewState = viewState.copy(showBottomSheet = true)
+            is ActivateAffiliationCode -> activateStoneCode()
+            is UserInput -> viewState = viewState.copy(stoneCodeToBeActivated = event.affiliationCode)
+            AddAffiliationCode -> viewState = viewState.copy(showBottomSheet = true)
             OnDismiss -> viewState = viewState.copy(showBottomSheet = false)
-            is StoneCodeItemClick -> deactivateStoneCode(position = event.position)
+            is AffiliationCodeItemClick -> deactivateAffiliationCode(position = event.position)
         }
     }
 
     private fun activateStoneCode() {
         viewModelScope.launch {
             viewState = viewState.copy(activationInProgress = true)
-            val isSuccess = providerWrapper.activate(viewState.stoneCodeToBeActivated)
+            val isSuccess = activationProviderWrapper.activate(viewState.stoneCodeToBeActivated)
 
             if (isSuccess) {
-                listStoneCodesActivated()
+                listActivatedAffiliationCodes()
             }
 
             viewState = viewState.copy(
@@ -49,22 +47,21 @@ class ManageStoneCodeViewModel(
         }
     }
 
-    private fun deactivateStoneCode(position: Int) {
+    private fun deactivateAffiliationCode(position: Int) {
         viewModelScope.launch {
-            val isSuccess = providerWrapper.deactivate(viewState.stoneCodesActivated[position])
+            val isSuccess = activationProviderWrapper.deactivate(viewState.stoneCodesActivated[position])
 
             if (isSuccess) {
-                listStoneCodesActivated()
+                listActivatedAffiliationCodes()
             }
         }
     }
 
-    private fun listStoneCodesActivated() {
-        val stoneCodes = sessionApplication.userModelList
-            .map { userModel -> userModel.stoneCode }
-            .toList()
-
-        viewState = viewState.copy(stoneCodesActivated = stoneCodes)
+    private fun listActivatedAffiliationCodes() {
+        viewModelScope.launch {
+            val activatedStoneCodes = activationProviderWrapper.getActivatedAffiliationCodes()
+            viewState = viewState.copy(stoneCodesActivated = activatedStoneCodes)
+        }
     }
 }
 
@@ -76,10 +73,10 @@ data class ManageStoneCodeUiModel(
     val activationInProgress: Boolean = false
 )
 
-sealed interface ManageStoneCodeEvent {
-    data class UserInput(val stoneCode: String) : ManageStoneCodeEvent
-    data object AddStoneCode : ManageStoneCodeEvent
-    data object OnDismiss : ManageStoneCodeEvent
-    data object ActivateStoneCode : ManageStoneCodeEvent
-    data class StoneCodeItemClick(val position: Int) : ManageStoneCodeEvent
+sealed interface ManageAffiliationCodeEvent {
+    data class UserInput(val affiliationCode: String) : ManageAffiliationCodeEvent
+    data object AddAffiliationCode : ManageAffiliationCodeEvent
+    data object OnDismiss : ManageAffiliationCodeEvent
+    data object ActivateAffiliationCode : ManageAffiliationCodeEvent
+    data class AffiliationCodeItemClick(val position: Int) : ManageAffiliationCodeEvent
 }

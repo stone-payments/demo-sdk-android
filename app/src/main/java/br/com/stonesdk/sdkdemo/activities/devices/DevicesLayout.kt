@@ -1,17 +1,16 @@
 package br.com.stonesdk.sdkdemo.activities.devices
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -19,28 +18,32 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import br.com.stonesdk.sdkdemo.activities.devices.DevicesViewModel.DevicePinpadUiModel
+import br.com.stonesdk.sdkdemo.ui.components.MonospacedText
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import org.koin.androidx.compose.getViewModel
+import com.google.accompanist.permissions.MultiplePermissionsState
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import org.koin.androidx.compose.koinViewModel
 
 
 @OptIn(ExperimentalPermissionsApi::class)
-@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun DevicesScreen(
-    viewModel: DevicesViewModel = getViewModel(),
+    viewModel: DevicesViewModel = koinViewModel(),
     closeScreen: () -> Unit
 ) {
+    val uiModel = viewModel.uiState.collectAsState()
     val effects by viewModel.sideEffects.collectAsState()
-    val permissionState = rememberPermissionState(Manifest.permission.BLUETOOTH_CONNECT)
+
+    val permissionState = rememberMultiplePermissionsState(
+        viewModel.getBluetoothPermissions()
+    )
 
     LaunchedEffect(effects) {
         effects?.let { event ->
@@ -50,28 +53,38 @@ fun DevicesScreen(
         }
     }
 
-    if (!permissionState.status.isGranted) {
-        RequestBluetoothPermission(
-            onPermissionGranted = {
-                viewModel.onEvent(DevicesEvent.EnableBluetooth)
-                viewModel.onEvent(DevicesEvent.Permission)
-            },
-            permissionState = permissionState
-        )
-    } else {
-        viewModel.onEvent(DevicesEvent.EnableBluetooth)
-        viewModel.onEvent(DevicesEvent.Permission)
+    LaunchedEffect(true) {
+        if (!permissionState.allPermissionsGranted) {
+            requestBluetoothPermission(
+                onPermissionGranted = {
+                    viewModel.onEvent(DevicesEvent.StartDeviceScan)
+                    viewModel.onEvent(DevicesEvent.Permission)
+                }, permissionState = permissionState
+            )
+        } else {
+            viewModel.onEvent(DevicesEvent.StartDeviceScan)
+            viewModel.onEvent(DevicesEvent.Permission)
+        }
     }
+
+    val isScanning = remember { derivedStateOf { uiModel.value.isScanningDevices } }
+    val availableDevices = remember { derivedStateOf { uiModel.value.bluetoothDevices } }
+    val errorMessages = remember { derivedStateOf { uiModel.value.errorMessages } }
+
     DevicesContent(
-        viewState = viewModel.viewState,
+        isScanning = isScanning.value,
+        availableDevices = availableDevices.value,
+        errorMessages = errorMessages.value,
         onEvent = viewModel::onEvent
     )
 }
 
 @Composable
 fun DevicesContent(
-    onEvent: (DevicesEvent) -> Unit,
-    viewState: DevicePinpadUiModel
+    isScanning: Boolean,
+    availableDevices: List<BluetoothInfo>,
+    errorMessages: List<String>,
+    onEvent: (DevicesEvent) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -79,29 +92,46 @@ fun DevicesContent(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (viewState.loading) {
-            CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+        if (isScanning) {
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Text(
+                    text = "Procurando dispositivos...",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .weight(1f)
+                )
+
+                Button(
+                    modifier = Modifier.padding(end = 8.dp),
+                    onClick = { onEvent(DevicesEvent.StopDeviceScan) }
+                ) {
+                    Text("Stop")
+                }
+
+                CircularProgressIndicator()
+            }
         }
-        if (viewState.bluetoothDevices.isEmpty()) {
-            Text(
-                textAlign = TextAlign.Center,
-                text = "Nenhum dispositivo Bluetooth disponível.",
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-        } else {
-            BluetoothDeviceList(
-                modifier = Modifier.weight(1f),
-                bluetoothDevices = viewState.bluetoothDevices,
-                onEvent = onEvent
-            )
-        }
-        viewState.errorMessage?.let { errorMessage ->
-            Text(
-                text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 16.dp)
-            )
+
+        BluetoothDeviceList(
+            bluetoothDevices = availableDevices,
+            onEvent = onEvent
+        )
+
+        LazyColumn {
+            items(
+                count = errorMessages.size,
+                key = { index -> index }
+            ) { index ->
+                MonospacedText(
+                    text = errorMessages
+                        .getOrNull(index)
+                        .orEmpty(),
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
         }
     }
 }
@@ -112,17 +142,24 @@ fun BluetoothDeviceList(
     bluetoothDevices: List<BluetoothInfo>,
     onEvent: (DevicesEvent) -> Unit
 ) {
-    LazyColumn(
-        modifier = modifier
-            .fillMaxWidth()
-            .fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 8.dp)
-    ) {
-        itemsIndexed(bluetoothDevices) { index, device ->
-            BluetoothDeviceItem(
-                deviceName = device.name,
-                onClick = { onEvent(DevicesEvent.DeviceItemClick(index)) }
-            )
+
+    if (bluetoothDevices.isEmpty()) {
+        Text(
+            textAlign = TextAlign.Center,
+            text = "Nenhum dispositivo Bluetooth disponível.",
+            modifier = Modifier.padding(16.dp)
+        )
+    } else {
+        LazyColumn(
+            modifier = modifier
+                .fillMaxWidth()
+                .fillMaxSize(),
+            contentPadding = PaddingValues(vertical = 8.dp)
+        ) {
+            itemsIndexed(bluetoothDevices) { index, device ->
+                BluetoothDeviceItem(deviceName = device.name,
+                    onClick = { onEvent(DevicesEvent.DeviceItemClick(index)) })
+            }
         }
     }
 }
@@ -130,8 +167,7 @@ fun BluetoothDeviceList(
 @SuppressLint("MissingPermission")
 @Composable
 fun BluetoothDeviceItem(
-    deviceName: String,
-    onClick: () -> Unit
+    deviceName: String, onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -148,15 +184,12 @@ fun BluetoothDeviceItem(
 }
 
 @ExperimentalPermissionsApi
-@Composable
-fun RequestBluetoothPermission(
+fun requestBluetoothPermission(
     onPermissionGranted: () -> Unit,
-    permissionState: PermissionState
+    permissionState: MultiplePermissionsState
 ) {
-    LaunchedEffect(permissionState) {
-        when {
-            permissionState.status.isGranted -> onPermissionGranted()
-            else -> permissionState.launchPermissionRequest()
-        }
+    when {
+        permissionState.allPermissionsGranted -> onPermissionGranted()
+        else -> permissionState.launchMultiplePermissionRequest()
     }
 }

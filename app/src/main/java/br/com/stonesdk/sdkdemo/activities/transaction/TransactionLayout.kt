@@ -2,9 +2,8 @@
 
 package br.com.stonesdk.sdkdemo.activities.transaction
 
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -12,59 +11,119 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import br.com.stonesdk.sdkdemo.R
-import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.CancelTransaction
-import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.InstallmentSelected
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.SendTransaction
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.TypeOfTransaction
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionEvent.UserInput
-import org.koin.androidx.compose.getViewModel
-import stone.application.enums.TypeOfTransactionEnum
+import br.com.stonesdk.sdkdemo.ui.components.BaseSpinner
+import br.com.stonesdk.sdkdemo.utils.parseCurrencyToCents
+import co.stone.posmobile.sdk.payment.domain.model.InstallmentTransaction
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun TransactionScreen(
-    viewModel: TransactionViewModel = getViewModel()
+    viewModel: TransactionViewModel = koinViewModel()
 ) {
+    val uiState = viewModel.uiState.collectAsState()
+
+    val desiredAmount = remember { derivedStateOf { uiState.value.amount } }
+    val transactionButtonEnabled = remember {
+        derivedStateOf {
+            desiredAmount.value.parseCurrencyToCents() > 0
+        }
+    }
+
+    val typeOfTransactions = remember {
+        derivedStateOf {
+            uiState.value.typeOfTransactions
+        }
+    }
+    val selectedTypeOfTransaction = remember {
+        derivedStateOf {
+            uiState.value.selectedTypeOfTransaction
+        }
+    }
+
+    val installments = remember { derivedStateOf { uiState.value.installments } }
+    val selectedInstallment = remember { derivedStateOf { uiState.value.selectedInstallment } }
+    val showInstallmentSelection = remember {
+        derivedStateOf {
+            selectedTypeOfTransaction.value == TypeOfTransactionEnum.CREDIT
+        }
+    }
+
+    val shouldCaptureTransaction =
+        remember { derivedStateOf { uiState.value.shouldCaptureTransaction } }
+
+    val affiliationCodes = remember { derivedStateOf { uiState.value.affiliationCodes } }
+    val selectedAffiliationCode =
+        remember { derivedStateOf { uiState.value.selectedAffiliationCode } }
+    val showAffiliationCodeSelection = remember {
+        derivedStateOf {
+            affiliationCodes.value.size > 1
+        }
+    }
+
+    val logMessages = remember { derivedStateOf {uiState.value.logMessages } }
+
     TransactionContent(
-        model = viewModel.viewState,
-        onEvent = viewModel::onEvent
+        desiredAmount = desiredAmount.value,
+        typeOfTransactions = typeOfTransactions.value,
+        selectedTypeOfTransaction = selectedTypeOfTransaction.value,
+        showInstallmentSelection = showInstallmentSelection.value,
+        installments = installments.value,
+        selectedInstallment = selectedInstallment.value,
+        affiliationCodes = affiliationCodes.value,
+        selectedAffiliationCode = selectedAffiliationCode.value,
+        showAffiliationCodeSelection = showAffiliationCodeSelection.value,
+        shouldCaptureTransaction = shouldCaptureTransaction.value,
+        transactionButtonEnabled = transactionButtonEnabled.value,
+        logMessages = logMessages.value,
+        onEvent = viewModel::onEvent,
     )
 
 }
 
 @Composable
 fun TransactionContent(
-    model: TransactionUiModel,
+    desiredAmount: String,
+    typeOfTransactions: List<TypeOfTransactionEnum>,
+    selectedTypeOfTransaction: TypeOfTransactionEnum,
+    showInstallmentSelection: Boolean,
+    installments: List<InstallmentTransaction>,
+    selectedInstallment: InstallmentTransaction,
+    affiliationCodes: List<String>,
+    selectedAffiliationCode: String,
+    showAffiliationCodeSelection: Boolean,
+    shouldCaptureTransaction: Boolean,
+    transactionButtonEnabled: Boolean,
+    logMessages: List<String>,
     onEvent: (TransactionEvent) -> Unit
 ) {
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(4.dp),
+            .padding(4.dp)
+            .imePadding(),
         verticalArrangement = Arrangement.Top
     ) {
         Row(
@@ -72,7 +131,7 @@ fun TransactionContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             OutlinedTextField(
-                value = "10",
+                value = desiredAmount,
                 readOnly = false,
                 onValueChange = { amount -> onEvent(UserInput(amount)) },
                 label = { Text(text = stringResource(id = R.string.transaction_enter_value)) },
@@ -81,164 +140,104 @@ fun TransactionContent(
             )
         }
 
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 2.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            RadioButtonGroup(onEvent, typeSelected = model.selectedTransaction)
+            RadioButtonGroup(
+                onEvent = onEvent,
+                selectedTransactionType = selectedTypeOfTransaction,
+                transactionTypes = typeOfTransactions
+            )
+
+            AnimatedVisibility(showInstallmentSelection) {
+                Spacer(modifier = Modifier.width(4.dp))
+                BaseSpinner(
+                    title = "Nº de parcelas",
+                    onItemSelected = { installment ->
+                        onEvent(
+                            TransactionEvent.OnInstallmentSelected(
+                                installment
+                            )
+                        )
+                    },
+                    selectedElement = selectedInstallment,
+                    elements = installments,
+                    elementNaming = { installment -> installment.mapInstallmentToPresentation() }
+                )
+            }
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Spinner(
-                title = "Nº de parcelas",
-                modifier = Modifier.weight(1f),
-                installmentList = model.installmentList,
-                onEvent = onEvent,
-                stoneCodeList = emptyList(),
-                isStoneCode = false
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            Spinner(
-                title = "Stone Code",
-                modifier = Modifier.weight(1f),
-                stoneCodeList = model.selectedStoneCode,
-                installmentList = emptyList(),
-                onEvent = onEvent,
-                isStoneCode = true
+        AnimatedVisibility(showAffiliationCodeSelection) {
+            Spacer(modifier = Modifier.width(4.dp))
+            BaseSpinner(
+                title = "Código de Afiliação",
+                onItemSelected = { affiliationCode ->
+                    onEvent(
+                        TransactionEvent.OnAffiliationCodeSelected(
+                            affiliationCode
+                        )
+                    )
+                },
+                selectedElement = selectedAffiliationCode,
+                elements = affiliationCodes,
+                elementNaming = { affiliationCode -> affiliationCode }
             )
         }
 
-        Row(
+        CheckboxCapture(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp)
-        ) {
-            CheckboxCapture(
-                onEvent = onEvent,
-                label = "Transação com Captura",
-                checked = model.isCheckBox
+                .padding(16.dp),
+            onEvent = onEvent,
+            label = "Transação com Captura",
+            checked = shouldCaptureTransaction
+        )
+
+        logMessages.forEach { logMessage ->
+            Text(
+                modifier = Modifier.fillMaxWidth().padding(start = 16.dp),
+                text = logMessage
+
             )
         }
+
+        Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            onClick = { onEvent(SendTransaction) },
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(vertical = 2.dp)
+                .fillMaxWidth()
+                .padding(16.dp),
+            enabled = transactionButtonEnabled,
+            onClick = { onEvent(SendTransaction) },
         ) {
             Text(text = stringResource(id = R.string.transaction_send_button))
         }
-
-        Button(
-            onClick = { onEvent(CancelTransaction) },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-
-        ) {
-            Text(text = stringResource(id = R.string.cancel_transaction_button))
-        }
-
     }
-
 }
 
 @Composable
 fun RadioButtonGroup(
     onEvent: (TransactionEvent) -> Unit,
-    typeSelected: TypeOfTransactionEnum,
+    transactionTypes: List<TypeOfTransactionEnum>,
+    selectedTransactionType: TypeOfTransactionEnum
+) {
 
-    ) {
-    val transactionTypes = listOf(
-        TypeOfTransactionEnum.DEBIT to "Débito",
-        TypeOfTransactionEnum.CREDIT to "Crédito",
-        TypeOfTransactionEnum.VOUCHER to "Voucher",
-        TypeOfTransactionEnum.PIX to "Pix"
-    )
     FlowRow {
-        transactionTypes.forEach { (transactionType, text) ->
-
+        transactionTypes.forEach { type ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.weight(1f)
             ) {
                 RadioButton(
-                    selected = (transactionType == typeSelected),
-                    onClick = { onEvent(TypeOfTransaction(transactionType)) }
+                    selected = (type == selectedTransactionType),
+                    onClick = { onEvent(TypeOfTransaction(type)) }
                 )
                 Text(
-                    text = text,
+                    text = type.displayName,
                 )
-            }
-        }
-    }
-}
-
-
-@Composable
-fun Spinner(
-    title: String,
-    onEvent: (TransactionEvent) -> Unit,
-    modifier: Modifier = Modifier,
-    installmentList: List<String>,
-    stoneCodeList: List<String>,
-    isStoneCode: Boolean
-) {
-    var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember {
-        mutableStateOf(
-            if (isStoneCode) stoneCodeList.firstOrNull() ?: "" else installmentList.firstOrNull()
-                ?: ""
-        )
-    }
-
-    Box(modifier = modifier) {
-        OutlinedTextField(
-            value = selectedItem,
-            onValueChange = {},
-            label = { Text(text = title) },
-            readOnly = true,  // Impede edição manual
-            trailingIcon = {
-                Icon(
-                    imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = null,
-                    Modifier.clickable { expanded = true }
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { expanded = true }
-        )
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            if (!isStoneCode) {
-                installmentList.forEachIndexed { index, installment ->
-                    DropdownMenuItem(
-                        text = { Text(text = installment) },
-                        onClick = {
-                            selectedItem = installment
-                            onEvent(InstallmentSelected(index))
-                            expanded = false
-                        }
-                    )
-                }
-            } else {
-                stoneCodeList.forEachIndexed { index, stoneCode ->
-                    DropdownMenuItem(
-                        text = { Text(text = stoneCode) },
-                        onClick = {
-                            selectedItem = stoneCode
-                            onEvent(TransactionEvent.StoneCodeItemClick(index))
-                            expanded = false
-                        })
-                }
             }
         }
     }
@@ -249,11 +248,15 @@ fun CheckboxCapture(
     checked: Boolean,
     onEvent: (TransactionEvent) -> Unit,
     label: String,
+    modifier: Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
         Checkbox(
             checked = checked,
-            onCheckedChange = {isChecked -> onEvent(TransactionEvent.CheckBoxChanged(isChecked )) }
+            onCheckedChange = { isChecked -> onEvent(TransactionEvent.CheckBoxChanged(isChecked)) }
         )
         Text(text = label)
     }

@@ -79,7 +79,7 @@ dependencies {
     implementation(libs.lifecycle.runtime.compose)
     implementation(libs.lifecycle.viewmodel.compose)
 
-    implementation (libs.material)
+    implementation(libs.material)
     implementation(libs.compose.material3)
     implementation(libs.compose.foundation)
     implementation(libs.compose.ui)
@@ -92,9 +92,9 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.fragment)
 
-    implementation (libs.permissiondispatcher)
-    annotationProcessor (libs.permissiondispatcher.processor)
-    implementation (libs.accompanist.permissions)
+    implementation(libs.permissiondispatcher)
+    annotationProcessor(libs.permissiondispatcher.processor)
+    implementation(libs.accompanist.permissions)
 
     implementation(libs.koinCore)
     implementation(libs.koinAndroid)
@@ -112,9 +112,6 @@ dependencies {
     debugImplementation(libs.compose.ui.tooling)
 
     androidTestImplementation platform(libs.compose.bom)
-
-    implementation("org.slf4j:slf4j-api:2.0.7")
-    implementation("com.github.tony19:logback-android:3.0.0")
 
 //    implementation libs.pos.android.sdk.posandroid.ingenico
 //    implementation libs.pos.android.sdk.posandroid.positivo

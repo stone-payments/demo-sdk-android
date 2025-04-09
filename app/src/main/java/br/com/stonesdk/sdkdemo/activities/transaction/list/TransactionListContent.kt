@@ -25,23 +25,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.stonesdk.sdkdemo.ui.components.DottedSpaceBetweenRowElements
+import co.stone.posmobile.sdk.payment.domain.model.response.TransactionStatus
 
 @Composable
 fun TransactionListContent(
     loading: Boolean = false,
     errorMessage: String? = null,
     transactions: List<Transaction>,
-    onItemClick: (Transaction) -> Unit
+    onItemClick: (Transaction) -> Unit,
 ) {
-
     AnimatedVisibility(
         visible = loading,
         enter = fadeIn(),
-        exit = fadeOut(tween(900))
+        exit = fadeOut(tween(900)),
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             CircularProgressIndicator()
         }
@@ -50,22 +50,21 @@ fun TransactionListContent(
     AnimatedVisibility(
         visible = !loading,
         enter = fadeIn(tween(900)),
-        exit = fadeOut()
+        exit = fadeOut(),
     ) {
         errorMessage?.let {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = errorMessage,
                     modifier = Modifier.padding(16.dp),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace
+                    fontFamily = FontFamily.Monospace,
                 )
             }
-
         }
         LazyColumn {
             items(count = transactions.size, key = { transactions[it].id }) { index ->
@@ -73,9 +72,9 @@ fun TransactionListContent(
                     id = transactions[index].id,
                     authorizedAmount = transactions[index].authorizedAmount,
                     authorizationDate = transactions[index].authorizationDate,
-                    atk = transactions[index].atk,
+                    itk = transactions[index].itk,
                     status = transactions[index].status,
-                    onItemSelected = { onItemClick(transactions[index]) }
+                    onItemSelected = { onItemClick(transactions[index]) },
                 )
             }
         }
@@ -87,15 +86,17 @@ fun TransactionListItem(
     id: String,
     authorizedAmount: String,
     authorizationDate: String,
-    atk: String?,
+    itk: String?,
     status: String,
     onItemSelected: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier
-        .clickable { onItemSelected() }
-        .padding(8.dp)) {
-
+    Column(
+        modifier =
+            modifier
+                .clickable { onItemSelected() }
+                .padding(8.dp),
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -107,15 +108,16 @@ fun TransactionListItem(
                         fontFamily = FontFamily.Monospace,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
-                        modifier = Modifier.padding(end = 8.dp)
+                        modifier = Modifier.padding(end = 8.dp),
                     )
                 },
                 endText = {
                     Text(
-                        text = authorizedAmount, fontFamily = FontFamily.Monospace,
+                        text = authorizedAmount,
+                        fontFamily = FontFamily.Monospace,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp),
                     )
                 },
             )
@@ -129,9 +131,9 @@ fun TransactionListItem(
             fontSize = 14.sp,
         )
 
-        atk?.let {
+        itk?.let {
             Text(
-                text = "ATK: $atk",
+                text = "ITK: $itk",
                 fontFamily = FontFamily.Monospace,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
@@ -144,30 +146,28 @@ fun TransactionListItem(
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
         )
-
     }
-
 }
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun TransactionListItemPreview() {
-    val transaction = Transaction(
-        id = "1",
-        authorizedAmount = "R$ 100,00",
-        authorizationDate = "2021-12-25T18:59:59.000Z",
-        atk = "12345678901234",
-        status = "Aprovado",
-        data = TODO(),
-        merchant = TODO()
-    )
+    val transaction =
+        Transaction(
+            id = "1",
+            affiliationCode = "123",
+            authorizedAmount = "R$ 100,00",
+            authorizationDate = "2021-12-25T18:59:59.000Z",
+            itk = "12345678901234",
+            status = "Aprovado",
+        )
 
     TransactionListItem(
         id = transaction.id,
         authorizedAmount = transaction.authorizedAmount,
         authorizationDate = transaction.authorizationDate,
-        status = transaction.status,
-        atk = transaction.atk,
-        onItemSelected = {}
+        status = TransactionStatus.APPROVED.toString(),
+        itk = transaction.itk,
+        onItemSelected = {},
     )
 }

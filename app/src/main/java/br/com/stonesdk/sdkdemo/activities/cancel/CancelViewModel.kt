@@ -1,40 +1,39 @@
-package br.com.stonesdk.sdkdemo.activities.transaction.list
+package br.com.stonesdk.sdkdemo.activities.cancel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.stonesdk.sdkdemo.activities.transaction.list.Transaction
+import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListProviderWrapper.TransactionListStatus
 import br.com.stonesdk.sdkdemo.utils.parseCentsToCurrency
+import co.stone.posmobile.sdk.payment.domain.model.response.TransactionStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class TransactionListViewModel(
+class CancelViewModel(
     val transactionProvider: TransactionListProviderWrapper,
+    val cancelProvider: CancelProviderWrapper,
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<TransactionListUiModel> =
-        MutableStateFlow(TransactionListUiModel())
-    val uiState: StateFlow<TransactionListUiModel> = _uiState.asStateFlow()
+    private val _uiState: MutableStateFlow<CancelUiModel> =
+        MutableStateFlow(CancelUiModel())
+    val uiState: StateFlow<CancelUiModel> = _uiState.asStateFlow()
 
     init {
-        getTransactions()
-    }
-
-    private fun getTransactions() {
         viewModelScope.launch {
             transactionProvider.getAllTransactions().collect { status ->
                 when (status) {
-                    TransactionListStatus.Loading -> {
+                    is TransactionListStatus.Loading -> {
                         _uiState.update { it.copy(loading = true) }
                     }
-
                     is TransactionListStatus.Success -> {
                         val transactions =
                             status.transactions
+                                .filter { it.transactionStatus == TransactionStatus.APPROVED }
                                 .sortedByDescending { it.transactionId }
                                 .map { transaction ->
-
                                     Transaction(
                                         id = transaction.transactionId.toString(),
                                         affiliationCode = transaction.affiliationCode,
@@ -44,6 +43,7 @@ class TransactionListViewModel(
                                         status = transaction.transactionStatus.name,
                                     )
                                 }
+
                         _uiState.update {
                             it.copy(
                                 transactions = transactions,
@@ -68,38 +68,37 @@ class TransactionListViewModel(
 
     fun onItemClick(transaction: Transaction) {
         viewModelScope.launch {
-//            val installmentTransaction: InstallmentTransaction =
-//                (transaction.data as? PaymentData.CardPaymentData)
-//                    ?.cardPaymentMethod
-//                    ?.takeIf { it is CardPaymentMethod.Credit }
-//                    ?.let { (it as CardPaymentMethod.Credit).installmentTransaction }
-//                    ?: InstallmentTransaction.None()
-//            EmailProvider.create().sendEmail(
-//                config = EmailConfig(
-//                    Contact("", ""),
-//                    listOf(Contact("", "")),
-//                    EmailReceiptType.MERCHANT
-//                ),
-//                data = transaction.data,
-//                receiptType = EmailReceiptType.MERCHANT,
-//                merchant = transaction.merchant,
-//                installmentTransaction = installmentTransaction
-//
-//            )
+            cancelProvider.cancelTransactionByItk(transaction.itk).collect { status ->
+                when (status) {
+                    is CancelProviderWrapper.CancelStatus.Loading -> {
+                        _uiState.update { it.copy(loading = true) }
+                    }
+
+                    is CancelProviderWrapper.CancelStatus.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                loading = false,
+                                transactions = it.transactions.filter { t -> t.itk != transaction.itk },
+                            )
+                        }
+                    }
+
+                    is CancelProviderWrapper.CancelStatus.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                transactions = emptyList(),
+                                loading = false,
+                                errorMessage = status.error,
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
 
-data class Transaction(
-    val id: String,
-    val affiliationCode: String,
-    val authorizedAmount: String,
-    val authorizationDate: String,
-    val itk: String,
-    val status: String,
-)
-
-data class TransactionListUiModel(
+data class CancelUiModel(
     val loading: Boolean = false,
     val errorMessage: String? = null,
     val transactions: List<Transaction> = emptyList(),

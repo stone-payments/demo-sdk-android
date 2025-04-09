@@ -1,14 +1,15 @@
-package br.com.stonesdk.sdkdemo.activities.transaction.list
+package br.com.stonesdk.sdkdemo.activities.cancel
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListContent
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TransactionListScreen(
-    viewModel: TransactionListViewModel = koinViewModel(),
+fun CancelScreen(
+    viewModel: CancelViewModel = koinViewModel(),
 ) {
     val uiModel = viewModel.uiState.collectAsStateWithLifecycle()
 

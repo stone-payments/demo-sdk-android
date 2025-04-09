@@ -21,9 +21,12 @@ class TransactionRevertViewModel(
 
     private fun revertTransactionsWithErrors() {
         viewModelScope.launch {
-            _uiState.value = TransactionRevertUiModel(loading = true)
             reversalProviderWrapper.reverseTransactions().collect {
                 when (it) {
+                    is ReversalProviderWrapper.RevertTransactionsStatus.InProgress -> {
+                        _uiState.value = TransactionRevertUiModel(loading = true)
+                    }
+
                     is ReversalProviderWrapper.RevertTransactionsStatus.Completed -> {
                         _uiState.value =
                             TransactionRevertUiModel(

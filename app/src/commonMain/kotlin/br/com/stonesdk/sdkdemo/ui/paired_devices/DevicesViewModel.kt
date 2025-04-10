@@ -28,21 +28,22 @@ class DevicesViewModel() : ViewModel() {
 
     var repository = BluetoothDeviceRepository()
 
-    fun startDevicesScan() {
- /*       viewModelScope.launch(Dispatchers.IO) {
-            repository.startScan().collect { bluetoothDeviceList ->
-                state = state.copy(
-                    bluetoothDevices = bluetoothDeviceList.map {
-                        BluetoothInfo(
-                            name = it.deviceName,
-                            address = it.hardwareAddress,
-                            isConnected = true
-                        )
-                    }.distinctBy { it.address }
-                )
+fun startDevicesScan() {
+    viewModelScope.launch(Dispatchers.IO) {
+        val devices = mutableListOf<BluetoothInfo>()
+        repository.startScan().collect { device ->
+            val bluetoothInfo = BluetoothInfo(
+                name = device.deviceName,
+                address = device.hardwareAddress,
+                isConnected = true
+            )
+            if (devices.none { it.address == bluetoothInfo.address }) {
+                devices.add(bluetoothInfo)
             }
-        }*/
+            state = state.copy(bluetoothDevices = devices)
+        }
     }
+}
 
 
     fun stopScan() {

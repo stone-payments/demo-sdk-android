@@ -5,8 +5,7 @@ import androidx.navigation.NavController
 
 data class BluetoothInfo(
     val name: String,
-    val address: String,
-    val isConnected : Boolean
+    val address: String
 )
 
 

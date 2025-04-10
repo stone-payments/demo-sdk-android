@@ -34,8 +34,7 @@ fun startDevicesScan() {
         repository.startScan().collect { device ->
             val bluetoothInfo = BluetoothInfo(
                 name = device.deviceName,
-                address = device.hardwareAddress,
-                isConnected = true
+                address = device.hardwareAddress
             )
             if (devices.none { it.address == bluetoothInfo.address }) {
                 devices.add(bluetoothInfo)

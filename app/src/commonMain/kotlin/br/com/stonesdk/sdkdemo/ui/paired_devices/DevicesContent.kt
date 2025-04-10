@@ -92,7 +92,6 @@ fun DevicesContent(
                     Column {
                         Text(it.name)
                         Text(it.address)
-                        Text("Conectado: ${it.isConnected}")
                     }
                 }
             }

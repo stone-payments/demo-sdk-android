@@ -29,7 +29,7 @@ class DevicesViewModel() : ViewModel() {
     var repository = BluetoothDeviceRepository()
 
     fun startDevicesScan() {
-        viewModelScope.launch(Dispatchers.IO) {
+ /*       viewModelScope.launch(Dispatchers.IO) {
             repository.startScan().collect { bluetoothDeviceList ->
                 state = state.copy(
                     bluetoothDevices = bluetoothDeviceList.map {
@@ -41,7 +41,7 @@ class DevicesViewModel() : ViewModel() {
                     }.distinctBy { it.address }
                 )
             }
-        }
+        }*/
     }
 
 

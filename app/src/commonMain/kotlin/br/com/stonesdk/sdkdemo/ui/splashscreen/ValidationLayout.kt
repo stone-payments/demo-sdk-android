@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import br.com.stonesdk.sdkdemo.ui.components.LoadingContent
 import br.com.stonesdk.sdkdemo.utils.AppInfo
 import co.stone.posmobile.lib.commons.platform.PlatformContext

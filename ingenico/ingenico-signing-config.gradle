@@ -1,0 +1,15 @@
+def keystorePropertiesFile = rootProject.file("ingenico/ingenico-keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    productFlavors {
+        ingenico {
+            dimension "model"
+            signingConfig signingConfigs.debug
+            versionNameSuffix "-ingenico"
+        }
+    }
+}

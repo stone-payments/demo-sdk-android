@@ -1,0 +1,15 @@
+def keystorePropertiesFile = rootProject.file("tectoy/tectoy-keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    productFlavors {
+        tectoySeriesT {
+            dimension "model"
+            signingConfig signingConfigs.debug
+            versionNameSuffix "-tectoySeriesT"
+        }
+    }
+}

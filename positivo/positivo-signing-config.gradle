@@ -1,4 +1,3 @@
-
 def keystorePropertiesFile = rootProject.file("positivo/positivo-keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
@@ -6,21 +5,20 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-
     signingConfigs {
-        positivo {
-            storeFile file("../positivo/${keystoreProperties['storeFile']}")
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storePassword keystoreProperties['storePassword']
+        positivoStandard {
+            storeFile rootProject.file("positivo/${keystoreProperties.getProperty('storeFile', System.env.POSITIVO_KEYSTORE_FILE)}")
+            keyAlias keystoreProperties.getProperty('keyAlias', System.env.POSITIVO_KEYSTORE_ALIAS)
+            keyPassword keystoreProperties.getProperty('keyPassword', System.env.POSITIVO_KEYSTORE_KEY_PASSWORD)
+            storePassword keystoreProperties.getProperty('storePassword', System.env.POSITIVO_KEYSTORE_PASSWORD)
         }
     }
 
-    buildTypes {
-        positivo {
-            initWith debug
-            signingConfig signingConfigs.positivo
-            matchingFallbacks = ['debug']
+    productFlavors {
+        positivoSeriesL {
+            dimension "model"
+            signingConfig signingConfigs.positivoStandard
+            versionNameSuffix "-positivoSeriesL"
         }
     }
 }

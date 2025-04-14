@@ -23,16 +23,16 @@ class BluetoothDeviceRepository() {
     val scope = CoroutineScope(Dispatchers.IO)
 
     fun startScan(): Flow<BluetoothDevice> = channelFlow {
-        provider.discoverPinpad(
-            onStartDiscover = {  },
-            onStopDiscover = { },
-            onBound = { device ->
-                runBlocking {
-                    trySend(device)
-                }
-            }
-        )
 
+        provider.discoverPinpad(object : StoneResultCallback<List<BluetoothDevice>> {
+            override fun onSuccess(result: List<BluetoothDevice>) {
+                result.forEach { trySend(it) }
+            }
+
+            override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                close(throwable)
+            }
+        })
         awaitClose {
             provider.stopDiscover()
         }
@@ -53,7 +53,6 @@ class BluetoothDeviceRepository() {
 
         provider.connect(
             pinpadAddress = address,
-            pinpadModelName = "MP15-50000263", // Replace with the actual model name
             stoneResultCallback = object : StoneResultCallback<Boolean> {
                 override fun onSuccess(result: Boolean) {
                     scope.launch { channel.trySend(Result.success(Unit)) }

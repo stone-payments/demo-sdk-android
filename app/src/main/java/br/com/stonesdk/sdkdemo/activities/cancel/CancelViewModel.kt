@@ -35,7 +35,7 @@ class CancelViewModel(
                                 .sortedByDescending { it.transactionId }
                                 .map { transaction ->
                                     Transaction(
-                                        id = transaction.transactionId.toString(),
+                                        id = transaction.transactionId,
                                         affiliationCode = transaction.affiliationCode,
                                         authorizedAmount = transaction.amountAuthorized.parseCentsToCurrency(),
                                         authorizationDate = transaction.time,

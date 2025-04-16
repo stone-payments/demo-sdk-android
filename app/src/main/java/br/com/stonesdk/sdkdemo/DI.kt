@@ -11,7 +11,9 @@ import br.com.stonesdk.sdkdemo.activities.display.DisplayMessageViewModel
 import br.com.stonesdk.sdkdemo.activities.main.MainViewModel
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.manageStoneCode.ManageStoneCodeViewModel
+import br.com.stonesdk.sdkdemo.activities.transaction.EmailProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.transaction.InstallmentProvider
+import br.com.stonesdk.sdkdemo.activities.transaction.MerchantProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.transaction.PaymentProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.transaction.ReversalProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.transaction.TransactionViewModel
@@ -36,12 +38,32 @@ val demoApplicationModule =
             BluetoothProviderWrapper()
         }
 
+        factory<BluetoothAdapter> {
+            BluetoothAdapter.getDefaultAdapter()
+        }
+
+        single<BluetoothProvider> {
+            BluetoothProvider.create()
+        }
+
+        factory {
+            CancelProviderWrapper()
+        }
+
         factory {
             DeviceInfoProviderWrapper()
         }
 
         factory {
             DisplayMessageProviderWrapper()
+        }
+
+        factory {
+            EmailProviderWrapper()
+        }
+
+        factory {
+            MerchantProviderWrapper()
         }
 
         factory {
@@ -58,16 +80,6 @@ val demoApplicationModule =
 
         factory {
             TransactionListProviderWrapper()
-        }
-
-        factory { CancelProviderWrapper() }
-
-        factory<BluetoothAdapter> {
-            BluetoothAdapter.getDefaultAdapter()
-        }
-
-        single<BluetoothProvider> {
-            BluetoothProvider.create()
         }
 
         single<PaymentProvider> {
@@ -105,6 +117,8 @@ val demoApplicationModule =
 
         viewModel {
             TransactionListViewModel(
+                emailProviderWrapper = get(),
+                merchantProviderWrapper = get(),
                 transactionProvider = get(),
             )
         }

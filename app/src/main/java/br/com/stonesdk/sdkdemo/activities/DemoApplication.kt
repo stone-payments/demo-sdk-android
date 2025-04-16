@@ -10,7 +10,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 
 class DemoApplication : Application() {
-
     override fun onCreate() {
         super.onCreate()
 
@@ -27,21 +26,19 @@ class DemoApplication : Application() {
             appVersion = "123",
             packageName = "br.com.example",
             environment = StoneStart.StoneEnvironment.CERTIFICATION,
-            callback = object : StoneResultCallback<List<Merchant>> {
-                override fun onSuccess(result: List<Merchant>) {
-                    Log.d("StoneStart", "Success: ${result.size}")
-                }
+            callback =
+                object : StoneResultCallback<List<Merchant>> {
+                    override fun onSuccess(result: List<Merchant>) {
+                        Log.d("StoneStart", "Success: ${result.size}")
+                    }
 
-                override fun onError(
-                    stoneStatus: br.com.stone.sdk.android.error.StoneStatus?,
-                    throwable: Throwable
-                ) {
-                    Log.d("StoneStart", "Error: ${throwable.message}")
-                }
-
-
-            }
+                    override fun onError(
+                        stoneStatus: br.com.stone.sdk.android.error.StoneStatus?,
+                        throwable: Throwable,
+                    ) {
+                        Log.d("StoneStart", "Error: ${throwable.message}")
+                    }
+                },
         )
-
     }
 }

@@ -39,7 +39,7 @@ class CancelViewModel(
                                         affiliationCode = transaction.affiliationCode,
                                         authorizedAmount = transaction.amountAuthorized.parseCentsToCurrency(),
                                         authorizationDate = transaction.time,
-                                        itk = transaction.initiatorTransactionKey,
+                                        atk = transaction.acquirerTransactionKey,
                                         status = transaction.transactionStatus.name,
                                     )
                                 }
@@ -68,7 +68,20 @@ class CancelViewModel(
 
     fun onItemClick(transaction: Transaction) {
         viewModelScope.launch {
-            cancelProvider.cancelTransactionByItk(transaction.itk).collect { status ->
+            val atk = transaction.atk
+
+            if (atk == null) {
+                _uiState.update {
+                    it.copy(
+                        transactions = emptyList(),
+                        loading = false,
+                        errorMessage = "Transaction not found",
+                    )
+                }
+                return@launch
+            }
+
+            cancelProvider.cancelTransactionByAtk(transaction.atk).collect { status ->
                 when (status) {
                     is CancelProviderWrapper.CancelStatus.Loading -> {
                         _uiState.update { it.copy(loading = true) }
@@ -78,7 +91,7 @@ class CancelViewModel(
                         _uiState.update {
                             it.copy(
                                 loading = false,
-                                transactions = it.transactions.filter { t -> t.itk != transaction.itk },
+                                transactions = it.transactions.filter { t -> t.atk != transaction.atk },
                             )
                         }
                     }

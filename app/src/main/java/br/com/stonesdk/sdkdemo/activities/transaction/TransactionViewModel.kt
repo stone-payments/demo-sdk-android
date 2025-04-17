@@ -27,9 +27,8 @@ class TransactionViewModel(
     private val deviceInfoProviderWrapper: DeviceInfoProviderWrapper,
     private val installmentProvider: InstallmentProvider,
     private val paymentProviderWrapper: PaymentProviderWrapper,
-    private val context: Context
+    private val context: Context,
 ) : ViewModel() {
-
     private val _uiState: MutableStateFlow<TransactionUiModel> =
         MutableStateFlow(TransactionUiModel())
     val uiState: StateFlow<TransactionUiModel> = _uiState.asStateFlow()
@@ -37,20 +36,21 @@ class TransactionViewModel(
     init {
         val isPosDevice = deviceInfoProviderWrapper.isPosDevice()
 
-        val typeOfTransactions = if (isPosDevice) {
-            listOf(
-                TypeOfTransactionEnum.CREDIT,
-                TypeOfTransactionEnum.DEBIT,
-                TypeOfTransactionEnum.VOUCHER,
-                TypeOfTransactionEnum.PIX
-            )
-        } else {
-            listOf(
-                TypeOfTransactionEnum.CREDIT,
-                TypeOfTransactionEnum.DEBIT,
-                TypeOfTransactionEnum.VOUCHER
-            )
-        }
+        val typeOfTransactions =
+            if (isPosDevice) {
+                listOf(
+                    TypeOfTransactionEnum.CREDIT,
+                    TypeOfTransactionEnum.DEBIT,
+                    TypeOfTransactionEnum.VOUCHER,
+                    TypeOfTransactionEnum.PIX,
+                )
+            } else {
+                listOf(
+                    TypeOfTransactionEnum.CREDIT,
+                    TypeOfTransactionEnum.DEBIT,
+                    TypeOfTransactionEnum.VOUCHER,
+                )
+            }
 
         viewModelScope.launch {
             val activatedAffiliationCodes = activationProviderWrapper.getActivatedAffiliationCodes()
@@ -59,7 +59,7 @@ class TransactionViewModel(
                 it.copy(
                     affiliationCodes = activatedAffiliationCodes,
                     selectedAffiliationCode = selectedAffiliationCode,
-                    typeOfTransactions = typeOfTransactions
+                    typeOfTransactions = typeOfTransactions,
                 )
             }
         }
@@ -74,7 +74,7 @@ class TransactionViewModel(
             }
 
             is TransactionEvent.CancelTransaction -> {
-                //providerWrapper.cancelTransaction()
+                // providerWrapper.cancelTransaction()
             }
 
             is TransactionEvent.OnInstallmentSelected -> onInstallmentSelected(event.installmentTransaction)
@@ -89,69 +89,83 @@ class TransactionViewModel(
         }
     }
 
-
     private fun updateInstallments(type: TypeOfTransactionEnum) {
-        val installments = installmentProvider.getInstallment(
-            transactionType = type,
-            isPos = deviceInfoProviderWrapper.isPosDevice()
-        )
+        val installments =
+            installmentProvider.getInstallment(
+                transactionType = type,
+                isPos = deviceInfoProviderWrapper.isPosDevice(),
+            )
 
         _uiState.update {
             it.copy(
                 selectedTypeOfTransaction = type,
                 installments = installments,
-                selectedInstallment = installments.first()
+                selectedInstallment = installments.first(),
             )
         }
     }
 
     fun startTransaction() {
         viewModelScope.launch {
-
             val amount = uiState.value.amount.toLongOrNull() ?: 0
             val captureTransaction = uiState.value.shouldCaptureTransaction
             val selectedInstallment = uiState.value.selectedInstallment
             val selectedAffiliationCode = uiState.value.selectedAffiliationCode
             val isContactlessEnabled = true
             val orderId = null
-            val cardPaymentMethod = when (uiState.value.selectedTypeOfTransaction) {
-                TypeOfTransactionEnum.CREDIT -> {
-                    val installmentType = if(selectedInstallment.installmentNumber <= 1) {
-                        InstallmentTransaction.None()
-                    } else {
-                        selectedInstallment
+            val cardPaymentMethod =
+                when (uiState.value.selectedTypeOfTransaction) {
+                    TypeOfTransactionEnum.CREDIT -> {
+                        val installmentType =
+                            if (selectedInstallment.installmentNumber <= 1) {
+                                InstallmentTransaction.None()
+                            } else {
+                                selectedInstallment
+                            }
+                        CardPaymentMethod.Credit(
+                            installmentTransaction = installmentType,
+                        )
                     }
-                    CardPaymentMethod.Credit(
-                        installmentTransaction = installmentType,
-                    )
+                    TypeOfTransactionEnum.DEBIT -> CardPaymentMethod.Debit
+                    TypeOfTransactionEnum.VOUCHER -> CardPaymentMethod.Voucher
+                    else -> throw IllegalArgumentException("Invalid transaction type")
                 }
-                TypeOfTransactionEnum.DEBIT -> CardPaymentMethod.Debit
-                TypeOfTransactionEnum.VOUCHER -> CardPaymentMethod.Voucher
-                else -> throw IllegalArgumentException("Invalid transaction type")
+
+            val paymentInput =
+                PaymentInput.CardPaymentInput(
+                    amount = amount,
+                    capture = captureTransaction,
+                    cardPaymentMethod = cardPaymentMethod,
+                    affiliationCode = selectedAffiliationCode,
+                    isContactlessEnabled = isContactlessEnabled,
+                    orderId = orderId,
+                )
+
+            val (_, deviceAddress) = PersistBTState.getBTState(context)
+
+            if (deviceAddress == null) {
+                // TODO display error message indicating bluetooth is not connected
+                _uiState.update {
+                    it.copy(success = false, error = true)
+                }
+                return@launch
             }
 
-            val paymentInput = PaymentInput.CardPaymentInput(
-                amount = amount,
-                capture = captureTransaction,
-                cardPaymentMethod = cardPaymentMethod,
-                affiliationCode = selectedAffiliationCode,
-                isContactlessEnabled = isContactlessEnabled,
-                orderId = orderId
-            )
-
-            val state = PersistBTState.getBTState(context)
             suspendCoroutine { cont ->
-                BluetoothProvider.create().connect(state.second!!, state.first, object :
-                    StoneResultCallback<Boolean> {
-                    override fun onSuccess(result: Boolean) {
-                        cont.resume(Unit)
-                    }
+                BluetoothProvider.create().connect(
+                    pinpadAddress = deviceAddress,
+                    stoneResultCallback =
+                        object :
+                            StoneResultCallback<Boolean> {
+                            override fun onSuccess(result: Boolean) {
+                                cont.resume(Unit)
+                            }
 
-                    override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                        cont.resume(Unit)
-                    }
-
-                })
+                            override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                                cont.resume(Unit)
+                            }
+                        },
+                )
             }
 
             paymentProviderWrapper.startPayment(paymentInput).collectLatest { status ->
@@ -192,7 +206,7 @@ class TransactionViewModel(
         }
     }
 
-    private fun updateSelectedStoneCode(affiliationCode : String) {
+    private fun updateSelectedStoneCode(affiliationCode: String) {
         _uiState.update {
             it.copy(selectedAffiliationCode = affiliationCode)
         }
@@ -223,15 +237,17 @@ data class TransactionUiModel(
     val affiliationCodes: List<String> = emptyList(),
     val selectedAffiliationCode: String = "",
     val logMessages: List<String> = emptyList(),
-    val shouldCaptureTransaction: Boolean = true
+    val shouldCaptureTransaction: Boolean = true,
 )
 
 enum class TypeOfTransactionEnum(val displayName: String) {
-
-    CREDIT("Crédito"), DEBIT("Débito"), VOUCHER("Voucher"), PIX("Pix");
+    CREDIT("Crédito"),
+    DEBIT("Débito"),
+    VOUCHER("Voucher"),
+    PIX("Pix"),
+    ;
 
     companion object {
-
         fun fromType(type: String): TypeOfTransactionEnum? {
             return entries.firstOrNull { it.name == type }
         }
@@ -240,12 +256,17 @@ enum class TypeOfTransactionEnum(val displayName: String) {
 
 sealed interface TransactionEvent {
     data class UserInput(val amount: String) : TransactionEvent
+
     data class OnInstallmentSelected(val installmentTransaction: InstallmentTransaction) :
         TransactionEvent
 
     data class TypeOfTransaction(val type: TypeOfTransactionEnum) : TransactionEvent
+
     data class OnAffiliationCodeSelected(val affiliationCode: String) : TransactionEvent
+
     data object SendTransaction : TransactionEvent
+
     data object CancelTransaction : TransactionEvent
+
     data class CheckBoxChanged(val isChecked: Boolean) : TransactionEvent
 }

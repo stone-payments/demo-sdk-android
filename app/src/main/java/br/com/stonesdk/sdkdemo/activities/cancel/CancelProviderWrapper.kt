@@ -11,11 +11,11 @@ class CancelProviderWrapper {
     private val cancelProvider: CancellationProvider
         get() = CancellationProvider.create()
 
-    fun cancelTransactionByAtk(atk: String): Flow<CancelStatus> {
+    fun cancelTransactionByAtk(initiatorTransactionKey: String): Flow<CancelStatus> {
         return channelFlow {
             trySend(CancelStatus.Loading)
             cancelProvider.cancel(
-                acquirerTransactionKey = atk,
+                initiatorTransactionKey = initiatorTransactionKey,
                 object : StoneResultCallback<Unit> {
                     override fun onSuccess(result: Unit) {
                         trySend(CancelStatus.Success)

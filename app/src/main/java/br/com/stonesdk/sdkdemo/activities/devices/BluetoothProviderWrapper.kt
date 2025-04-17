@@ -10,12 +10,11 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 class BluetoothProviderWrapper {
-
     val provider: BluetoothProvider
         get() = BluetoothProvider.create()
 
     suspend fun connectPinpad(
-        pinpad: BluetoothInfo
+        pinpad: BluetoothInfo,
     ): ConnectPinpadStatus {
         return bluetoothConnection(pinpad)
     }
@@ -25,18 +24,20 @@ class BluetoothProviderWrapper {
 
             provider.connect(
                 pinpadAddress = pinpad.address,
-                pinpadModelName = pinpad.name,
-                stoneResultCallback = object : StoneResultCallback<Boolean> {
-                    override fun onSuccess(result: Boolean) {
-                        continuation.resume(ConnectPinpadStatus.Success)
-                    }
+                stoneResultCallback =
+                    object : StoneResultCallback<Boolean> {
+                        override fun onSuccess(result: Boolean) {
+                            continuation.resume(ConnectPinpadStatus.Success)
+                        }
 
-                    override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                        continuation.resume(ConnectPinpadStatus.Error(
-                            stoneStatus?.message ?: throwable.message ?: "Erro desconhecido"
-                        ))
-                    }
-                }
+                        override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                            continuation.resume(
+                                ConnectPinpadStatus.Error(
+                                    stoneStatus?.message ?: throwable.message ?: "Erro desconhecido",
+                                ),
+                            )
+                        }
+                    },
             )
 
             continuation.invokeOnCancellation {}
@@ -50,7 +51,7 @@ class BluetoothProviderWrapper {
         return bluetoothAdapter.map { device ->
             BluetoothInfo(
                 name = device.name,
-                address = device.address
+                address = device.address,
             )
         }
     }
@@ -58,35 +59,42 @@ class BluetoothProviderWrapper {
     fun startDeviceScan(
         onStartDiscover: (BluetoothDevice) -> Unit,
         onStopDiscover: (Boolean) -> Unit,
-        onBound: (BluetoothDevice) -> Unit
+        onBound: (BluetoothDevice) -> Unit,
     ) {
         provider.discoverPinpad(
-            onStartDiscover = onStartDiscover,
-            onStopDiscover = onStopDiscover,
-            onBound = onBound
+            stoneResultCallback =
+                object : StoneResultCallback<List<BluetoothDevice>> {
+                    override fun onSuccess(result: List<BluetoothDevice>) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                        TODO("Not yet implemented")
+                    }
+                },
         )
     }
 
-    fun stopDeviceScan(){
+    fun stopDeviceScan() {
         provider.stopDiscover()
     }
-
 }
 
 sealed class ConnectPinpadStatus {
     data object Success : ConnectPinpadStatus()
+
     data class Error(val errorMessage: String) : ConnectPinpadStatus()
 }
 
 data class BluetoothInfo(
     val name: String,
     val address: String,
-){
+) {
     companion object {
         fun BluetoothDevice.toDeviceInfo(): BluetoothInfo {
             return BluetoothInfo(
                 name = this.deviceName,
-                address = this.hardwareAddress
+                address = this.hardwareAddress,
             )
         }
     }

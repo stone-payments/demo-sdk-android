@@ -1,5 +1,6 @@
 package br.com.stonesdk.sdkdemo.activities.transaction
 
+import android.util.Log
 import br.com.stone.sdk.android.error.StoneStatus
 import co.stone.posmobile.sdk.merchant.domain.model.Merchant
 import co.stone.posmobile.sdk.payment.domain.model.response.PaymentData
@@ -31,11 +32,13 @@ class EmailProviderWrapper {
                 stoneResultCallback =
                     object : co.stone.posmobile.sdk.callback.StoneResultCallback<Unit> {
                         override fun onSuccess(result: Unit) {
+                            Log.d("EmailProviderWrapper", "Email sent successfully")
                             trySend(EmailStatus.Success)
                         }
 
                         override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
                             val error = stoneStatus?.message ?: throwable.message ?: "Unknown error"
+                            Log.e("EmailProviderWrapper", "Error: $stoneStatus", throwable)
                             trySend(EmailStatus.Error(error))
                         }
                     },
@@ -48,7 +51,7 @@ class EmailProviderWrapper {
     private fun getEmailConfig(): EmailConfig {
         return EmailConfig(
             from = Contact(MAILER_ADDRESS, "Stone Pagamentos"),
-            to = listOf(Contact(RECIPIENT_ADDRESS, "Stone Pagamentos")),
+            to = listOf(Contact(RECIPIENT_ADDRESS, "Joao Carlos")),
             type = EmailReceiptType.CLIENT,
         )
     }

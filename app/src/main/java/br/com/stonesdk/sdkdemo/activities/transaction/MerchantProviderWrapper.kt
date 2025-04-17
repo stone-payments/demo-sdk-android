@@ -1,5 +1,6 @@
 package br.com.stonesdk.sdkdemo.activities.transaction
 
+import android.util.Log
 import br.com.stone.sdk.android.error.StoneStatus
 import co.stone.posmobile.sdk.callback.StoneResultCallback
 import co.stone.posmobile.sdk.merchant.domain.model.Merchant
@@ -20,6 +21,7 @@ class MerchantProviderWrapper {
                 object : StoneResultCallback<Merchant> {
                     override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
                         val error = stoneStatus?.message ?: throwable.message ?: "Unknown error"
+                        Log.e("MerchantProviderWrapper", "Error: $stoneStatus", throwable)
                         trySend(MerchantByAffiliationCodeStatus.Error(error))
                     }
 

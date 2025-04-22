@@ -4,7 +4,6 @@ import android.util.Log
 import br.com.stone.sdk.android.error.StoneStatus
 import co.stone.posmobile.sdk.merchant.domain.model.Merchant
 import co.stone.posmobile.sdk.payment.domain.model.response.PaymentData
-import co.stone.posmobile.sdk.sendEmail.domain.model.Contact
 import co.stone.posmobile.sdk.sendEmail.domain.model.EmailConfig
 import co.stone.posmobile.sdk.sendEmail.domain.model.EmailReceiptType
 import co.stone.posmobile.sdk.sendEmail.provider.EmailProvider
@@ -50,9 +49,9 @@ class EmailProviderWrapper {
 
     private fun getEmailConfig(): EmailConfig {
         return EmailConfig(
-            from = Contact(MAILER_ADDRESS, "Stone Pagamentos"),
-            to = listOf(Contact(RECIPIENT_ADDRESS, "Joao Carlos")),
-            type = EmailReceiptType.CLIENT,
+            from = MAILER_ADDRESS,
+            to = listOf(RECIPIENT_ADDRESS),
+            receiptType = EmailReceiptType.CLIENT,
         )
     }
 

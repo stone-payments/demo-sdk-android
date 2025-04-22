@@ -25,7 +25,7 @@ class DemoApplication : Application() {
             appName = "",
             appVersion = "123",
             packageName = "br.com.example",
-            environment = StoneStart.StoneEnvironment.CERTIFICATION,
+            environment = StoneStart.StoneEnvironment.STAGING,
             callback =
                 object : StoneResultCallback<List<Merchant>> {
                     override fun onSuccess(result: List<Merchant>) {

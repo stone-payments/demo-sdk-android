@@ -118,7 +118,6 @@ val demoApplicationModule =
         viewModel {
             TransactionListViewModel(
                 emailProviderWrapper = get(),
-                merchantProviderWrapper = get(),
                 transactionProvider = get(),
             )
         }

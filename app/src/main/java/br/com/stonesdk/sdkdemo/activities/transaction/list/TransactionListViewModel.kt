@@ -3,8 +3,6 @@ package br.com.stonesdk.sdkdemo.activities.transaction.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.stonesdk.sdkdemo.activities.transaction.EmailProviderWrapper
-import br.com.stonesdk.sdkdemo.activities.transaction.MerchantProviderWrapper
-import br.com.stonesdk.sdkdemo.activities.transaction.MerchantProviderWrapper.MerchantByAffiliationCodeStatus
 import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListProviderWrapper.TransactionByIdStatus
 import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListProviderWrapper.TransactionListStatus
 import br.com.stonesdk.sdkdemo.utils.parseCentsToCurrency
@@ -17,7 +15,6 @@ import kotlinx.coroutines.launch
 
 class TransactionListViewModel(
     val emailProviderWrapper: EmailProviderWrapper,
-    val merchantProviderWrapper: MerchantProviderWrapper,
     val transactionProvider: TransactionListProviderWrapper,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<TransactionListUiModel> =
@@ -102,36 +99,8 @@ class TransactionListViewModel(
                 return@launch
             }
 
-            val merchantResult =
-                merchantProviderWrapper.getMerchantByAffiliationCode(affiliationCode = transaction.affiliationCode)
-                    .first { MerchantByAffiliationCodeStatus.Loading != it }
-
-            if (merchantResult is MerchantByAffiliationCodeStatus.Error) {
-                _uiState.update {
-                    it.copy(
-                        transactions = emptyList(),
-                        loading = false,
-                        errorMessage = merchantResult.errorMessage,
-                    )
-                }
-                return@launch
-            }
-
-            merchantResult as MerchantByAffiliationCodeStatus.Success
-            if (merchantResult.merchant == null) {
-                _uiState.update {
-                    it.copy(
-                        transactions = emptyList(),
-                        loading = false,
-                        errorMessage = "Merchant not found",
-                    )
-                }
-                return@launch
-            }
-
             emailProviderWrapper.sendMail(
                 paymentData = paymentDataResult.transaction,
-                merchant = merchantResult.merchant,
             ).collect { status ->
                 when (status) {
                     EmailProviderWrapper.EmailStatus.Loading -> {

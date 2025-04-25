@@ -106,7 +106,7 @@ dependencies {
     coreLibraryDesugaring(libs.tools.desugar)
 
     implementation(libs.posmobile.sdk.core.android)
-    implementation(libs.posmobile.sdk.debugmode)
+//    implementation(libs.posmobile.sdk.debugmode)
 
     debugImplementation(libs.compose.ui.tooling)
 

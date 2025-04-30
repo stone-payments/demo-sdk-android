@@ -31,11 +31,39 @@ class TransactionListProviderWrapper {
         }
     }
 
+    fun getTransactionById(transactionId: Long): Flow<TransactionByIdStatus> {
+        return callbackFlow {
+            trySend(TransactionByIdStatus.Loading)
+            transactionListProvider.findTransactionById(
+                idFromBase = transactionId,
+                object : StoneResultCallback<PaymentData?> {
+                    override fun onSuccess(result: PaymentData?) {
+                        trySend(TransactionByIdStatus.Success(result))
+                    }
+
+                    override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                        val error = stoneStatus?.message ?: throwable.message ?: "Unknown error"
+                        trySend(TransactionByIdStatus.Error(error))
+                    }
+                },
+            )
+            awaitClose { }
+        }
+    }
+
     sealed class TransactionListStatus {
         data object Loading : TransactionListStatus()
 
         data class Success(val transactions: List<PaymentData>) : TransactionListStatus()
 
         data class Error(val errorMessage: String) : TransactionListStatus()
+    }
+
+    sealed class TransactionByIdStatus {
+        data object Loading : TransactionByIdStatus()
+
+        data class Success(val transaction: PaymentData?) : TransactionByIdStatus()
+
+        data class Error(val errorMessage: String) : TransactionByIdStatus()
     }
 }

@@ -69,10 +69,10 @@ fun TransactionListContent(
         LazyColumn {
             items(count = transactions.size, key = { transactions[it].id }) { index ->
                 TransactionListItem(
-                    id = transactions[index].id,
+                    id = transactions[index].id.toString(),
                     authorizedAmount = transactions[index].authorizedAmount,
                     authorizationDate = transactions[index].authorizationDate,
-                    itk = transactions[index].itk,
+                    atk = transactions[index].atk,
                     status = transactions[index].status,
                     onItemSelected = { onItemClick(transactions[index]) },
                 )
@@ -86,7 +86,7 @@ fun TransactionListItem(
     id: String,
     authorizedAmount: String,
     authorizationDate: String,
-    itk: String?,
+    atk: String?,
     status: String,
     onItemSelected: () -> Unit,
     modifier: Modifier = Modifier,
@@ -131,9 +131,9 @@ fun TransactionListItem(
             fontSize = 14.sp,
         )
 
-        itk?.let {
+        atk?.let {
             Text(
-                text = "ITK: $itk",
+                text = "ATK: $atk",
                 fontFamily = FontFamily.Monospace,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
@@ -154,20 +154,20 @@ fun TransactionListItem(
 fun TransactionListItemPreview() {
     val transaction =
         Transaction(
-            id = "1",
+            id = 1,
             affiliationCode = "123",
             authorizedAmount = "R$ 100,00",
             authorizationDate = "2021-12-25T18:59:59.000Z",
-            itk = "12345678901234",
+            atk = "12345678901234",
             status = "Aprovado",
         )
 
     TransactionListItem(
-        id = transaction.id,
+        id = transaction.id.toString(),
         authorizedAmount = transaction.authorizedAmount,
         authorizationDate = transaction.authorizationDate,
         status = TransactionStatus.APPROVED.toString(),
-        itk = transaction.itk,
+        atk = transaction.atk,
         onItemSelected = {},
     )
 }

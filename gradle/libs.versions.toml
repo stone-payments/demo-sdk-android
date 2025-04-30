@@ -5,17 +5,15 @@ activityComposeVersion = "1.9.3"
 appcompatVersion = "1.7.0"
 composeBomVersion = "2024.12.01"
 constraintLayoutVersion = "2.2.0"
-desugarVersion = "2.1.3"
-dataContainerDataVersion = "5.0.0-RC18"
-dataContainerContractVersion = "5.0.0-RC18"
+desugarVersion = "2.1.5"
 fragmentVersion = "1.8.2"
-gradlePluginVersion = "8.2.2"
+gradlePluginVersion = "8.9.0"
 kotlinVersion = "2.0.20"
 lifecycleVersion = "2.8.7"
 materialVersion = "1.12.0"
 permissionDispatcherVersion = "4.8.0"
-sdkVersion = "6.0.0-alpha32"
-sdkDebugVersion = "6.0.0-alpha21"
+sdkVersion = "6.0.0-alpha34-dev-005"
+sdkDebugVersion = "6.0.0-alpha34-dev-005"
 
 koinVersion = "4.0.0"
 slf4jVersion = "2.0.7"
@@ -50,10 +48,9 @@ tools-desugar = { group = "com.android.tools", name = "desugar_jdk_libs", versio
 logbackAndroid = { group = "com.github.tony19", name = "logback-android", version.ref = "logbackAndroidVersion" }
 slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4jVersion" }
 
-posmobile-datacontainer-data = { group = "co.stone.posmobile", name = "data-container-data", version.ref = "dataContainerDataVersion" }
 posmobile-sdk-core = { group = "co.stone.posmobile.sdk", name = "sdk-core", version.ref = "sdkVersion" }
 posmobile-sdk-core-android = { group = "co.stone.posmobile.sdk", name = "sdk-core-android", version.ref = "sdkVersion" }
-posmobile-sdk-debugmode = { group = "br.com.stone", name = "debugmode", version.ref = "sdkDebugVersion" }
+#posmobile-sdk-debugmode = { group = "br.com.stone", name = "debugmode", version.ref = "sdkDebugVersion" }
 
 #pos-android-sdk = { group = "br.com.stone", name = "stone-sdk", version.ref = "sdkVersion" }
 #pos-android-sdk-debugmode = { group = "br.com.stone.sdk.android", name = "debugmode", version.ref = "sdkVersion" }

@@ -17,10 +17,8 @@ class EmailProviderWrapper {
     private val emailProvider: EmailProvider
         get() = EmailProvider.create()
 
-    fun sendMail(
-        paymentData: PaymentData,
-    ): Flow<EmailStatus> {
-        return callbackFlow {
+    fun sendMail(paymentData: PaymentData): Flow<EmailStatus> =
+        callbackFlow {
             trySend(EmailStatus.Loading)
 
             val isTransactionCancelled =
@@ -30,14 +28,13 @@ class EmailProviderWrapper {
             val config = getEmailConfig()
 
             if (isTransactionCancelled) {
-                sendPaymentEmail(config = config, paymentData = paymentData)
-            } else {
                 sendCancelEmail(config = config, paymentData = paymentData)
+            } else {
+                sendPaymentEmail(config = config, paymentData = paymentData)
             }
 
             awaitClose { }
         }
-    }
 
     private suspend fun ProducerScope<EmailStatus>.sendPaymentEmail(
         config: EmailConfig,
@@ -53,7 +50,10 @@ class EmailProviderWrapper {
                         trySend(EmailStatus.Success)
                     }
 
-                    override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                    override fun onError(
+                        stoneStatus: StoneStatus?,
+                        throwable: Throwable,
+                    ) {
                         val error = stoneStatus?.message ?: throwable.message ?: "Unknown error"
                         Log.e("EmailProviderWrapper", "Error: $stoneStatus", throwable)
                         trySend(EmailStatus.Error(error))
@@ -76,7 +76,10 @@ class EmailProviderWrapper {
                         trySend(EmailStatus.Success)
                     }
 
-                    override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                    override fun onError(
+                        stoneStatus: StoneStatus?,
+                        throwable: Throwable,
+                    ) {
                         val error = stoneStatus?.message ?: throwable.message ?: "Unknown error"
                         Log.e("EmailProviderWrapper", "Error: $stoneStatus", throwable)
                         trySend(EmailStatus.Error(error))
@@ -85,20 +88,21 @@ class EmailProviderWrapper {
         )
     }
 
-    private fun getEmailConfig(): EmailConfig {
-        return EmailConfig(
+    private fun getEmailConfig(): EmailConfig =
+        EmailConfig(
             from = MAILER_ADDRESS,
             to = listOf(RECIPIENT_ADDRESS),
             receiptType = EmailReceiptType.CLIENT,
         )
-    }
 
     sealed class EmailStatus {
         data object Loading : EmailStatus()
 
         data object Success : EmailStatus()
 
-        data class Error(val errorMessage: String) : EmailStatus()
+        data class Error(
+            val errorMessage: String,
+        ) : EmailStatus()
     }
 
     companion object {

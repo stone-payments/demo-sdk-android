@@ -17,7 +17,10 @@ class EmailProviderWrapper {
     private val emailProvider: EmailProvider
         get() = EmailProvider.create()
 
-    fun sendMail(paymentData: PaymentData): Flow<EmailStatus> =
+    fun sendMail(
+        paymentData: PaymentData,
+        receiptType: EmailReceiptType,
+    ): Flow<EmailStatus> =
         callbackFlow {
             trySend(EmailStatus.Loading)
 
@@ -25,7 +28,7 @@ class EmailProviderWrapper {
                 paymentData
                     .transactionStatus == TransactionStatus.CANCELLED
 
-            val config = getEmailConfig()
+            val config = getEmailConfig(receiptType)
 
             if (isTransactionCancelled) {
                 sendCancelEmail(config = config, paymentData = paymentData)
@@ -88,11 +91,11 @@ class EmailProviderWrapper {
         )
     }
 
-    private fun getEmailConfig(): EmailConfig =
+    private fun getEmailConfig(receiptType: EmailReceiptType): EmailConfig =
         EmailConfig(
             from = MAILER_ADDRESS,
             to = listOf(RECIPIENT_ADDRESS),
-            receiptType = EmailReceiptType.CLIENT,
+            receiptType = receiptType,
         )
 
     sealed class EmailStatus {

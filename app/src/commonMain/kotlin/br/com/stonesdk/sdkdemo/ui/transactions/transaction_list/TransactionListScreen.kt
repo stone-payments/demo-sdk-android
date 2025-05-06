@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.stonesdk.sdkdemo.ui.components.DottedSpaceBetweenRowElements
+import co.stone.posmobile.sdk.payment.domain.model.response.TransactionStatus
 
 
 
@@ -57,17 +58,16 @@ fun TransactionListContent(
     loading: Boolean = false,
     errorMessage: String? = null,
     transactions: List<Transaction>,
-    onItemClick: (Transaction) -> Unit
+    onItemClick: (Transaction) -> Unit,
 ) {
-
     AnimatedVisibility(
         visible = loading,
         enter = fadeIn(),
-        exit = fadeOut(tween(900))
+        exit = fadeOut(tween(900)),
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             CircularProgressIndicator()
         }
@@ -76,32 +76,31 @@ fun TransactionListContent(
     AnimatedVisibility(
         visible = !loading,
         enter = fadeIn(tween(900)),
-        exit = fadeOut()
+        exit = fadeOut(),
     ) {
         errorMessage?.let {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = errorMessage,
                     modifier = Modifier.padding(16.dp),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace
+                    fontFamily = FontFamily.Monospace,
                 )
             }
-
         }
         LazyColumn {
             items(count = transactions.size, key = { transactions[it].id }) { index ->
                 TransactionListItem(
-                    id = transactions[index].id,
+                    id = transactions[index].id.toString(),
                     authorizedAmount = transactions[index].authorizedAmount,
                     authorizationDate = transactions[index].authorizationDate,
                     atk = transactions[index].atk,
                     status = transactions[index].status,
-                    onItemSelected = { onItemClick(transactions[index]) }
+                    onItemSelected = { onItemClick(transactions[index]) },
                 )
             }
         }
@@ -116,12 +115,14 @@ fun TransactionListItem(
     atk: String?,
     status: String,
     onItemSelected: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier
-        .clickable { onItemSelected() }
-        .padding(8.dp)) {
-
+    Column(
+        modifier =
+            modifier
+                .clickable { onItemSelected() }
+                .padding(8.dp),
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -133,15 +134,16 @@ fun TransactionListItem(
                         fontFamily = FontFamily.Monospace,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
-                        modifier = Modifier.padding(end = 8.dp)
+                        modifier = Modifier.padding(end = 8.dp),
                     )
                 },
                 endText = {
                     Text(
-                        text = authorizedAmount, fontFamily = FontFamily.Monospace,
+                        text = authorizedAmount,
+                        fontFamily = FontFamily.Monospace,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp),
                     )
                 },
             )
@@ -170,7 +172,5 @@ fun TransactionListItem(
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
         )
-
     }
-
 }

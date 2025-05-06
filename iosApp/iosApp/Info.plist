@@ -2,27 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleIdentifier</key>
-	<string>co.stone.sdkdemo</string>
-	<key>CFBundleName</key>
-	<string>SDKDemo</string>
-	<key>CFBundleDisplayName</key>
-	<string>SDKDemo</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Este aplicativo precisa acessar o Bluetooth para se conectar a dispositivos.</string>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>O Bluetooth é necessário para comunicação com dispositivos externos.</string>
 	<key>UISupportedExternalAccessoryProtocols</key>
 	<array>
 		<string>A2DP</string>
-        <string>AVRCP</string>
-        <string>HFP</string>
-        <string>HSP</string>
-        <string>SPP</string>
-        <string>PBAP</string>
-        <string>MAP</string>
+		<string>AVRCP</string>
+		<string>HFP</string>
+		<string>HSP</string>
+		<string>SPP</string>
+		<string>PBAP</string>
+		<string>MAP</string>
 	</array>
 </dict>
 </plist>

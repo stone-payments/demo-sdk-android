@@ -57,7 +57,7 @@ lifecycleViewmodelAndroidVersion = "2.8.7"
 #compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 #constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintLayoutVersion" }
 #fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentVersion" }
-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "gradlePluginVersion" }
+gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 koinCore = { group = "io.insert-koin", name = "koin-core", version.ref = "koinVersion" }
 koinAndroid = { group = "io.insert-koin", name = "koin-android", version.ref = "koinVersion" }
 koin-composeVM = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koinVersion" }

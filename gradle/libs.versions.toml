@@ -14,7 +14,7 @@ kotlinVersion = "2.0.20"
 lifecycleVersion = "2.8.7"
 materialVersion = "1.12.0"
 permissionDispatcherVersion = "4.8.0"
-sdkVersion = "6.0.0-beta1"
+sdkVersion = "6.0.1-dev"
 sdkDebugVersion = "6.0.0-alpha34-dev-005"
 
 koinVersion = "4.0.0"
@@ -97,8 +97,8 @@ androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "l
 #pos-android-sdk = { group = "co.stone.posmobile.sdk", name = "sdk-core", version.ref = "sdkVersion" }
 #pos-android-sdk-manufacturer-serial = { group = "co.stone.posmobile.sdk.manufacturer", name = "manufacturer-serial", version.ref = "sdkVersion" }
 
-posmobile-sdk-core = { group = "co.stone.pos.mobile.sdk", name = "sdk-core", version.ref = "sdkVersion"  }
-posmobile-sdk-manufacturer-serial = { group = "co.stone.pos.mobile.sdk.manufacturer", name = "manufacturer-serial", version.ref = "sdkVersion"}
+posmobile-sdk-core = { group = "co.stone.pos.mobile.sdk", name = "sdk-core", version.ref = "sdkVersion" }
+posmobile-sdk-manufacturer-serial = { group = "co.stone.pos.mobile.sdk.manufacturer", name = "manufacturer-serial", version.ref = "sdkVersion" }
 
 [plugins]
 

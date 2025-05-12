@@ -2,9 +2,9 @@ package br.com.stonesdk.sdkdemo.activities.cancel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.stonesdk.sdkdemo.activities.transaction.list.Transaction
 import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListProviderWrapper.TransactionListStatus
+import br.com.stonesdk.sdkdemo.ui.transactions.transaction_list.Transaction
 import br.com.stonesdk.sdkdemo.utils.parseCentsToCurrency
 import co.stone.posmobile.sdk.payment.domain.model.response.TransactionStatus
 import kotlinx.coroutines.flow.MutableStateFlow

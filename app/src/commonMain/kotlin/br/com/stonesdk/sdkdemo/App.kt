@@ -12,11 +12,10 @@ import br.com.stonesdk.sdkdemo.ui.main.MainScreen
 import br.com.stonesdk.sdkdemo.ui.paired_devices.DeviceScreen
 import br.com.stonesdk.sdkdemo.ui.splashscreen.ValidationScreen
 import br.com.stonesdk.sdkdemo.ui.transactions.TransactionScreen
-import br.com.stonesdk.sdkdemo.ui.transactions.transaction_list.TransactionListScreen
+import br.com.stonesdk.sdkdemo.ui.transactions.transactionList.TransactionListScreen
 import br.com.stonesdk.sdkdemo.utils.AppInfo
 import co.stone.posmobile.lib.commons.platform.PlatformContext
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
 
 @Composable
 @Preview
@@ -28,7 +27,7 @@ fun DemoApp(context: PlatformContext, appInfo: AppInfo) {
                 ValidationScreen(
                     context,
                     appInfo,
-                    navController = navController
+                    navController = navController,
                 )
             }
             composable("home") { MainScreen(navController) }

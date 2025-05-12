@@ -1,4 +1,4 @@
-package br.com.stonesdk.sdkdemo.ui.transactions.transaction_list
+package br.com.stonesdk.sdkdemo.ui.transactions.transactionList
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -28,15 +28,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.stonesdk.sdkdemo.ui.components.DottedSpaceBetweenRowElements
-import co.stone.posmobile.sdk.payment.domain.model.response.TransactionStatus
-
-
 
 @Composable
 fun TransactionListScreen(
-    viewModel: TransactionListViewModel = viewModel { TransactionListViewModel() }
+    viewModel: TransactionListViewModel = viewModel { TransactionListViewModel() },
 ) {
-
     val uiModel = viewModel.uiState.collectAsState()
 
     val errorMessage = remember { derivedStateOf { uiModel.value.errorMessage } }
@@ -47,11 +43,9 @@ fun TransactionListScreen(
         loading = loading.value,
         errorMessage = errorMessage.value,
         transactions = transactions.value,
-        onItemClick = viewModel::onItemClick
+        onItemClick = viewModel::onItemClick,
     )
 }
-
-
 
 @Composable
 fun TransactionListContent(

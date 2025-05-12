@@ -1,4 +1,4 @@
-package br.com.stonesdk.sdkdemo.ui.transactions.transaction_list
+package br.com.stonesdk.sdkdemo.ui.transactions.transactionList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,9 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TransactionListViewModel() : ViewModel() {
-
-    private val _uiState: MutableStateFlow<TransactionListUiModel> =
-        MutableStateFlow(TransactionListUiModel())
+    private val _uiState: MutableStateFlow<TransactionListUiModel> = MutableStateFlow(TransactionListUiModel())
     val uiState: StateFlow<TransactionListUiModel> = _uiState.asStateFlow()
 
     init {
@@ -23,44 +21,44 @@ class TransactionListViewModel() : ViewModel() {
     }
 
     private fun getTransactions() {
-
         viewModelScope.launch {
             _uiState.update { it.copy(loading = true) }
 
             val provider = TransactionListProvider.create()
-            provider.getAllTransactions(object : StoneResultCallback<List<PaymentData>> {
-                override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                    _uiState.update {
-                        it.copy(
-                            transactions = emptyList(),
-                            loading = false,
-                            errorMessage = stoneStatus?.message ?: throwable.message
-                        )
+            provider.getAllTransactions(
+                object : StoneResultCallback<List<PaymentData>> {
+                    override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                        _uiState.update {
+                            it.copy(
+                                transactions = emptyList(),
+                                loading = false,
+                                errorMessage = stoneStatus?.message ?: throwable.message,
+                            )
+                        }
                     }
-                }
 
-                override fun onSuccess(result: List<PaymentData>) {
-                    val transactions =
-                        result.sortedByDescending { it.transactionId }
-                            .map { transaction ->
+                    override fun onSuccess(result: List<PaymentData>) {
+                        val transactions =
+                            result.sortedByDescending { it.transactionId }.map { transaction ->
                                 Transaction(
-                                    id = transaction.transactionId.toString(),
+                                    id = transaction.transactionId,
+                                    affiliationCode = transaction.affiliationCode,
                                     authorizedAmount = transaction.amountAuthorized.parseCentsToCurrency(),
                                     authorizationDate = transaction.time,
                                     atk = transaction.acquirerTransactionKey,
-                                    status = transaction.transactionStatus.name
+                                    status = transaction.transactionStatus.name,
                                 )
                             }
 
-                    _uiState.update {
-                        it.copy(
-                            transactions = transactions,
-                            loading = false
-                        )
+                        _uiState.update {
+                            it.copy(
+                                transactions = transactions,
+                                loading = false,
+                            )
+                        }
                     }
-
-                }
-            })
+                },
+            )
         }
     }
 
@@ -75,15 +73,16 @@ private fun Long.parseCentsToCurrency(): String {
 }
 
 data class Transaction(
-    val id: String,
+    val id: Long,
+    val affiliationCode: String,
     val authorizedAmount: String,
     val authorizationDate: String,
-    val atk: String?,
-    val status: String
+    val atk: String? = null,
+    val status: String,
 )
 
 data class TransactionListUiModel(
     val loading: Boolean = false,
     val errorMessage: String? = null,
-    val transactions: List<Transaction> = emptyList()
+    val transactions: List<Transaction> = emptyList(),
 )

@@ -6,8 +6,8 @@ import br.com.stonesdk.sdkdemo.ui.components.LoadingContent
 import br.com.stonesdk.sdkdemo.ui.main.MainContent
 import br.com.stonesdk.sdkdemo.ui.main.MainNavigationOption
 import br.com.stonesdk.sdkdemo.ui.splashscreen.ActivateContent
-import br.com.stonesdk.sdkdemo.ui.transactions.transaction_list.Transaction
-import br.com.stonesdk.sdkdemo.ui.transactions.transaction_list.TransactionListItem
+import br.com.stonesdk.sdkdemo.ui.transactions.transactionList.Transaction
+import br.com.stonesdk.sdkdemo.ui.transactions.transactionList.TransactionListItem
 
 @Preview
 @Composable

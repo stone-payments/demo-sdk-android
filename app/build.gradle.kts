@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.composeCompiler)
 }
 
-
 kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -22,11 +21,11 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "DemoApp"
-            isStatic= true
+            isStatic = true
             xcf.add(this)
         }
     }
@@ -36,6 +35,9 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.material3.android)
+            implementation(libs.koin.android)
+            implementation(libs.koin.android.compose)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -44,26 +46,23 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-           // implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose.viewmodel)
+            // implementation(libs.androidx.lifecycle.viewmodel)
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
 
             implementation(libs.androidx.lifecycle.runtime.compose)
-//            implementation(libs.androidx.material3.android)
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha12")
-            implementation("co.stone.posmobile.sdk:sdk-core:6.0.0-alpha34-dev-005")
-            implementation("co.stone.posmobile.sdk.manufacturer:manufacturer-serial:6.0.0-alpha34-dev-005")
+            implementation(libs.posmobile.sdk.core)
+            implementation(libs.posmobile.sdk.manufacturer.serial)
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
             implementation(libs.platform.tools)
             implementation(libs.kotlin.logging)
-
         }
 
         iosMain.dependencies {
-
         }
-
     }
-
 }
 
 android {
@@ -107,20 +106,19 @@ dependencies {
     coreLibraryDesugaring(libs.tools.desugar)
 }
 
-
-////apply from: '../gertec/gertec-signing-config.gradle'
-////apply from: '../positivo/positivo-signing-config.gradle'
+// //apply from: '../gertec/gertec-signing-config.gradle'
+// //apply from: '../positivo/positivo-signing-config.gradle'
 //
-//android {
+// android {
 //
-////    flavorDimensions = ["manufacturer"]
-////    productFlavors {
-////        standard {
-////            dimension "manufacturer"
-////            signingConfig signingConfigs.debug
-////            isDefault true
-////        }
-////    }
+// //    flavorDimensions = ["manufacturer"]
+// //    productFlavors {
+// //        standard {
+// //            dimension "manufacturer"
+// //            signingConfig signingConfigs.debug
+// //            isDefault true
+// //        }
+// //    }
 //    compileSdk 34
 //
 //    defaultConfig {
@@ -175,9 +173,9 @@ dependencies {
 //    }
 //
 //    namespace 'br.com.stonesdk.sdkdemo'
-//}
+// }
 //
-//dependencies {
+// dependencies {
 //    implementation platform(libs.compose.bom)
 //
 //    implementation(libs.lifecycle.runtime)
@@ -215,14 +213,14 @@ dependencies {
 //
 //   androidTestImplementation platform(libs.compose.bom)
 //
-////    implementation libs.pos.android.sdk.posandroid.ingenico
-////    implementation libs.pos.android.sdk.posandroid.positivo
-////    implementation libs.pos.android.sdk.posandroid.gertec
-////    implementation libs.pos.android.sdk.posandroid.sunmi
+// //    implementation libs.pos.android.sdk.posandroid.ingenico
+// //    implementation libs.pos.android.sdk.posandroid.positivo
+// //    implementation libs.pos.android.sdk.posandroid.gertec
+// //    implementation libs.pos.android.sdk.posandroid.sunmi
 //
-////    testImplementation "io.mockk:mockk:1.13.12"
-////    testImplementation "org.junit.platform:junit-platform-launcher:1.10.0"
-////    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.10.0"
-////    testImplementation "org.junit.vintage:junit-vintage-engine:5.10.0"
-////    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0-RC"
-//}
+// //    testImplementation "io.mockk:mockk:1.13.12"
+// //    testImplementation "org.junit.platform:junit-platform-launcher:1.10.0"
+// //    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.10.0"
+// //    testImplementation "org.junit.vintage:junit-vintage-engine:5.10.0"
+// //    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0-RC"
+// }

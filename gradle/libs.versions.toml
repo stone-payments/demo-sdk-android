@@ -14,7 +14,7 @@ kotlinVersion = "2.0.20"
 lifecycleVersion = "2.8.7"
 materialVersion = "1.12.0"
 permissionDispatcherVersion = "4.8.0"
-sdkVersion = "6.0.0-alpha34-dev-005"
+sdkVersion = "6.0.0-beta1"
 sdkDebugVersion = "6.0.0-alpha34-dev-005"
 
 koinVersion = "4.0.0"
@@ -22,7 +22,7 @@ slf4jVersion = "2.0.7"
 logbackAndroidVersion = "3.0.0"
 
 
-agp = "8.6.0"
+agp = "8.9.2"
 android-compileSdk = "35"
 android-minSdk = "24"
 android-targetSdk = "34"
@@ -58,10 +58,10 @@ lifecycleViewmodelAndroidVersion = "2.8.7"
 #constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintLayoutVersion" }
 #fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentVersion" }
 gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
-koinCore = { group = "io.insert-koin", name = "koin-core", version.ref = "koinVersion" }
-koinAndroid = { group = "io.insert-koin", name = "koin-android", version.ref = "koinVersion" }
-koin-composeVM = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koinVersion" }
-koinCompose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koinVersion" }
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koinVersion" }
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinVersion" }
+koin-android-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koinVersion" }
+koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koinVersion" }
 kotlinGradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlinVersion" }
 #lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleVersion" }
 #lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleVersion" }
@@ -82,7 +82,7 @@ androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", nam
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 #androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationComposeVersion" }
 #androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroidVersion" }
-#androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3AndroidVersion" }
+androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3AndroidVersion" }
 platform-tools = { module = "co.stone.pos.mobile:platform-tools", version.ref = "platformToolsVersion" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlinLoggingVersion" }
 androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroidVersion" }
@@ -94,8 +94,14 @@ androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "l
 #pos-android-sdk-posandroid-positivo = { group = "br.com.stone", name = "stone-sdk-posandroid-positivo", version.ref = "sdkVersion" }
 #pos-android-sdk-posandroid-gertec = { group = "br.com.stone", name = "stone-sdk-posandroid-gertec", version.ref = "sdkVersion" }
 #pos-android-sdk-posandroid-sunmi = { group = "br.com.stone", name = "stone-sdk-posandroid-sunmi", version.ref = "sdkVersion" }
+#pos-android-sdk = { group = "co.stone.posmobile.sdk", name = "sdk-core", version.ref = "sdkVersion" }
+#pos-android-sdk-manufacturer-serial = { group = "co.stone.posmobile.sdk.manufacturer", name = "manufacturer-serial", version.ref = "sdkVersion" }
+
+posmobile-sdk-core = { group = "co.stone.pos.mobile.sdk", name = "sdk-core", version.ref = "sdkVersion"  }
+posmobile-sdk-manufacturer-serial = { group = "co.stone.pos.mobile.sdk.manufacturer", name = "manufacturer-serial", version.ref = "sdkVersion"}
 
 [plugins]
+
 #org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }

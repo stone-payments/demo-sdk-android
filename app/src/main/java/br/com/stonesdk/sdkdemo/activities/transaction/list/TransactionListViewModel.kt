@@ -2,9 +2,9 @@ package br.com.stonesdk.sdkdemo.activities.transaction.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.stonesdk.sdkdemo.activities.transaction.EmailProviderWrapper
 import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListProviderWrapper.TransactionByIdStatus
 import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListProviderWrapper.TransactionListStatus
+import br.com.stonesdk.sdkdemo.ui.transactions.EmailProviderWrapper
 import br.com.stonesdk.sdkdemo.utils.parseCentsToCurrency
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

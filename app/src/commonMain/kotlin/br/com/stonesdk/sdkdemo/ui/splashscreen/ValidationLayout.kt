@@ -10,17 +10,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,24 +38,25 @@ internal fun ValidationScreen(
     context: PlatformContext,
     appInfo: AppInfo,
     viewModel: ValidationViewModel = viewModel { ValidationViewModel() },
-    navController: NavController
+    navController: NavController,
 ) {
+    val uiModel by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState = remember { derivedStateOf { uiModel.state } }
 
-    LaunchedEffect(Unit) {
-        viewModel.initializeSDK(context,appInfo)
-    }
+    when (uiState.value) {
+        null -> {
+            viewModel.initializeSDK(context, appInfo)
+        }
+        is SplashScreenState.Idle -> {
+            viewModel.checkNeedToActivate()
+        }
 
-    when (uiState) {
         is SplashScreenState.Loading -> {
-            with(uiState as SplashScreenState.Loading) {
-                LoadingContent(message)
-            }
+            LoadingContent("")
         }
 
         is SplashScreenState.Activated -> {
-            println("teste activated")
             navController.navigate("home")
         }
 
@@ -69,43 +67,38 @@ internal fun ValidationScreen(
         }
 
         is SplashScreenState.Error -> {
-            with(uiState as SplashScreenState.Error) {
+            with(uiState.value as SplashScreenState.Error) {
                 Column(modifier = Modifier.fillMaxSize()) {
                     Text("Error: $code - $message")
                     Button(onClick = {
-                        viewModel.initializeSDK(context,appInfo)
+                        viewModel.initializeSDK(context, appInfo)
                     }) {
                         Text(text = "Tentar novamente")
                     }
-
                 }
             }
         }
     }
 }
 
-
 @Preview
-
-
 @Preview
 @Composable
 internal fun ActivateContent(
     onEvent: (String) -> Unit,
 ) {
-
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
-
         Text(
             text = "Digite o Stone Code",
             fontSize = 18.sp,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier.align(Alignment.CenterHorizontally),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -116,18 +109,19 @@ internal fun ActivateContent(
             onValueChange = { value ->
                 input = value
             },
-            modifier = Modifier
-                .width(170.dp)
-                .align(Alignment.CenterHorizontally),
+            modifier =
+                Modifier
+                    .width(170.dp)
+                    .align(Alignment.CenterHorizontally),
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            )
+            colors =
+                TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
         )
-
 
         Spacer(modifier = Modifier.height(24.dp))
 

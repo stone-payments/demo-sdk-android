@@ -114,6 +114,9 @@ dependencies {
     coreLibraryDesugaring(libs.tools.desugar)
 }
 
+
+configurations.implementation {exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8") }
+
 // //apply from: '../gertec/gertec-signing-config.gradle'
 // //apply from: '../positivo/positivo-signing-config.gradle'
 //

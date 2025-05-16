@@ -37,6 +37,7 @@ fun DemoApp(context: PlatformContext, appInfo: AppInfo) {
             composable("paired-devices") { DeviceScreen(navController) }
             composable("show-message") { DisplayMessageScreen() }
             composable("make-transaction") { TransactionScreen() }
+            composable("validate-by-card") { TransactionScreen() }
         }
     }
 }

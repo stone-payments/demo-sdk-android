@@ -55,7 +55,7 @@ class MainViewModel(
     }
 
     private fun getPosOptions(): List<MainNavigationOption> {
-        val isPosDevice = false
+        val isPosDevice = true
         return if (isPosDevice) {
             listOf(
                 MainNavigationOption.PosMakeTransaction,

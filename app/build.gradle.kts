@@ -18,17 +18,17 @@ kotlin {
     }
 
     val xcf = XCFramework("DemoApp")
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64(),
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "DemoApp"
-            isStatic = true
-            xcf.add(this)
-        }
-    }
+//    listOf(
+//        iosX64(),
+//        iosArm64(),
+//        iosSimulatorArm64(),
+//    ).forEach { iosTarget ->
+//        iosTarget.binaries.framework {
+//            baseName = "DemoApp"
+//            isStatic = true
+//            xcf.add(this)
+//        }
+//    }
 
     sourceSets {
 
@@ -53,8 +53,10 @@ kotlin {
 
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha12")
-            implementation(libs.posmobile.sdk.core)
-            implementation(libs.posmobile.sdk.manufacturer.serial)
+            //implementation(libs.posmobile.sdk.core)
+            //implementation(libs.posmobile.sdk.manufacturer.serial)
+            implementation("co.stone.pos.mobile.sdk:sdk-core:6.0.3-dev")
+            implementation("co.stone.pos.mobile.sdk.manufacturer:manufacturer-serial:6.0.3-dev")
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
             implementation(libs.platform.tools)
             implementation(libs.kotlin.logging)

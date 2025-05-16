@@ -71,7 +71,7 @@ class TransactionViewModel(
             }
 
             is TransactionEvent.OnInstallmentSelected -> onInstallmentSelected(event.installmentTransaction)
-            is TransactionEvent.SendTransaction -> startTransaction()
+            is TransactionEvent.SendTransaction -> startTransactionWithPreConnect()
             is TransactionEvent.OnAffiliationCodeSelected -> updateSelectedStoneCode(event.affiliationCode)
             is TransactionEvent.TypeOfTransaction -> updateTransactionType(event.type)
             is TransactionEvent.CheckBoxChanged -> {
@@ -98,7 +98,7 @@ class TransactionViewModel(
         }
     }
 
-    fun startTransaction() {
+    fun startTransactionWithPreConnect() {
         viewModelScope.launch {
 
             val amount = uiState.value.amount.toLongOrNull() ?: 0

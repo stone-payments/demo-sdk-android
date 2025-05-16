@@ -29,14 +29,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.com.stonesdk.sdkdemo.ui.components.LoadingContent
-import br.com.stonesdk.sdkdemo.utils.AppInfo
-import co.stone.posmobile.lib.commons.platform.PlatformContext
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun ValidationScreen(
-    context: PlatformContext,
-    appInfo: AppInfo,
     viewModel: ValidationViewModel = viewModel { ValidationViewModel() },
     navController: NavController,
 ) {
@@ -45,9 +41,6 @@ internal fun ValidationScreen(
     val uiState = remember { derivedStateOf { uiModel.state } }
 
     when (uiState.value) {
-        null -> {
-            viewModel.initializeSDK(context, appInfo)
-        }
         is SplashScreenState.Idle -> {
             viewModel.checkNeedToActivate()
         }
@@ -71,7 +64,7 @@ internal fun ValidationScreen(
                 Column(modifier = Modifier.fillMaxSize()) {
                     Text("Error: $code - $message")
                     Button(onClick = {
-                        viewModel.initializeSDK(context, appInfo)
+                        //viewModel.initializeSDK(context, appInfo)
                     }) {
                         Text(text = "Tentar novamente")
                     }

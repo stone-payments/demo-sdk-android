@@ -2,6 +2,7 @@ package br.com.stonesdk.sdkdemo.controller
 
 import androidx.compose.ui.window.ComposeUIViewController
 import br.com.stonesdk.sdkdemo.DemoApp
+import br.com.stonesdk.sdkdemo.di.initializeKoin
 import br.com.stonesdk.sdkdemo.utils.AppInfo
 import co.stone.posmobile.lib.commons.platform.PlatformContext
 import platform.Foundation.NSBundle
@@ -16,4 +17,11 @@ private fun getAppInfo(): AppInfo {
     )
 }
 
-fun MainViewController() = ComposeUIViewController { DemoApp(PlatformContext.INSTANCE, getAppInfo()) }
+fun MainViewController() = ComposeUIViewController(
+    configure = {
+        initializeKoin(
+            platformContext = PlatformContext.INSTANCE,
+            appInfo = getAppInfo()
+        )
+    }
+) { DemoApp() }

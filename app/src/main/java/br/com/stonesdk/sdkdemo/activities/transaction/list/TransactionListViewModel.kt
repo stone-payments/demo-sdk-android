@@ -2,10 +2,11 @@ package br.com.stonesdk.sdkdemo.activities.transaction.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.stonesdk.sdkdemo.activities.transaction.EmailProviderWrapper
-import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListProviderWrapper.TransactionByIdStatus
-import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListProviderWrapper.TransactionListStatus
+import br.com.stonesdk.sdkdemo.wrappers.EmailProviderWrapper
+import br.com.stonesdk.sdkdemo.wrappers.TransactionListProviderWrapper.TransactionByIdStatus
+import br.com.stonesdk.sdkdemo.wrappers.TransactionListProviderWrapper.TransactionListStatus
 import br.com.stonesdk.sdkdemo.utils.parseCentsToCurrency
+import br.com.stonesdk.sdkdemo.wrappers.TransactionListProviderWrapper
 import co.stone.posmobile.sdk.payment.domain.model.response.PaymentData
 import co.stone.posmobile.sdk.sendEmail.domain.model.EmailReceiptType
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -161,30 +162,31 @@ class TransactionListViewModel(
         receiptType: EmailReceiptType,
     ) {
         viewModelScope.launch {
-            emailProviderWrapper.sendMail(
-                paymentData = paymentData,
-                receiptType = receiptType,
-            ).collect { status ->
-                when (status) {
-                    EmailProviderWrapper.EmailStatus.Loading -> {
-                        _sendMailState.update { it.copy(sendMailState = SendMailState.Sending) }
-                    }
+            emailProviderWrapper
+                .sendMail(
+                    paymentData = paymentData,
+                    receiptType = receiptType,
+                ).collect { status ->
+                    when (status) {
+                        EmailProviderWrapper.EmailStatus.Loading -> {
+                            _sendMailState.update { it.copy(sendMailState = SendMailState.Sending) }
+                        }
 
-                    is EmailProviderWrapper.EmailStatus.Success -> {
-                        val state =
-                            if (receiptType == EmailReceiptType.MERCHANT) {
-                                SendMailState.SendMerchantSuccess
-                            } else {
-                                SendMailState.SendClientSuccess
-                            }
-                        _sendMailState.update { it.copy(sendMailState = state) }
-                    }
+                        is EmailProviderWrapper.EmailStatus.Success -> {
+                            val state =
+                                if (receiptType == EmailReceiptType.MERCHANT) {
+                                    SendMailState.SendMerchantSuccess
+                                } else {
+                                    SendMailState.SendClientSuccess
+                                }
+                            _sendMailState.update { it.copy(sendMailState = state) }
+                        }
 
-                    is EmailProviderWrapper.EmailStatus.Error -> {
-                        _sendMailState.update { it.copy(sendMailState = SendMailState.SendMailError(status.errorMessage)) }
+                        is EmailProviderWrapper.EmailStatus.Error -> {
+                            _sendMailState.update { it.copy(sendMailState = SendMailState.SendMailError(status.errorMessage)) }
+                        }
                     }
                 }
-            }
         }
     }
 }
@@ -218,7 +220,9 @@ sealed class SendMailState {
 
     data object SendClientSuccess : SendMailState()
 
-    data class SendMailError(val error: String? = null) : SendMailState()
+    data class SendMailError(
+        val error: String? = null,
+    ) : SendMailState()
 
     data object Completed : SendMailState()
 }

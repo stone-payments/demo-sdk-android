@@ -3,7 +3,7 @@ package br.com.stonesdk.sdkdemo.ui.splashscreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.stone.sdk.android.error.StoneStatus
-import br.com.stonesdk.sdkdemo.ActivationProviderWrapper
+import br.com.stonesdk.sdkdemo.wrappers.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.utils.AppInfo
 import co.stone.posmobile.lib.commons.platform.PlatformContext
 import co.stone.posmobile.sdk.callback.StoneResultCallback

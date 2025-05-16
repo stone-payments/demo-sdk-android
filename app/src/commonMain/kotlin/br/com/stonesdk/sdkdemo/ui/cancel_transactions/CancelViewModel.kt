@@ -6,42 +6,45 @@ import br.com.stonesdk.sdkdemo.ui.transactions.transactionList.Transaction
 import br.com.stonesdk.sdkdemo.utils.parseCentsToCurrency
 import br.com.stonesdk.sdkdemo.wrappers.CancelProviderWrapper
 import br.com.stonesdk.sdkdemo.wrappers.TransactionListProviderWrapper
+import br.com.stonesdk.sdkdemo.wrappers.TransactionListProviderWrapper.TransactionListStatus
 import co.stone.posmobile.sdk.payment.domain.model.response.TransactionStatus
-
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-
 class CancelViewModel(
     val transactionProvider: TransactionListProviderWrapper,
     val cancelProvider: CancelProviderWrapper,
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<CancelUiModel> = MutableStateFlow(CancelUiModel())
+    private val _uiState: MutableStateFlow<CancelUiModel> =
+        MutableStateFlow(CancelUiModel())
     val uiState: StateFlow<CancelUiModel> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
             transactionProvider.getAllTransactions().collect { status ->
                 when (status) {
-                    is TransactionListProviderWrapper.TransactionListStatus.Loading -> {
+                    is TransactionListStatus.Loading -> {
                         _uiState.update { it.copy(loading = true) }
                     }
 
-                    is TransactionListProviderWrapper.TransactionListStatus.Success -> {
-                        val transactions = status.transactions.filter { it.transactionStatus == TransactionStatus.APPROVED }
-                            .sortedByDescending { it.transactionId }.map { transaction ->
-                                Transaction(
-                                    id = transaction.transactionId,
-                                    affiliationCode = transaction.affiliationCode,
-                                    authorizedAmount = transaction.amountAuthorized.parseCentsToCurrency(),
-                                    authorizationDate = transaction.time,
-                                    atk = transaction.acquirerTransactionKey,
-                                    status = transaction.transactionStatus.name,
-                                )
-                            }
+                    is TransactionListStatus.Success -> {
+                        val transactions =
+                            status.transactions
+                                .filter { it.transactionStatus == TransactionStatus.APPROVED }
+                                .sortedByDescending { it.transactionId }
+                                .map { transaction ->
+                                    Transaction(
+                                        id = transaction.transactionId,
+                                        affiliationCode = transaction.affiliationCode,
+                                        authorizedAmount = transaction.amountAuthorized.parseCentsToCurrency(),
+                                        authorizationDate = transaction.time,
+                                        atk = transaction.acquirerTransactionKey,
+                                        status = transaction.transactionStatus.name,
+                                    )
+                                }
 
                         _uiState.update {
                             it.copy(
@@ -51,7 +54,7 @@ class CancelViewModel(
                         }
                     }
 
-                    is TransactionListProviderWrapper.TransactionListStatus.Error -> {
+                    is TransactionListStatus.Error -> {
                         _uiState.update {
                             it.copy(
                                 transactions = emptyList(),
@@ -115,3 +118,4 @@ data class CancelUiModel(
     val errorMessage: String? = null,
     val transactions: List<Transaction> = emptyList(),
 )
+

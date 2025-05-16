@@ -17,18 +17,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.stonesdk.sdkdemo.ui.components.DottedSpaceBetweenRowElements
 import co.stone.posmobile.sdk.payment.domain.model.response.TransactionStatus
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun TransactionListContent(
@@ -153,7 +150,7 @@ fun TransactionListItem(
 }
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
+@Preview
 fun TransactionListItemPreview() {
     val transaction =
         Transaction(

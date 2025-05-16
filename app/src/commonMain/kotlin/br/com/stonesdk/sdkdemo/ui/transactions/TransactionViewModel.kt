@@ -2,10 +2,14 @@ package br.com.stonesdk.sdkdemo.ui.transactions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.stonesdk.sdkdemo.ActivationProviderWrapper
+import br.com.stone.sdk.android.error.StoneStatus
+import br.com.stonesdk.sdkdemo.utils.PersistBTState
+import br.com.stonesdk.sdkdemo.wrappers.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.wrappers.DeviceInfoProviderWrapper
 import br.com.stonesdk.sdkdemo.wrappers.InstallmentProvider
 import br.com.stonesdk.sdkdemo.wrappers.PaymentProviderWrapper
+import co.stone.posmobile.sdk.bluetooth.provider.BluetoothProvider
+import co.stone.posmobile.sdk.callback.StoneResultCallback
 import co.stone.posmobile.sdk.payment.domain.model.CardPaymentMethod
 import co.stone.posmobile.sdk.payment.domain.model.InstallmentTransaction
 import co.stone.posmobile.sdk.payment.domain.model.PaymentInput
@@ -15,6 +19,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class TransactionViewModel(
     private val activationProviderWrapper: ActivationProviderWrapper = ActivationProviderWrapper(),
@@ -134,7 +140,7 @@ class TransactionViewModel(
                     orderId = orderId,
                 )
 
-            val (_, deviceAddress) = PersistBTState.getBTState(context)
+            val (_, deviceAddress) = PersistBTState.getBTState()
 
             if (deviceAddress == null) {
                 // TODO display error message indicating bluetooth is not connected

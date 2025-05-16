@@ -18,8 +18,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TransactionListViewModel(
-    val emailProviderWrapper: EmailProviderWrapper,
     val transactionProvider: TransactionListProviderWrapper,
+    val emailProviderWrapper: EmailProviderWrapper,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<TransactionListUiModel> = MutableStateFlow(TransactionListUiModel())
 

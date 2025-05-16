@@ -1,14 +1,10 @@
 [versions]
-desugarVersion = "2.1.5"
-kotlinVersion = "2.0.20"
-sdkVersion = "6.0.0-alpha34-dev-005"
+# co stone libraries
+platformToolsVersion = "1.0.0-RC4"
+sdkVersion = "6.0.1-dev"
 sdkDebugVersion = "6.0.0-alpha34-dev-005"
 
-koinVersion = "4.0.0"
-slf4jVersion = "2.0.7"
-logbackAndroidVersion = "3.0.0"
-
-
+# android libraries
 agp = "8.9.2"
 android-compileSdk = "35"
 android-minSdk = "24"
@@ -17,22 +13,28 @@ androidx-activityCompose = "1.10.0"
 androidx-appcompat = "1.7.0"
 androidx-constraintlayout = "2.2.0"
 androidx-core-ktx = "1.15.0"
+androidx-datastore = "1.1.6"
 androidx-espresso-core = "3.6.1"
 androidx-lifecycle = "2.8.4"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
 compose-multiplatform = "1.7.0"
-junit = "4.13.2"
-kotlin = "2.1.10"
-navigationComposeVersion = "2.8.7"
-uiToolingPreviewAndroidVersion = "1.7.8"
-material3AndroidVersion = "1.3.1"
-platformToolsVersion = "1.0.0-RC4"
+desugarVersion = "2.1.5"
+kotlinVersion = "2.1.10"
 kotlinLoggingVersion = "5.1.0"
+koinVersion = "4.0.0"
 lifecycleViewmodelAndroidVersion = "2.8.7"
+logbackAndroidVersion = "3.0.0"
+material3AndroidVersion = "1.3.1"
+navigationComposeVersion = "2.8.7"
+okio = "3.11.0"
+slf4jVersion = "2.0.7"
+uiToolingPreviewAndroidVersion = "1.7.8"
+
+# test libraries
+junit = "4.13.2"
 
 [libraries]
-
 gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koinVersion" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinVersion" }
@@ -44,12 +46,15 @@ logbackAndroid = { group = "com.github.tony19", name = "logback-android", versio
 slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4jVersion" }
 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "androidx-datastore" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
-androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3AndroidVersion" }
-platform-tools = { module = "co.stone.pos.mobile:platform-tools", version.ref = "platformToolsVersion" }
-kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlinLoggingVersion" }
 androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroidVersion" }
+androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3AndroidVersion" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlinLoggingVersion" }
 
+platform-tools = { module = "co.stone.pos.mobile:platform-tools", version.ref = "platformToolsVersion" }
 #pos-android-sdk = { group = "br.com.stone", name = "stone-sdk", version.ref = "sdkVersion" }
 #pos-android-sdk-debugmode = { group = "br.com.stone.sdk.android", name = "debugmode", version.ref = "sdkVersion" }
 #pos-android-sdk-posandroid = { group = "br.com.stone", name = "stone-sdk-posandroid", version.ref = "sdkVersion" }
@@ -64,10 +69,8 @@ posmobile-sdk-core = { group = "co.stone.pos.mobile.sdk", name = "sdk-core", ver
 posmobile-sdk-manufacturer-serial = { group = "co.stone.pos.mobile.sdk.manufacturer", name = "manufacturer-serial", version.ref = "sdkVersion" }
 
 [plugins]
-
-#org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
-composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinVersion" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlinVersion" }

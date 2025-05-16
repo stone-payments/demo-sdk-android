@@ -40,24 +40,28 @@ kotlin {
             implementation(libs.koin.android.compose)
         }
         commonMain.dependencies {
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.androidx.datastore)
+            implementation(libs.androidx.datastore.preferences)
+            implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
-            // implementation(libs.androidx.lifecycle.viewmodel)
-            implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
-
-            implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha12")
-            implementation(libs.posmobile.sdk.core)
-            implementation(libs.posmobile.sdk.manufacturer.serial)
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
             implementation(libs.platform.tools)
             implementation(libs.kotlin.logging)
+            implementation(libs.okio)
+            // TODO move to catalog
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
+            implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha12")
+
+            implementation(libs.posmobile.sdk.core)
+            implementation(libs.posmobile.sdk.manufacturer.serial)
         }
 
         iosMain.dependencies {

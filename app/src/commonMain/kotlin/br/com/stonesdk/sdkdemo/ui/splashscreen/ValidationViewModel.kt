@@ -10,8 +10,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ValidationViewModel : ViewModel() {
-    private val activationProvider: ActivationProviderWrapper = ActivationProviderWrapper()
+class ValidationViewModel(
+    private val activationProvider : ActivationProviderWrapper
+) : ViewModel() {
 
     private val _uiState: MutableStateFlow<ValidationUiModel> =
         MutableStateFlow(ValidationUiModel(SplashScreenState.Idle))

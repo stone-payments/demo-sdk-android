@@ -5,10 +5,11 @@ import androidx.lifecycle.viewModelScope
 import br.com.stone.sdk.android.error.StoneStatus
 import br.com.stonesdk.sdkdemo.utils.PersistBTState
 import br.com.stonesdk.sdkdemo.wrappers.ActivationProviderWrapper
+import br.com.stonesdk.sdkdemo.wrappers.BluetoothProviderWrapper
+import br.com.stonesdk.sdkdemo.wrappers.BluetoothStatus
 import br.com.stonesdk.sdkdemo.wrappers.DeviceInfoProviderWrapper
 import br.com.stonesdk.sdkdemo.wrappers.InstallmentProvider
 import br.com.stonesdk.sdkdemo.wrappers.PaymentProviderWrapper
-import co.stone.posmobile.sdk.bluetooth.provider.BluetoothProvider
 import co.stone.posmobile.sdk.callback.StoneResultCallback
 import co.stone.posmobile.sdk.payment.domain.model.CardPaymentMethod
 import co.stone.posmobile.sdk.payment.domain.model.InstallmentTransaction
@@ -23,10 +24,11 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class TransactionViewModel(
-    private val activationProviderWrapper: ActivationProviderWrapper = ActivationProviderWrapper(),
-    private val deviceInfoProviderWrapper: DeviceInfoProviderWrapper = DeviceInfoProviderWrapper(),
-    private val installmentProvider: InstallmentProvider = InstallmentProvider(),
-    private val paymentProviderWrapper: PaymentProviderWrapper = PaymentProviderWrapper()
+    private val activationProviderWrapper: ActivationProviderWrapper,
+    private val bluetoothProviderWrapper: BluetoothProviderWrapper,
+    private val deviceInfoProviderWrapper: DeviceInfoProviderWrapper,
+    private val installmentProvider: InstallmentProvider,
+    private val paymentProviderWrapper: PaymentProviderWrapper
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<TransactionUiModel> =
         MutableStateFlow(TransactionUiModel())
@@ -125,6 +127,7 @@ class TransactionViewModel(
                             installmentTransaction = installmentType,
                         )
                     }
+
                     TypeOfTransactionEnum.DEBIT -> CardPaymentMethod.Debit
                     TypeOfTransactionEnum.VOUCHER -> CardPaymentMethod.Voucher
                     else -> throw IllegalArgumentException("Invalid transaction type")
@@ -150,21 +153,18 @@ class TransactionViewModel(
                 return@launch
             }
 
-            suspendCoroutine { cont ->
-                BluetoothProvider.create().connect(
-                    pinpadAddress = deviceAddress,
-                    stoneResultCallback =
-                        object :
-                            StoneResultCallback<Boolean> {
-                            override fun onSuccess(result: Boolean) {
-                                cont.resume(Unit)
-                            }
+            bluetoothProviderWrapper.connect(deviceAddress).let { connectStatus ->
+                when (connectStatus) {
+                    is BluetoothStatus.Error -> {
+                        _uiState.update {
+                            it.copy(success = false, error = true)
+                        }
+                    }
 
-                            override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                                cont.resume(Unit)
-                            }
-                        },
-                )
+                    is BluetoothStatus.Success -> {
+                        // Do nothing
+                    }
+                }
             }
 
             paymentProviderWrapper.startPayment(paymentInput).collectLatest { status ->

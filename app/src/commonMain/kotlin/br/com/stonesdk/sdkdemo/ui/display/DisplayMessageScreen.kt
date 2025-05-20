@@ -17,14 +17,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.stonesdk.sdkdemo.ui.components.MonospacedText
+import org.koin.compose.viewmodel.koinViewModel
 
 private const val DISPLAY_MESSAGE_BUTTON_TEXT = "Mostrar Mensagem"
 
 @Composable
 fun DisplayMessageScreen(
-    viewModel: DisplayMessageViewModel = viewModel { DisplayMessageViewModel() }
+    viewModel: DisplayMessageViewModel = koinViewModel()
 ) {
 
     val uiModel = viewModel.uiState.collectAsState()

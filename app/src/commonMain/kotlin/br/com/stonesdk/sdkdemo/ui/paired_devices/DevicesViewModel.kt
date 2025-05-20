@@ -21,7 +21,7 @@ data class DevicePinpadUiModel(
     }
 }
 
-class DevicesViewModel() : ViewModel() {
+class DevicesViewModel : ViewModel() {
 
     var state by mutableStateOf(DevicePinpadUiModel())
         private set

@@ -19,11 +19,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
 
 
 @Composable
-fun MainScreen(navController: NavController,viewModel: MainViewModel = MainViewModel()) {
+fun MainScreen(
+    navController: NavController,
+    viewModel : MainViewModel = koinViewModel()
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     MainContent(

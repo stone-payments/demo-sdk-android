@@ -28,16 +28,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.stonesdk.sdkdemo.ui.components.BaseSpinner
 import br.com.stonesdk.sdkdemo.utils.parseCurrencyToCents
 import co.stone.posmobile.sdk.payment.domain.model.InstallmentTransaction
-import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun TransactionScreen(
-    viewModel: TransactionViewModel = viewModel { TransactionViewModel() }
+    viewModel: TransactionViewModel = koinViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsState()
 

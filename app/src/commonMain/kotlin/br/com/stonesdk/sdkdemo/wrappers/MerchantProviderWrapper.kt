@@ -12,31 +12,56 @@ class MerchantProviderWrapper {
     private val merchantProvider: MerchantProvider
         get() = MerchantProvider.create()
 
-    fun getMerchantByAffiliationCode(affiliationCode: String): Flow<MerchantByAffiliationCodeStatus> {
+    fun getAllMerchants() : Flow<QueryAllMerchantsStatus> {
         return callbackFlow {
-            trySend(MerchantByAffiliationCodeStatus.Loading)
+            trySend(QueryAllMerchantsStatus.Loading)
+            merchantProvider.getAllMerchants(object : StoneResultCallback<List<Merchant>>{
+                override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                    val error = stoneStatus?.message ?: throwable.message ?: "Unknown error"
+                    trySend(QueryAllMerchantsStatus.Error(error))
+                }
+
+                override fun onSuccess(result: List<Merchant>) {
+                    trySend(QueryAllMerchantsStatus.Success(result))
+                }
+            })
+            awaitClose {  }
+        }
+    }
+
+    fun getMerchantByAffiliationCode(affiliationCode: String): Flow<QueryMerchantByAffiliationCodeStatus> {
+        return callbackFlow {
+            trySend(QueryMerchantByAffiliationCodeStatus.Loading)
             merchantProvider.getMerchantByCode(
                 affiliationCode = affiliationCode,
                 object : StoneResultCallback<Merchant> {
                     override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
                         val error = stoneStatus?.message ?: throwable.message ?: "Unknown error"
-                        trySend(MerchantByAffiliationCodeStatus.Error(error))
+                        trySend(QueryMerchantByAffiliationCodeStatus.Error(error))
                     }
 
                     override fun onSuccess(result: Merchant) {
-                        trySend(MerchantByAffiliationCodeStatus.Success(result))
+                        trySend(QueryMerchantByAffiliationCodeStatus.Success(result))
                     }
                 },
             )
             awaitClose { }
         }
     }
+}
 
-    sealed class MerchantByAffiliationCodeStatus {
-        data object Loading : MerchantByAffiliationCodeStatus()
+sealed class QueryAllMerchantsStatus {
+    data object Loading : QueryAllMerchantsStatus()
 
-        data class Success(val merchant: Merchant?) : MerchantByAffiliationCodeStatus()
+    data class Success(val merchants: List<Merchant>) : QueryAllMerchantsStatus()
 
-        data class Error(val errorMessage: String) : MerchantByAffiliationCodeStatus()
-    }
+    data class Error(val errorMessage: String) : QueryAllMerchantsStatus()
+}
+
+sealed class QueryMerchantByAffiliationCodeStatus {
+    data object Loading : QueryMerchantByAffiliationCodeStatus()
+
+    data class Success(val merchant: Merchant?) : QueryMerchantByAffiliationCodeStatus()
+
+    data class Error(val errorMessage: String) : QueryMerchantByAffiliationCodeStatus()
 }

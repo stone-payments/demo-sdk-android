@@ -3,6 +3,7 @@ package br.com.stonesdk.sdkdemo.ui.transactions.transactionList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.stone.sdk.android.error.StoneStatus
+import br.com.stonesdk.sdkdemo.wrappers.TransactionListProviderWrapper
 import co.stone.posmobile.sdk.callback.StoneResultCallback
 import co.stone.posmobile.sdk.payment.domain.model.response.PaymentData
 import co.stone.posmobile.sdk.transactionList.provider.TransactionListProvider
@@ -12,7 +13,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class TransactionListViewModel() : ViewModel() {
+class TransactionListViewModel(
+    private val transactionListProvider : TransactionListProviderWrapper
+) : ViewModel() {
     private val _uiState: MutableStateFlow<TransactionListUiModel> = MutableStateFlow(TransactionListUiModel())
     val uiState: StateFlow<TransactionListUiModel> = _uiState.asStateFlow()
 
@@ -22,24 +25,14 @@ class TransactionListViewModel() : ViewModel() {
 
     private fun getTransactions() {
         viewModelScope.launch {
-            _uiState.update { it.copy(loading = true) }
-
-            val provider = TransactionListProvider.create()
-            provider.getAllTransactions(
-                object : StoneResultCallback<List<PaymentData>> {
-                    override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                        _uiState.update {
-                            it.copy(
-                                transactions = emptyList(),
-                                loading = false,
-                                errorMessage = stoneStatus?.message ?: throwable.message,
-                            )
-                        }
+            transactionListProvider.getAllTransactions().collect{status ->
+                when(status){
+                    TransactionListProviderWrapper.TransactionListStatus.Loading -> {
+                        _uiState.update { it.copy(loading = true) }
                     }
-
-                    override fun onSuccess(result: List<PaymentData>) {
+                    is TransactionListProviderWrapper.TransactionListStatus.Success ->{
                         val transactions =
-                            result.sortedByDescending { it.transactionId }.map { transaction ->
+                            status.transactions.sortedByDescending { it.transactionId }.map { transaction ->
                                 Transaction(
                                     id = transaction.transactionId,
                                     affiliationCode = transaction.affiliationCode,
@@ -57,8 +50,18 @@ class TransactionListViewModel() : ViewModel() {
                             )
                         }
                     }
-                },
-            )
+                    is TransactionListProviderWrapper.TransactionListStatus.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                transactions = emptyList(),
+                                loading = false,
+                                errorMessage = status.errorMessage,
+                            )
+                        }
+                    }
+
+                }
+            }
         }
     }
 

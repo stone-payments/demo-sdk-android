@@ -13,11 +13,7 @@ import kotlinx.coroutines.launch
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-class MainViewModel(
-//    private val activationProviderWrapper: ActivationProviderWrapper,
-//    private val deviceInfoProviderWrapper : DeviceInfoProviderWrapper,
-//    private val reversalProviderWrapper: ReversalProviderWrapper
-) : ViewModel() {
+class MainViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(
         MainUiState(
@@ -93,34 +89,34 @@ data class MainUiState(
 
 
 @OptIn(ExperimentalUuidApi::class)
-sealed class MainNavigationOption (val key : Uuid = Uuid.random(), val name: String, val route : String?, val action : () -> Unit = {}) {
+sealed class MainNavigationOption(val key: Uuid = Uuid.random(), val name: String, val route: String?, val action: () -> Unit = {}) {
     data object GeneralListTransactions :
-        MainNavigationOption(name= "Listar Transações", route = "transactions-list")
+        MainNavigationOption(name = "Listar Transações", route = "transactions-list")
 
     data object GeneralCancelErrorTransactions :
-        MainNavigationOption(name= "Cancelar Transações com Erro", route = "cancel-error-transactions")
+        MainNavigationOption(name = "Cancelar Transações com Erro", route = "cancel-error-transactions")
 
     data object GeneralManageStoneCodes :
-        MainNavigationOption(name= "Gerenciar Códigos Stone", route = "manage-stone-codes")
+        MainNavigationOption(name = "Gerenciar Códigos Stone", route = "manage-stone-codes")
 
     data object PinpadPairedDevices :
-        MainNavigationOption(name= "Dispositivos Pareados", route = "paired-devices")
+        MainNavigationOption(name = "Dispositivos Pareados", route = "paired-devices")
 
     data object PinpadMakeTransaction :
-        MainNavigationOption(name= "Realizar Transação [Pinpad]", route = "make-transaction")
+        MainNavigationOption(name = "Realizar Transação [Pinpad]", route = "make-transaction")
 
     data object PinpadShowMessage :
-        MainNavigationOption(name= "Mostrar Mensagem [Pinpad]", route = "show-message")
+        MainNavigationOption(name = "Mostrar Mensagem [Pinpad]", route = "show-message")
 
     data object PinpadDisconnect :
-        MainNavigationOption(name= "Desconectar [Pinpad]", route = "disconnect")
+        MainNavigationOption(name = "Desconectar [Pinpad]", route = "disconnect")
 
     data object PosMakeTransaction :
-        MainNavigationOption(name= "Realizar Transação [POS]", route = "make-transaction")
+        MainNavigationOption(name = "Realizar Transação [POS]", route = "make-transaction")
 
-    data object PosValidateByCard : MainNavigationOption(name= "Validar Transações por Cartão", route = "validate-by-card")
+    data object PosValidateByCard : MainNavigationOption(name = "Validar Transações por Cartão", route = "validate-by-card")
     data object PosPrinterProvider :
-        MainNavigationOption(name= "Provedor de Impressão [POS]", route = "printer-provider")
+        MainNavigationOption(name = "Provedor de Impressão [POS]", route = "printer-provider")
 
     data object PosMifareProvider : MainNavigationOption(name = "Provedor Mifare [POS]", route = "mifare-provider")
 }

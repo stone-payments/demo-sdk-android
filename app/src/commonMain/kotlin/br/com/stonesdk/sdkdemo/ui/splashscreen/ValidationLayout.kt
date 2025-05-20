@@ -26,14 +26,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.com.stonesdk.sdkdemo.ui.components.LoadingContent
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun ValidationScreen(
-    viewModel: ValidationViewModel = viewModel { ValidationViewModel() },
+    viewModel: ValidationViewModel = koinViewModel(),
     navController: NavController,
 ) {
     val uiModel by viewModel.uiState.collectAsStateWithLifecycle()

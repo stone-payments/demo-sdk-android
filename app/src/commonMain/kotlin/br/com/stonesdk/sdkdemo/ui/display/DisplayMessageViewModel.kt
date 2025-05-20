@@ -2,9 +2,8 @@ package br.com.stonesdk.sdkdemo.ui.display
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.stone.sdk.android.error.StoneStatus
-import co.stone.posmobile.sdk.callback.StoneResultCallback
-import co.stone.posmobile.sdk.display.provider.DisplayProvider
+import br.com.stonesdk.sdkdemo.wrappers.DisplayMessageStatus
+import br.com.stonesdk.sdkdemo.wrappers.DisplayProviderWrapper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +13,9 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-class DisplayMessageViewModel : ViewModel() {
+class DisplayMessageViewModel(
+    private val displayProvider: DisplayProviderWrapper
+) : ViewModel() {
 
     private val _uiState: MutableStateFlow<DisplayMessageUiModel> =
         MutableStateFlow(DisplayMessageUiModel())
@@ -27,21 +28,24 @@ class DisplayMessageViewModel : ViewModel() {
                     message = message,
                 )
             }
-            val provider = DisplayProvider.create()
-            provider.show(message, object : StoneResultCallback<Unit> {
-                override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                    val errorMessages = _uiState.value.errorMessages.toMutableList()
-                    val newErrorMessage =
-                        "${getCurrentFormattedTimestamp()}: $message - ${stoneStatus?.message ?: throwable.message}"
-                    errorMessages.add(0, newErrorMessage)
+            displayProvider.displayMessage(message).let { status ->
+                when (status) {
+                    is DisplayMessageStatus.Success -> {
+                        // Do Nothing
+                    }
 
-                    _uiState.value = DisplayMessageUiModel(
-                        errorMessages = errorMessages
-                    )
+                    is DisplayMessageStatus.Error -> {
+                        val errorMessages = _uiState.value.errorMessages.toMutableList()
+                        val newErrorMessage =
+                            "${getCurrentFormattedTimestamp()}: $message - ${status.errorMessage}"
+                        errorMessages.add(0, newErrorMessage)
+
+                        _uiState.value = DisplayMessageUiModel(
+                            errorMessages = errorMessages
+                        )
+                    }
                 }
-
-                override fun onSuccess(result: Unit) {}
-            })
+            }
         }
     }
 

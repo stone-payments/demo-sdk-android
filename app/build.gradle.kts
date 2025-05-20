@@ -102,10 +102,16 @@ android {
     }
 }
 
-configurations.all {
-    resolutionStrategy {
-        exclude("co.stone.posmobile", "lib-commons-android")
-        exclude("br.com.stone.posandroid", "hal-api")
+configurations {
+    all {
+        resolutionStrategy {
+            exclude("co.stone.posmobile", "lib-commons-android")
+            exclude("br.com.stone.posandroid", "hal-api")
+        }
+    }
+
+    implementation {
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-gradle-plugin-api")
     }
 }
 

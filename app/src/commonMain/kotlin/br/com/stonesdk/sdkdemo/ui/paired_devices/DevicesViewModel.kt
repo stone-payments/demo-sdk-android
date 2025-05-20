@@ -21,17 +21,17 @@ data class DevicePinpadUiModel(
     }
 }
 
-class DevicesViewModel : ViewModel() {
+class DevicesViewModel(
+    private val bluetoothDeviceRepository: BluetoothDeviceRepository
+) : ViewModel() {
 
     var state by mutableStateOf(DevicePinpadUiModel())
         private set
 
-    var repository = BluetoothDeviceRepository()
-
 fun startDevicesScan() {
     viewModelScope.launch(Dispatchers.IO) {
         val devices = mutableListOf<BluetoothInfo>()
-        repository.startScan().collect { device ->
+        bluetoothDeviceRepository.startScan().collect { device ->
             val bluetoothInfo = BluetoothInfo(
                 name = device.deviceName,
                 address = device.hardwareAddress
@@ -46,12 +46,12 @@ fun startDevicesScan() {
 
 
     fun stopScan() {
-        repository.stopScan()
+        bluetoothDeviceRepository.stopScan()
     }
 
     fun connect(bluetoothInfo: BluetoothInfo) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.connect(bluetoothInfo.address).onSuccess {
+            bluetoothDeviceRepository.connect(bluetoothInfo.address).onSuccess {
                 state = state.copy(
                     pinpadConnected = true
                 )
@@ -60,7 +60,7 @@ fun startDevicesScan() {
     }
 
     fun disconnect() {
-        repository.disconnect()
+        bluetoothDeviceRepository.disconnect()
         state = state.copy(
             pinpadConnected = false
         )

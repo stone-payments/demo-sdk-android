@@ -1,6 +1,7 @@
 package br.com.stonesdk.sdkdemo.wrappers
 
 import br.com.stone.sdk.android.error.StoneStatus
+import co.stone.posmobile.sdk.bluetooth.domain.model.BluetoothDevice
 import co.stone.posmobile.sdk.bluetooth.provider.BluetoothProvider
 import co.stone.posmobile.sdk.callback.StoneResultCallback
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -10,18 +11,18 @@ class BluetoothProviderWrapper {
     private val bluetoothProvider: BluetoothProvider
         get() = BluetoothProvider.create()
 
-    suspend fun connect(deviceAddress: String): BluetoothStatus = suspendCancellableCoroutine { continuation ->
+    suspend fun connect(deviceAddress: String): BluetoothConnectStatus = suspendCancellableCoroutine { continuation ->
         bluetoothProvider.connect(
             pinpadAddress = deviceAddress,
             stoneResultCallback = object :
                 StoneResultCallback<Boolean> {
                 override fun onSuccess(result: Boolean) {
-                    continuation.resume(BluetoothStatus.Success)
+                    continuation.resume(BluetoothConnectStatus.Success)
                 }
 
                 override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
                     continuation.resume(
-                        BluetoothStatus.Error(
+                        BluetoothConnectStatus.Error(
                             stoneStatus?.message ?: throwable.message ?: "Erro desconhecido"
                         )
                     )
@@ -29,9 +30,42 @@ class BluetoothProviderWrapper {
             }
         )
     }
+
+    suspend fun discoverPinpad(): BluetoothDiscoverStatus = suspendCancellableCoroutine { continuation ->
+        bluetoothProvider.discoverPinpad(object : StoneResultCallback<List<BluetoothDevice>> {
+            override fun onSuccess(result: List<BluetoothDevice>) {
+                continuation.resume(
+                    BluetoothDiscoverStatus.Success(result)
+                )
+            }
+
+            override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
+                val errorMessage = stoneStatus?.message ?: throwable.message ?: "Erro desconhecido"
+                continuation.resume(
+                    BluetoothDiscoverStatus.Error(errorMessage)
+                )
+            }
+
+        })
+    }
+
+    fun stopDiscover() {
+        bluetoothProvider.stopDiscover()
+    }
+
+    fun disconnect() {
+        bluetoothProvider.disconnect()
+    }
+
 }
 
-sealed class BluetoothStatus {
-    data object Success : BluetoothStatus()
-    data class Error(val errorMessage: String) : BluetoothStatus()
+
+sealed class BluetoothDiscoverStatus {
+    data class Success(val devices: List<BluetoothDevice>) : BluetoothDiscoverStatus()
+    data class Error(val errorMessage: String) : BluetoothDiscoverStatus()
+}
+
+sealed class BluetoothConnectStatus {
+    data object Success : BluetoothConnectStatus()
+    data class Error(val errorMessage: String) : BluetoothConnectStatus()
 }

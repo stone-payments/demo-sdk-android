@@ -2,15 +2,12 @@ package br.com.stonesdk.sdkdemo.ui.transactions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.stone.sdk.android.error.StoneStatus
+import br.com.stonesdk.sdkdemo.ui.paired_devices.BluetoothDeviceRepository
 import br.com.stonesdk.sdkdemo.utils.PersistBTState
 import br.com.stonesdk.sdkdemo.wrappers.ActivationProviderWrapper
-import br.com.stonesdk.sdkdemo.wrappers.BluetoothProviderWrapper
-import br.com.stonesdk.sdkdemo.wrappers.BluetoothStatus
 import br.com.stonesdk.sdkdemo.wrappers.DeviceInfoProviderWrapper
 import br.com.stonesdk.sdkdemo.wrappers.InstallmentProvider
 import br.com.stonesdk.sdkdemo.wrappers.PaymentProviderWrapper
-import co.stone.posmobile.sdk.callback.StoneResultCallback
 import co.stone.posmobile.sdk.payment.domain.model.CardPaymentMethod
 import co.stone.posmobile.sdk.payment.domain.model.InstallmentTransaction
 import co.stone.posmobile.sdk.payment.domain.model.PaymentInput
@@ -20,12 +17,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class TransactionViewModel(
     private val activationProviderWrapper: ActivationProviderWrapper,
-    private val bluetoothProviderWrapper: BluetoothProviderWrapper,
+    private val bluetoothRepository: BluetoothDeviceRepository,
     private val deviceInfoProviderWrapper: DeviceInfoProviderWrapper,
     private val installmentProvider: InstallmentProvider,
     private val paymentProviderWrapper: PaymentProviderWrapper
@@ -153,19 +148,13 @@ class TransactionViewModel(
                 return@launch
             }
 
-            bluetoothProviderWrapper.connect(deviceAddress).let { connectStatus ->
-                when (connectStatus) {
-                    is BluetoothStatus.Error -> {
-                        _uiState.update {
-                            it.copy(success = false, error = true)
-                        }
-                    }
-
-                    is BluetoothStatus.Success -> {
-                        // Do nothing
-                    }
+            val connectStatus = bluetoothRepository.connect(deviceAddress)
+            if (connectStatus.isFailure) {
+                _uiState.update {
+                    it.copy(success = false, error = true)
                 }
             }
+
 
             paymentProviderWrapper.startPayment(paymentInput).collectLatest { status ->
                 when (status) {

@@ -5,6 +5,7 @@ import br.com.stonesdk.sdkdemo.ui.cancel_transactions.CancelViewModel
 import br.com.stonesdk.sdkdemo.ui.display.DisplayMessageViewModel
 import br.com.stonesdk.sdkdemo.ui.main.MainViewModel
 import br.com.stonesdk.sdkdemo.ui.manage_stone_codes.ManageStoneCodeViewModel
+import br.com.stonesdk.sdkdemo.ui.paired_devices.BluetoothDeviceRepository
 import br.com.stonesdk.sdkdemo.ui.paired_devices.DevicesViewModel
 import br.com.stonesdk.sdkdemo.ui.splashscreen.ValidationViewModel
 import br.com.stonesdk.sdkdemo.ui.transactions.TransactionViewModel
@@ -40,6 +41,10 @@ actual val targetModule: Module = module {
     factory { ReversalProviderWrapper() }
     factory { TransactionListProviderWrapper() }
 
+    single {
+        BluetoothDeviceRepository(bluetoothProviderWrapper = get())
+    }
+
     viewModel {
         CancelViewModel(
             transactionProvider = get(),
@@ -54,7 +59,9 @@ actual val targetModule: Module = module {
     }
 
     viewModel {
-        DevicesViewModel()
+        DevicesViewModel(
+            bluetoothDeviceRepository = get()
+        )
     }
 
     viewModel {
@@ -71,7 +78,7 @@ actual val targetModule: Module = module {
     viewModel {
         TransactionViewModel(
             activationProviderWrapper = get(),
-            bluetoothProviderWrapper = get(),
+            bluetoothRepository = get(),
             deviceInfoProviderWrapper = get(),
             installmentProvider = get(),
             paymentProviderWrapper = get(),

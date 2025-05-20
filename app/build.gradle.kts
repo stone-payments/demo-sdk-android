@@ -13,7 +13,7 @@ kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
@@ -40,28 +40,29 @@ kotlin {
             implementation(libs.koin.android.compose)
         }
         commonMain.dependencies {
-
+            implementation(project.dependencies.platform(libs.androidx.compose.bom))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.kotlin.datetime)
+            implementation(libs.kotlin.logging)
+            implementation(libs.kotlin.stdlib)
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
+            implementation(libs.androidx.navigation.compose)
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.platform.tools)
-            implementation(libs.kotlin.logging)
             implementation(libs.okio)
-            // TODO move to catalog
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
-            implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha12")
 
             implementation(libs.posmobile.sdk.core)
             implementation(libs.posmobile.sdk.manufacturer.serial)
+
         }
 
         iosMain.dependencies {
@@ -95,8 +96,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true
     }
 }
@@ -113,9 +114,6 @@ dependencies {
     debugImplementation(compose.uiTooling)
     coreLibraryDesugaring(libs.tools.desugar)
 }
-
-
-configurations.implementation {exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8") }
 
 // //apply from: '../gertec/gertec-signing-config.gradle'
 // //apply from: '../positivo/positivo-signing-config.gradle'

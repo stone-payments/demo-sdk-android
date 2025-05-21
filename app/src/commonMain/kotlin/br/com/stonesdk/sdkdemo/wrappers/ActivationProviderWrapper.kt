@@ -1,7 +1,6 @@
 package br.com.stonesdk.sdkdemo.wrappers
 
 import br.com.stone.sdk.android.error.StoneStatus
-import br.com.stonesdk.sdkdemo.wrappers.CancelProviderWrapper.CancelStatus
 import co.stone.posmobile.sdk.activation.provider.ActivationProvider
 import co.stone.posmobile.sdk.callback.StoneResultCallback
 import co.stone.posmobile.sdk.merchant.domain.model.Merchant

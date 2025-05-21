@@ -51,8 +51,6 @@ fun ManageStateScreen(
                     })
             }
         }
-
-        else -> {}
     }
 }
 

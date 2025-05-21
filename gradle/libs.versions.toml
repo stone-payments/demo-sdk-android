@@ -6,20 +6,20 @@ sdkDebugVersion = "6.0.0-alpha34-dev-005"
 
 # libraries
 agp = "8.9.2"
-androidxComposeBom = "2025.05.00"
 android-compileSdk = "35"
 android-minSdk = "24"
 android-targetSdk = "35"
+androidx-compose-bom = "2025.05.00"
 androidx-datastore = "1.1.6"
+androidx-lifecycle-viewmodel = "2.9.0"
 compose-multiplatform = "1.8.0"
 desugarVersion = "2.1.5"
 kotlinVersion = "2.1.20"
 kotlinDatetimeVersion = "0.6.1"
 kotlinLoggingVersion = "5.1.0"
 koinVersion = "4.0.4"
-lifecycleViewmodelAndroidVersion = "2.8.7"
 logbackAndroidVersion = "3.0.0"
-navigationComposeVersion = "2.8.0-alpha12"
+navigationComposeVersion = "2.9.0-beta01"
 okio = "3.11.0"
 slf4jVersion = "2.0.16"
 
@@ -41,13 +41,13 @@ logbackAndroid = { group = "com.github.tony19", name = "logback-android", versio
 slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4jVersion" }
 
 
-androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidx-compose-bom" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose"}
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "androidx-datastore" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
-androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose"}
-androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroidVersion" }
+androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle-viewmodel" }
 androidx-lifecycle-viewmodel-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-compose"}
+androidx-lifecycle-viewmodel-savedstate = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-savedstate"}
 androidx-navigation-compose = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "navigationComposeVersion" }
 kotlin-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinDatetimeVersion" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlinLoggingVersion" }

@@ -47,6 +47,8 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.materialIconsExtended)
+            implementation(compose.animation)
+
             implementation(libs.kotlin.datetime)
             implementation(libs.kotlin.logging)
             implementation(libs.kotlin.stdlib)
@@ -54,14 +56,16 @@ kotlin {
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.lifecycle.viewmodel.compose)
+            implementation(libs.androidx.lifecycle.viewmodel.savedstate)
             implementation(libs.androidx.navigation.compose)
+
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
-            implementation(libs.platform.tools)
             implementation(libs.okio)
 
             implementation(libs.posmobile.sdk.core)
             implementation(libs.posmobile.sdk.manufacturer.serial)
+            implementation(libs.platform.tools)
 
         }
 
@@ -116,7 +120,6 @@ configurations {
 }
 
 dependencies {
-    implementation(libs.androidx.lifecycle.viewmodel.android)
     debugImplementation(compose.uiTooling)
     coreLibraryDesugaring(libs.tools.desugar)
 }

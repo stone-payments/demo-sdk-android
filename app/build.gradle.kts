@@ -35,7 +35,6 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.material3.android)
             implementation(libs.koin.android)
             implementation(libs.koin.android.compose)
         }
@@ -47,6 +46,7 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.materialIconsExtended)
             implementation(libs.kotlin.datetime)
             implementation(libs.kotlin.logging)
             implementation(libs.kotlin.stdlib)

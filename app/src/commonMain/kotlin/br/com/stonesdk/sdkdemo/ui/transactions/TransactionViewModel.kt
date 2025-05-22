@@ -2,8 +2,8 @@ package br.com.stonesdk.sdkdemo.ui.transactions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.stonesdk.sdkdemo.data.BluetoothPreferences
 import br.com.stonesdk.sdkdemo.ui.paired_devices.BluetoothDeviceRepository
-import br.com.stonesdk.sdkdemo.utils.PersistBTState
 import br.com.stonesdk.sdkdemo.wrappers.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.wrappers.DeviceInfoProviderWrapper
 import br.com.stonesdk.sdkdemo.wrappers.InstallmentProvider
@@ -23,7 +23,7 @@ class TransactionViewModel(
     private val bluetoothRepository: BluetoothDeviceRepository,
     private val deviceInfoProviderWrapper: DeviceInfoProviderWrapper,
     private val installmentProvider: InstallmentProvider,
-    private val paymentProviderWrapper: PaymentProviderWrapper
+    private val paymentProviderWrapper: PaymentProviderWrapper,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<TransactionUiModel> =
         MutableStateFlow(TransactionUiModel())
@@ -101,8 +101,9 @@ class TransactionViewModel(
         }
     }
 
-    fun startTransaction() {
+    private fun startTransaction() {
         viewModelScope.launch {
+            println("startTransaction")
             val amount = uiState.value.amount.toLongOrNull() ?: 0
             val captureTransaction = uiState.value.shouldCaptureTransaction
             val selectedInstallment = uiState.value.selectedInstallment
@@ -138,9 +139,8 @@ class TransactionViewModel(
                     orderId = orderId,
                 )
 
-            val (_, deviceAddress) = PersistBTState.getBTState()
-
-            if (deviceAddress == null) {
+            val connectedDevice = bluetoothRepository.getConnectedBluetoothDevice()
+            if (connectedDevice == null) {
                 // TODO display error message indicating bluetooth is not connected
                 _uiState.update {
                     it.copy(success = false, error = true)
@@ -148,7 +148,7 @@ class TransactionViewModel(
                 return@launch
             }
 
-            val connectStatus = bluetoothRepository.connect(deviceAddress)
+            val connectStatus = bluetoothRepository.connect(connectedDevice.hardwareAddress)
             if (connectStatus.isFailure) {
                 _uiState.update {
                     it.copy(success = false, error = true)

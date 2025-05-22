@@ -3,6 +3,7 @@ package br.com.stonesdk.sdkdemo
 import android.app.Application
 import br.com.stonesdk.sdkdemo.di.initializeKoin
 import br.com.stonesdk.sdkdemo.utils.AppInfo
+import org.koin.android.ext.koin.androidContext
 
 class DemoApplication : Application() {
 
@@ -12,7 +13,9 @@ class DemoApplication : Application() {
         initializeKoin(
             platformContext = this@DemoApplication,
             appInfo = getAppInfo()
-        )
+        ){
+            androidContext(this@DemoApplication)
+        }
     }
 
     private fun getAppInfo(): AppInfo {

@@ -1,5 +1,6 @@
 package br.com.stonesdk.sdkdemo.ui.paired_devices
 
+import br.com.stonesdk.sdkdemo.data.BluetoothPreferences
 import br.com.stonesdk.sdkdemo.wrappers.BluetoothConnectStatus
 import br.com.stonesdk.sdkdemo.wrappers.BluetoothDiscoverStatus
 import br.com.stonesdk.sdkdemo.wrappers.BluetoothProviderWrapper
@@ -9,7 +10,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 
 class BluetoothDeviceRepository(
-    private val bluetoothProviderWrapper: BluetoothProviderWrapper
+    private val bluetoothProviderWrapper: BluetoothProviderWrapper,
+    private val bluetoothPreferences: BluetoothPreferences
 ) {
 
     fun startScan(): Flow<BluetoothDevice> = channelFlow {
@@ -35,6 +37,17 @@ class BluetoothDeviceRepository(
 
     fun disconnect() {
         bluetoothProviderWrapper.disconnect()
+    }
+
+    suspend fun getConnectedBluetoothDevice(): BluetoothDevice? {
+        return bluetoothPreferences.getPreferences()
+    }
+
+    suspend fun saveConnectedBluetoothDevice(
+        deviceName: String,
+        deviceAddress: String
+    ) {
+        bluetoothPreferences.savePreferences(bluetoothName = deviceName, bluetoothAddress = deviceAddress)
     }
 
     suspend fun connect(address: String): Result<Unit> {

@@ -52,6 +52,10 @@ fun startDevicesScan() {
     fun connect(bluetoothInfo: BluetoothInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             bluetoothDeviceRepository.connect(bluetoothInfo.address).onSuccess {
+                bluetoothDeviceRepository.saveConnectedBluetoothDevice(
+                    deviceName = bluetoothInfo.name,
+                    deviceAddress = bluetoothInfo.address
+                )
                 state = state.copy(
                     pinpadConnected = true
                 )

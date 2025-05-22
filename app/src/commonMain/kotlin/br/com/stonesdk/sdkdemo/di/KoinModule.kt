@@ -1,5 +1,6 @@
 package br.com.stonesdk.sdkdemo.di
 
+import br.com.stonesdk.sdkdemo.data.BluetoothPreferences
 import br.com.stonesdk.sdkdemo.ui.cancel_transactions.CancelViewModel
 import br.com.stonesdk.sdkdemo.ui.display.DisplayMessageViewModel
 import br.com.stonesdk.sdkdemo.ui.main.MainViewModel
@@ -33,7 +34,7 @@ import org.koin.dsl.module
 
 expect val targetModule: Module
 
-val commonModule  : Module = module {
+val commonModule: Module = module {
     factory { ActivationProviderWrapper() }
     factory { BluetoothProviderWrapper() }
     factory { CancelProviderWrapper() }
@@ -47,7 +48,16 @@ val commonModule  : Module = module {
     factory { TransactionListProviderWrapper() }
 
     single {
-        BluetoothDeviceRepository(bluetoothProviderWrapper = get())
+        BluetoothPreferences(
+            localStorageCreator = get()
+        )
+    }
+
+    single {
+        BluetoothDeviceRepository(
+            bluetoothProviderWrapper = get(),
+            bluetoothPreferences = get()
+        )
     }
 
     viewModel {

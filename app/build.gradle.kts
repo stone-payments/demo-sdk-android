@@ -65,7 +65,7 @@ kotlin {
 
             implementation(libs.posmobile.sdk.core)
             implementation(libs.posmobile.sdk.manufacturer.serial)
-            implementation(libs.platform.tools)
+            implementation(libs.posmobile.platform.tools)
 
         }
 

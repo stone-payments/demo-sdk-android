@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import br.com.stonesdk.sdkdemo.ui.components.BaseSpinner
+import br.com.stonesdk.sdkdemo.ui.components.MonospacedText
 import br.com.stonesdk.sdkdemo.utils.parseCurrencyToCents
 import co.stone.posmobile.sdk.payment.domain.model.InstallmentTransaction
 import org.koin.compose.viewmodel.koinViewModel
@@ -40,6 +42,7 @@ internal fun TransactionScreen(
     val uiState = viewModel.uiState.collectAsState()
 
     val desiredAmount = remember { derivedStateOf { uiState.value.amount } }
+    val errorMessages = remember { derivedStateOf { uiState.value.errorMessages } }
     val transactionButtonEnabled = remember {
         derivedStateOf {
             desiredAmount.value.parseCurrencyToCents() > 0
@@ -77,8 +80,6 @@ internal fun TransactionScreen(
         }
     }
 
-
-
     TransactionContent(
         desiredAmount = desiredAmount.value,
         typeOfTransactions = typeOfTransactions.value,
@@ -91,6 +92,7 @@ internal fun TransactionScreen(
         showAffiliationCodeSelection = showAffiliationCodeSelection.value,
         shouldCaptureTransaction = shouldCaptureTransaction.value,
         transactionButtonEnabled = transactionButtonEnabled.value,
+        errorMessages = errorMessages.value,
         onEvent = viewModel::onEvent
     )
 
@@ -109,6 +111,7 @@ fun TransactionContent(
     showAffiliationCodeSelection: Boolean,
     shouldCaptureTransaction: Boolean,
     transactionButtonEnabled: Boolean,
+    errorMessages : List<String>,
     onEvent: (TransactionEvent) -> Unit
 ) {
 
@@ -189,9 +192,6 @@ fun TransactionContent(
             checked = shouldCaptureTransaction
         )
 
-        // push button to bottom of page
-        Spacer(modifier = Modifier.weight(1f))
-
         Button(
             modifier = Modifier
                 .fillMaxWidth()
@@ -201,6 +201,21 @@ fun TransactionContent(
         ) {
             Text(text = "Enviar Transação")
         }
+
+        LazyColumn {
+            items(
+                count = errorMessages.size,
+                key = { index -> index }
+            ) { index ->
+                MonospacedText(
+                    text = errorMessages
+                        .getOrNull(index)
+                        .orEmpty(),
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+        }
+
     }
 }
 

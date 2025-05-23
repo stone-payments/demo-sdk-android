@@ -18,8 +18,8 @@ class ActivationProviderWrapper {
 
     suspend fun activate(affiliationCode: String): Boolean = suspendCancellableCoroutine { continuation ->
 
-        activationProvider.activate(affiliationCode, object : StoneResultCallback<Any> {
-            override fun onSuccess(result: Any) {
+        activationProvider.activate(affiliationCode, object : StoneResultCallback<Unit> {
+            override fun onSuccess(result: Unit) {
                 continuation.resume(true)
             }
 
@@ -29,6 +29,7 @@ class ActivationProviderWrapper {
             ) {
                 continuation.resume(false)
             }
+
         })
 
         continuation.invokeOnCancellation {}

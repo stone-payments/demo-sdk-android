@@ -8,6 +8,7 @@ import co.stone.posmobile.sdk.bluetooth.domain.model.BluetoothDevice
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.first
 
 class BluetoothDeviceRepository(
     private val bluetoothProviderWrapper: BluetoothProviderWrapper,
@@ -51,14 +52,9 @@ class BluetoothDeviceRepository(
     }
 
     suspend fun connect(address: String): Result<Unit> {
-        return when (val connectStatus = bluetoothProviderWrapper.connect(deviceAddress = address)) {
-            BluetoothConnectStatus.Success -> {
-                Result.success(Unit)
-            }
-
-            is BluetoothConnectStatus.Error -> {
-                Result.failure(Exception(connectStatus.errorMessage))
-            }
+        return when(val connectResult = bluetoothProviderWrapper.connect(address).first()){
+            is BluetoothConnectStatus.Error -> Result.failure(Exception(connectResult.errorMessage))
+            BluetoothConnectStatus.Success -> Result.success(Unit)
         }
     }
 }

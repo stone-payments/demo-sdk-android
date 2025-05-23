@@ -2,8 +2,8 @@ package br.com.stonesdk.sdkdemo.ui.transactions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.stonesdk.sdkdemo.data.BluetoothPreferences
 import br.com.stonesdk.sdkdemo.ui.paired_devices.BluetoothDeviceRepository
+import br.com.stonesdk.sdkdemo.utils.getCurrentFormattedTimestamp
 import br.com.stonesdk.sdkdemo.wrappers.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.wrappers.DeviceInfoProviderWrapper
 import br.com.stonesdk.sdkdemo.wrappers.InstallmentProvider
@@ -139,34 +139,62 @@ class TransactionViewModel(
                     orderId = orderId,
                 )
 
+            println("connect(getConnectedBluetoothDevice)")
             val connectedDevice = bluetoothRepository.getConnectedBluetoothDevice()
             if (connectedDevice == null) {
-                // TODO display error message indicating bluetooth is not connected
+                val errorMessages = _uiState.value.errorMessages.toMutableList()
+                val errorMessage = "Nenhum dispositivo conectado previamente"
+                val newErrorMessage = "${getCurrentFormattedTimestamp()}: $errorMessage"
+                errorMessages.add(0, newErrorMessage)
+
                 _uiState.update {
-                    it.copy(success = false, error = true)
+                    it.copy(
+                        success = false,
+                        errorMessages = errorMessages
+                    )
                 }
                 return@launch
             }
 
+            println("connect(hardwareAddress)")
             val connectStatus = bluetoothRepository.connect(connectedDevice.hardwareAddress)
+            if(connectStatus.isSuccess){
+                println("connect to device")
+            }
             if (connectStatus.isFailure) {
+                val errorMessages = _uiState.value.errorMessages.toMutableList()
+                val errorMessage = "Dispositivo não conectado"
+                val newErrorMessage = "${getCurrentFormattedTimestamp()}: $errorMessage"
+                errorMessages.add(0, newErrorMessage)
+
                 _uiState.update {
-                    it.copy(success = false, error = true)
+                    it.copy(
+                        success = false,
+                        errorMessages = errorMessages
+                    )
                 }
             }
 
-
+            println("start payment")
             paymentProviderWrapper.startPayment(paymentInput).collectLatest { status ->
                 when (status) {
                     is PaymentProviderWrapper.TransactionStatus.Success -> {
                         _uiState.update {
-                            it.copy(success = true, error = false)
+                            it.copy(success = true)
                         }
                     }
 
                     is PaymentProviderWrapper.TransactionStatus.Error -> {
+                        val errorMessages = _uiState.value.errorMessages.toMutableList()
+                        val errorMessage = "Falha ao processar transação"
+                        val newErrorMessage = "${getCurrentFormattedTimestamp()}: $errorMessage"
+                        errorMessages.add(0, newErrorMessage)
+
                         _uiState.update {
-                            it.copy(success = false, error = true)
+                            it.copy(
+                                success = false,
+                                errorMessages = errorMessages
+                            )
                         }
                     }
 
@@ -215,7 +243,7 @@ fun InstallmentTransaction.mapInstallmentToPresentation(): String {
 }
 
 data class TransactionUiModel(
-    val error: Boolean = false,
+    val errorMessages : List<String> = emptyList(),
     val success: Boolean = false,
     val amount: String = "",
     val typeOfTransactions: List<TypeOfTransactionEnum> = emptyList(),

@@ -53,7 +53,6 @@ kotlin-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", 
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlinLoggingVersion" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 
-platform-tools = { module = "co.stone.pos.mobile:platform-tools", version.ref = "platformToolsVersion" }
 #pos-android-sdk = { group = "br.com.stone", name = "stone-sdk", version.ref = "sdkVersion" }
 #pos-android-sdk-debugmode = { group = "br.com.stone.sdk.android", name = "debugmode", version.ref = "sdkVersion" }
 #pos-android-sdk-posandroid = { group = "br.com.stone", name = "stone-sdk-posandroid", version.ref = "sdkVersion" }
@@ -64,6 +63,7 @@ platform-tools = { module = "co.stone.pos.mobile:platform-tools", version.ref = 
 #pos-android-sdk = { group = "co.stone.posmobile.sdk", name = "sdk-core", version.ref = "sdkVersion" }
 #pos-android-sdk-manufacturer-serial = { group = "co.stone.posmobile.sdk.manufacturer", name = "manufacturer-serial", version.ref = "sdkVersion" }
 
+posmobile-platform-tools = { module = "co.stone.pos.mobile:platform-tools", version.ref = "platformToolsVersion" }
 posmobile-sdk-core = { group = "co.stone.pos.mobile.sdk", name = "sdk-core", version.ref = "sdkVersion" }
 posmobile-sdk-manufacturer-serial = { group = "co.stone.pos.mobile.sdk.manufacturer", name = "manufacturer-serial", version.ref = "sdkVersion" }
 

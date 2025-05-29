@@ -62,11 +62,11 @@ internal fun ValidationScreen(
         is SplashScreenState.Error -> {
             with(uiState.value as SplashScreenState.Error) {
                 Column(modifier = Modifier.fillMaxSize()) {
-                    Text("Error: $code - $message")
+                    Text("Error: $message")
                     Button(onClick = {
-                        //viewModel.initializeSDK(context, appInfo)
+                        viewModel.activate(code)
                     }) {
-                        Text(text = "Tentar novamente")
+                        viewModel.checkNeedToActivate()
                     }
                 }
             }
@@ -74,8 +74,6 @@ internal fun ValidationScreen(
     }
 }
 
-@Preview
-@Preview
 @Composable
 internal fun ActivateContent(
     onEvent: (String) -> Unit,
@@ -109,11 +107,6 @@ internal fun ActivateContent(
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
-            colors =
-                TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                ),
         )
 
         Spacer(modifier = Modifier.height(24.dp))

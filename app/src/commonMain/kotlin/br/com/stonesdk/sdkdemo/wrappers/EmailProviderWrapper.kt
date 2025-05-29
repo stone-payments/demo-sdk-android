@@ -1,10 +1,7 @@
 package br.com.stonesdk.sdkdemo.wrappers
 
-import br.com.stone.sdk.android.error.StoneStatus
-import co.stone.posmobile.sdk.callback.StoneResultCallback
 import co.stone.posmobile.sdk.payment.domain.model.response.PaymentData
 import co.stone.posmobile.sdk.payment.domain.model.response.TransactionStatus
-import co.stone.posmobile.sdk.sendEmail.domain.model.Contact
 import co.stone.posmobile.sdk.sendEmail.domain.model.EmailConfig
 import co.stone.posmobile.sdk.sendEmail.domain.model.EmailReceiptType
 import co.stone.posmobile.sdk.sendEmail.provider.EmailProvider
@@ -88,15 +85,10 @@ class EmailProviderWrapper {
     }
 
     private fun getEmailConfig(receiptType: EmailReceiptType): EmailConfig {
-        val contact = Contact(
-            name = "Stone",
-            address = MAILER_ADDRESS,
-        )
-
         return EmailConfig(
-            from = contact,
-            to = listOf(Contact(name = "Recipient", address = RECIPIENT_ADDRESS)),
-            type = receiptType,
+            from = MAILER_ADDRESS,
+            to = listOf(RECIPIENT_ADDRESS),
+            receiptType = receiptType,
         )
     }
 

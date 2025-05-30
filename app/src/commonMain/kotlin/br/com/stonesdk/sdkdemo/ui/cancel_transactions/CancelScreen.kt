@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import br.com.stonesdk.sdkdemo.ui.transactions.transactionList.TransactionListContent
+import br.com.stonesdk.sdkdemo.ui.components.TransactionListContent
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

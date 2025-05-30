@@ -89,7 +89,11 @@ data class MainUiState(
 
 
 @OptIn(ExperimentalUuidApi::class)
-sealed class MainNavigationOption(val key: Uuid = Uuid.random(), val name: String, val route: String?, val action: () -> Unit = {}) {
+sealed class MainNavigationOption(
+    val key: Uuid = Uuid.random(),
+    val name: String,
+    val route: String?,
+) {
     data object GeneralListTransactions :
         MainNavigationOption(name = "Listar Transações", route = "transactions-list")
 

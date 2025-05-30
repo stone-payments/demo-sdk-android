@@ -11,15 +11,9 @@ import kotlinx.coroutines.launch
 
 
 data class DevicePinpadUiModel(
-
     val pinpadConnected: Boolean = false,
     val bluetoothDevices: List<BluetoothInfo> = emptyList(),
-    val state: DevicesEvent? = null
-) {
-    sealed interface DevicesEvent {
-        data object ScanningDevices : DevicesEvent
-    }
-}
+)
 
 class DevicesViewModel(
     private val bluetoothDeviceRepository: BluetoothDeviceRepository

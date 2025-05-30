@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -23,10 +24,11 @@ import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MainScreen(
     navController: NavController,
-    viewModel : MainViewModel = koinViewModel()
+    viewModel: MainViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -34,12 +36,13 @@ fun MainScreen(
         generalItems = uiState.generalNavigationOptions,
         pinpadItems = uiState.pinpadNavigationOptions,
         posItems = uiState.posNavigationOptions,
-        onItemSelected = {select ->
-            select.route?.let { navController.navigate(it) }
+        onItemSelected = { select ->
+            select.route?.let {
+                navController.navigate(it)
+            }
         }
     )
 }
-
 
 
 @Composable
@@ -116,7 +119,8 @@ fun SelectableItem(
     onItemSelected: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Text(text = text,
+    Text(
+        text = text,
         modifier = modifier
             .fillMaxWidth()
             .clickable { onItemSelected() }

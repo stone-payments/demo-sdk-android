@@ -31,7 +31,7 @@ fun DeviceScreen(
             viewModel.connect(it)
         },
         onBackPressed = {
-            navController.popBackStack()
+            navController.navigateUp()
         }
     )
 }

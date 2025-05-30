@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import br.com.stonesdk.sdkdemo.ui.components.LoadingContent
+import br.com.stonesdk.sdkdemo.ui.main.MainNavigationOption
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -50,7 +51,9 @@ internal fun ValidationScreen(
         }
 
         is SplashScreenState.Activated -> {
-            navController.navigate("home")
+            navController.navigate("home"){
+                popUpTo("splash-screen") { inclusive = true }
+            }
         }
 
         is SplashScreenState.NotActivated -> {

@@ -15,7 +15,7 @@ import br.com.stonesdk.sdkdemo.ui.main.MainScreen
 import br.com.stonesdk.sdkdemo.ui.paired_devices.DeviceScreen
 import br.com.stonesdk.sdkdemo.ui.splashscreen.ValidationScreen
 import br.com.stonesdk.sdkdemo.ui.transactions.TransactionScreen
-import br.com.stonesdk.sdkdemo.ui.transactions.transactionList.TransactionListScreen
+import br.com.stonesdk.sdkdemo.ui.transactionList.TransactionListScreen
 
 @Composable
 fun DemoApp() {

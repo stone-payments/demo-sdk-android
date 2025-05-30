@@ -1,4 +1,4 @@
-package br.com.stonesdk.sdkdemo.ui.manage_stone_codes
+package br.com.stonesdk.sdkdemo.data
 
 data class MerchantData(
     val uuid: String,

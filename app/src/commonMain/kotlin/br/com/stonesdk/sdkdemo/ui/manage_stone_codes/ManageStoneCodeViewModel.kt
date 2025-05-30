@@ -3,6 +3,7 @@ package br.com.stonesdk.sdkdemo.ui.manage_stone_codes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.stone.sdk.android.error.StoneStatus
+import br.com.stonesdk.sdkdemo.data.MerchantData
 import br.com.stonesdk.sdkdemo.wrappers.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.wrappers.MerchantProviderWrapper
 import br.com.stonesdk.sdkdemo.wrappers.QueryAllMerchantsStatus

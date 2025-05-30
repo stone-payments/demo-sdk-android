@@ -9,7 +9,7 @@ import br.com.stonesdk.sdkdemo.ui.paired_devices.BluetoothDeviceRepository
 import br.com.stonesdk.sdkdemo.ui.paired_devices.DevicesViewModel
 import br.com.stonesdk.sdkdemo.ui.splashscreen.ValidationViewModel
 import br.com.stonesdk.sdkdemo.ui.transactions.TransactionViewModel
-import br.com.stonesdk.sdkdemo.ui.transactions.transactionList.TransactionListViewModel
+import br.com.stonesdk.sdkdemo.ui.transactionList.TransactionListViewModel
 import br.com.stonesdk.sdkdemo.utils.AppInfo
 import br.com.stonesdk.sdkdemo.wrappers.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.wrappers.BluetoothProviderWrapper

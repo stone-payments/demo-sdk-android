@@ -50,7 +50,6 @@ kotlin {
             implementation(compose.animation)
 
             implementation(libs.kotlin.datetime)
-            implementation(libs.kotlin.logging)
             implementation(libs.kotlin.stdlib)
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)

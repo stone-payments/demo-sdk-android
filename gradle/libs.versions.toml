@@ -18,10 +18,8 @@ kotlinVersion = "2.1.20"
 kotlinDatetimeVersion = "0.6.1"
 kotlinLoggingVersion = "5.1.0"
 koinVersion = "4.0.4"
-logbackAndroidVersion = "3.0.0"
 navigationComposeVersion = "2.9.0-beta01"
 okio = "3.11.0"
-slf4jVersion = "2.0.16"
 
 # test libraries
 junit = "4.13.2"
@@ -37,9 +35,6 @@ koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = 
 koin-android-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koinVersion" }
 koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koinVersion" }
 tools-desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarVersion" }
-logbackAndroid = { group = "com.github.tony19", name = "logback-android", version.ref = "logbackAndroidVersion" }
-slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4jVersion" }
-
 
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidx-compose-bom" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose"}
@@ -50,7 +45,6 @@ androidx-lifecycle-viewmodel-compose = { group = "org.jetbrains.androidx.lifecyc
 androidx-lifecycle-viewmodel-savedstate = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-savedstate"}
 androidx-navigation-compose = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "navigationComposeVersion" }
 kotlin-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinDatetimeVersion" }
-kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlinLoggingVersion" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 
 #pos-android-sdk = { group = "br.com.stone", name = "stone-sdk", version.ref = "sdkVersion" }

@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -65,11 +66,12 @@ internal fun ValidationScreen(
         is SplashScreenState.Error -> {
             with(uiState.value as SplashScreenState.Error) {
                 Column(modifier = Modifier.fillMaxSize()) {
-                    Text("Error: $message")
-                    Button(onClick = {
-                        viewModel.activate(code)
-                    }) {
-                        viewModel.checkNeedToActivate()
+                    Button(
+                        onClick = {
+                            viewModel.checkNeedToActivate()
+                        }
+                    ) {
+                        Text("Error: $message")
                     }
                 }
             }
@@ -101,14 +103,17 @@ internal fun ActivateContent(
         TextField(
             value = input,
             onValueChange = { value ->
-                input = value
+                input = value.filter { it.isDigit() }
             },
             modifier =
                 Modifier
                     .width(170.dp)
                     .align(Alignment.CenterHorizontally),
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.NumberPassword
+            ),
             singleLine = true,
+            visualTransformation = VisualTransformation.None,
             shape = RoundedCornerShape(12.dp),
         )
 

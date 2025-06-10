@@ -1,7 +1,7 @@
 [versions]
 # co stone libraries
 platformToolsVersion = "1.0.0-RC10"
-sdkVersion = "6.0.1-dev"
+sdkVersion = "6.0.0-beta2"
 sdkDebugVersion = "6.0.0-alpha34-dev-005"
 
 # libraries
@@ -67,3 +67,4 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinVersion" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlinVersion" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinVersion" }

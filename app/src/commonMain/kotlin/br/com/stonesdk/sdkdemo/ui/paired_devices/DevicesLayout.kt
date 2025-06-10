@@ -1,7 +1,6 @@
 package br.com.stonesdk.sdkdemo.ui.paired_devices
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import org.koin.compose.viewmodel.koinViewModel
 
 data class BluetoothInfo(
@@ -12,7 +11,6 @@ data class BluetoothInfo(
 
 @Composable
 fun DeviceScreen(
-    navController: NavController,
     viewModel: DevicesViewModel = koinViewModel()
 ) {
     DevicesContent(
@@ -31,7 +29,7 @@ fun DeviceScreen(
             viewModel.connect(it)
         },
         onBackPressed = {
-            navController.navigateUp()
+            viewModel.navigateBack()
         }
     )
 }

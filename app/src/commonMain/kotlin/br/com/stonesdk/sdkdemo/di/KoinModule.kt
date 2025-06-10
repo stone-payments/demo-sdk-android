@@ -1,6 +1,7 @@
 package br.com.stonesdk.sdkdemo.di
 
 import br.com.stonesdk.sdkdemo.data.BluetoothPreferences
+import br.com.stonesdk.sdkdemo.routes.NavigationManager
 import br.com.stonesdk.sdkdemo.ui.cancel_transactions.CancelViewModel
 import br.com.stonesdk.sdkdemo.ui.display.DisplayMessageViewModel
 import br.com.stonesdk.sdkdemo.ui.main.MainViewModel
@@ -8,8 +9,8 @@ import br.com.stonesdk.sdkdemo.ui.manage_stone_codes.ManageStoneCodeViewModel
 import br.com.stonesdk.sdkdemo.ui.paired_devices.BluetoothDeviceRepository
 import br.com.stonesdk.sdkdemo.ui.paired_devices.DevicesViewModel
 import br.com.stonesdk.sdkdemo.ui.splashscreen.ValidationViewModel
-import br.com.stonesdk.sdkdemo.ui.transactions.TransactionViewModel
 import br.com.stonesdk.sdkdemo.ui.transactionList.TransactionListViewModel
+import br.com.stonesdk.sdkdemo.ui.transactions.TransactionViewModel
 import br.com.stonesdk.sdkdemo.utils.AppInfo
 import br.com.stonesdk.sdkdemo.wrappers.ActivationProviderWrapper
 import br.com.stonesdk.sdkdemo.wrappers.BluetoothProviderWrapper
@@ -60,6 +61,10 @@ val commonModule: Module = module {
         )
     }
 
+    single {
+        NavigationManager()
+    }
+
     viewModel {
         CancelViewModel(
             transactionProvider = get(),
@@ -75,12 +80,15 @@ val commonModule: Module = module {
 
     viewModel {
         DevicesViewModel(
+            navigationManager = get(),
             bluetoothDeviceRepository = get()
         )
     }
 
     viewModel {
-        MainViewModel()
+        MainViewModel(
+            navigationManager = get()
+        )
     }
 
     viewModel {
@@ -108,7 +116,8 @@ val commonModule: Module = module {
 
     viewModel {
         ValidationViewModel(
-            activationProvider = get()
+            activationProvider = get(),
+            navigationManager = get(),
         )
     }
 }

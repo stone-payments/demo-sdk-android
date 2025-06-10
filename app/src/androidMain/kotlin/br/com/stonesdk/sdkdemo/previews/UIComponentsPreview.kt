@@ -11,10 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import br.com.stonesdk.sdkdemo.routes.Route
 import br.com.stonesdk.sdkdemo.theme.DemoSdkTheme
 import br.com.stonesdk.sdkdemo.ui.components.LoadingContent
 import br.com.stonesdk.sdkdemo.ui.main.MainContent
-import br.com.stonesdk.sdkdemo.ui.main.MainNavigationOption
 import br.com.stonesdk.sdkdemo.ui.splashscreen.ActivateContent
 
 @Preview(showBackground = true, showSystemUi = true)
@@ -64,41 +64,10 @@ private fun ActivateContentPreview2() {
 private fun MainPreview() {
     DemoSdkTheme {
         MainContent(
-            generalItems = getGeneralOptions(),
-            pinpadItems = getPinpadOptions(),
-            posItems = getPosOptions(),
+            generalItems = Route.getCommonRoutes(),
+            pinpadItems = Route.getPinpadRoutes(),
+            posItems = Route.getPosRoutes(),
             onItemSelected = {},
         )
-    }
-}
-
-private fun getGeneralOptions(): List<MainNavigationOption> {
-    return listOf(
-        MainNavigationOption.GeneralListTransactions,
-        MainNavigationOption.GeneralCancelErrorTransactions,
-        MainNavigationOption.GeneralManageStoneCodes,
-    )
-}
-
-private fun getPinpadOptions(): List<MainNavigationOption> {
-    return listOf(
-        MainNavigationOption.PinpadPairedDevices,
-        MainNavigationOption.PinpadMakeTransaction,
-        MainNavigationOption.PinpadShowMessage,
-        MainNavigationOption.PinpadDisconnect,
-    )
-}
-
-private fun getPosOptions(): List<MainNavigationOption> {
-    val isPosDevice = true
-    return if (isPosDevice) {
-        listOf(
-            MainNavigationOption.PosMakeTransaction,
-            MainNavigationOption.PosValidateByCard,
-            MainNavigationOption.PosPrinterProvider,
-            MainNavigationOption.PosMifareProvider,
-        )
-    } else {
-        emptyList()
     }
 }

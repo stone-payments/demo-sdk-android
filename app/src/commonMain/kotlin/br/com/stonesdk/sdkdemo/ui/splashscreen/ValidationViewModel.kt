@@ -2,6 +2,8 @@ package br.com.stonesdk.sdkdemo.ui.splashscreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.stonesdk.sdkdemo.routes.NavigationManager
+import br.com.stonesdk.sdkdemo.routes.Route
 import br.com.stonesdk.sdkdemo.wrappers.ActivationProviderWrapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -11,7 +13,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ValidationViewModel(
-    private val activationProvider: ActivationProviderWrapper
+    private val activationProvider: ActivationProviderWrapper,
+    private val navigationManager: NavigationManager,
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<ValidationUiModel> =
@@ -41,6 +44,10 @@ class ValidationViewModel(
                 _uiState.update { it.copy(state = SplashScreenState.Activated) }
             }
         }
+    }
+
+    fun navigateToHomeScreen() {
+        navigationManager.navigateClearingStack(Route.Home)
     }
 }
 

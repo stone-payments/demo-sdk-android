@@ -4,12 +4,12 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.UiComposable
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.unit.dp
 
@@ -28,6 +28,8 @@ fun DottedSpaceBetweenRowElements(
 
         startText()
 
+        val lineColor = MaterialTheme.colors.onSurface
+
         Canvas(
             modifier = Modifier
                 .height(1.dp)
@@ -41,7 +43,7 @@ fun DottedSpaceBetweenRowElements(
             )
 
             drawLine(
-                color = Color.Black,
+                color = lineColor,
                 start = Offset(x = 0f, y = canvasHeight / 2),
                 end = Offset(x = canvasWidth, y = canvasHeight / 2),
                 strokeWidth = lineThickness,

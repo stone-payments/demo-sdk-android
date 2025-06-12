@@ -16,19 +16,21 @@ class ActivationProviderWrapper {
     private val merchantProvider: MerchantProvider
         get() = MerchantProvider.create()
 
-    suspend fun activate(affiliationCode: String): Boolean = suspendCancellableCoroutine { continuation ->
+    suspend fun activate(affiliationCode: String): ActivationStatus = suspendCancellableCoroutine { continuation ->
 
         activationProvider.activate(affiliationCode, object : StoneResultCallback<Any> {
             override fun onSuccess(result: Any) {
-                continuation.resume(true)
+                continuation.resume(ActivationStatus.Activated)
             }
 
             override fun onError(
                 stoneStatus: StoneStatus?,
                 throwable: Throwable
             ) {
-                continuation.resume(false)
+                val errorMessage = stoneStatus?.message ?: throwable.message ?: "Unknown error"
+                continuation.resume(ActivationStatus.Error(errorMessage))
             }
+
         })
 
         continuation.invokeOnCancellation {}
@@ -83,4 +85,9 @@ class ActivationProviderWrapper {
             })
             continuation.invokeOnCancellation {}
         }
+
+    sealed class ActivationStatus{
+        data object Activated : ActivationStatus()
+        data class Error(val errorMessage: String) : ActivationStatus()
+    }
 }

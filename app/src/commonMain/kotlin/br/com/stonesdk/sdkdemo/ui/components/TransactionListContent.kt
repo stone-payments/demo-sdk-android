@@ -1,4 +1,4 @@
-package br.com.stonesdk.sdkdemo.ui.transactions.transactionList
+package br.com.stonesdk.sdkdemo.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.stonesdk.sdkdemo.ui.components.DottedSpaceBetweenRowElements
+import br.com.stonesdk.sdkdemo.ui.transactionList.Transaction
 import co.stone.posmobile.sdk.payment.domain.model.response.TransactionStatus
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

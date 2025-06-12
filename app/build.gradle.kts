@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.serialization)
 }
 
 kotlin {
@@ -50,7 +51,6 @@ kotlin {
             implementation(compose.animation)
 
             implementation(libs.kotlin.datetime)
-            implementation(libs.kotlin.logging)
             implementation(libs.kotlin.stdlib)
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
@@ -65,7 +65,7 @@ kotlin {
 
             implementation(libs.posmobile.sdk.core)
             implementation(libs.posmobile.sdk.manufacturer.serial)
-            implementation(libs.platform.tools)
+            implementation(libs.posmobile.platform.tools)
 
         }
 

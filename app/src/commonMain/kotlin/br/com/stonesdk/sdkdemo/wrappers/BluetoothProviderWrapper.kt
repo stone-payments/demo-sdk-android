@@ -4,31 +4,33 @@ import br.com.stone.sdk.android.error.StoneStatus
 import co.stone.posmobile.sdk.bluetooth.domain.model.BluetoothDevice
 import co.stone.posmobile.sdk.bluetooth.provider.BluetoothProvider
 import co.stone.posmobile.sdk.callback.StoneResultCallback
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 class BluetoothProviderWrapper {
+
     private val bluetoothProvider: BluetoothProvider
         get() = BluetoothProvider.create()
 
-    suspend fun connect(deviceAddress: String): BluetoothConnectStatus = suspendCancellableCoroutine { continuation ->
+    fun connect(deviceAddress: String): Flow<BluetoothConnectStatus> = channelFlow {
         bluetoothProvider.connect(
             pinpadAddress = deviceAddress,
             stoneResultCallback = object :
                 StoneResultCallback<Boolean> {
                 override fun onSuccess(result: Boolean) {
-                    continuation.resume(BluetoothConnectStatus.Success)
+                    trySend(BluetoothConnectStatus.Success)
                 }
 
                 override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                    continuation.resume(
-                        BluetoothConnectStatus.Error(
-                            stoneStatus?.message ?: throwable.message ?: "Erro desconhecido"
-                        )
-                    )
+                    val errorMessage = stoneStatus?.message ?: throwable.message ?: "Erro desconhecido"
+                    trySend(BluetoothConnectStatus.Error(errorMessage))
                 }
             }
         )
+        awaitClose {  }
     }
 
     suspend fun discoverPinpad(): BluetoothDiscoverStatus = suspendCancellableCoroutine { continuation ->

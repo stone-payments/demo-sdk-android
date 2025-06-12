@@ -1,12 +1,8 @@
-package br.com.stonesdk.sdkdemo.ui.transactions.transactionList
+package br.com.stonesdk.sdkdemo.ui.transactionList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.stone.sdk.android.error.StoneStatus
 import br.com.stonesdk.sdkdemo.wrappers.TransactionListProviderWrapper
-import co.stone.posmobile.sdk.callback.StoneResultCallback
-import co.stone.posmobile.sdk.payment.domain.model.response.PaymentData
-import co.stone.posmobile.sdk.transactionList.provider.TransactionListProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

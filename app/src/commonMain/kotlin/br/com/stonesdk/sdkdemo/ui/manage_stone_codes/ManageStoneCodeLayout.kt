@@ -13,7 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import br.com.stonesdk.sdkdemo.ui.components.LoadingContent
 import br.com.stonesdk.sdkdemo.ui.manage_stone_codes.ManageStoneCodeViewModel
-import br.com.stonesdk.sdkdemo.ui.manage_stone_codes.MerchantData
+import br.com.stonesdk.sdkdemo.data.MerchantData
 import org.koin.compose.viewmodel.koinViewModel
 
 

@@ -2,7 +2,7 @@ package br.com.stonesdk.sdkdemo.ui.cancel_transactions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.stonesdk.sdkdemo.ui.transactions.transactionList.Transaction
+import br.com.stonesdk.sdkdemo.ui.transactionList.Transaction
 import br.com.stonesdk.sdkdemo.utils.parseCentsToCurrency
 import br.com.stonesdk.sdkdemo.wrappers.CancelProviderWrapper
 import br.com.stonesdk.sdkdemo.wrappers.TransactionListProviderWrapper

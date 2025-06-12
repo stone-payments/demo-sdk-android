@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -18,36 +19,35 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
+import br.com.stonesdk.sdkdemo.routes.Route
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MainScreen(
-    navController: NavController,
-    viewModel : MainViewModel = koinViewModel()
+    viewModel: MainViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     MainContent(
-        generalItems = uiState.generalNavigationOptions,
+        generalItems = uiState.commonNavigationOptions,
         pinpadItems = uiState.pinpadNavigationOptions,
         posItems = uiState.posNavigationOptions,
-        onItemSelected = {select ->
-            select.route?.let { navController.navigate(it) }
+        onItemSelected = { option ->
+            viewModel.navigateToOption(option)
         }
     )
 }
 
 
-
 @Composable
 internal fun MainContent(
-    generalItems: List<MainNavigationOption>,
-    pinpadItems: List<MainNavigationOption>,
-    posItems: List<MainNavigationOption>,
-    onItemSelected: (MainNavigationOption) -> Unit
+    generalItems: List<Route>,
+    pinpadItems: List<Route>,
+    posItems: List<Route>,
+    onItemSelected: (Route) -> Unit
 ) {
 
 
@@ -77,8 +77,8 @@ internal fun MainContent(
 @OptIn(ExperimentalUuidApi::class)
 fun LazyListScope.renderSectionIfNotEmpty(
     title: String,
-    elements: List<MainNavigationOption>,
-    onItemSelected: (MainNavigationOption) -> Unit,
+    elements: List<Route>,
+    onItemSelected: (Route) -> Unit,
 ) {
 
     if (elements.isEmpty()) return
@@ -89,7 +89,6 @@ fun LazyListScope.renderSectionIfNotEmpty(
 
     items(
         count = elements.size,
-        key = { elements[it].key },
         contentType = { elements[it].name }
     ) {
         SelectableItem(
@@ -116,7 +115,8 @@ fun SelectableItem(
     onItemSelected: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Text(text = text,
+    Text(
+        text = text,
         modifier = modifier
             .fillMaxWidth()
             .clickable { onItemSelected() }

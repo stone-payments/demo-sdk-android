@@ -1,6 +1,21 @@
 [versions]
 # co stone libraries
 platformToolsVersion = "1.0.0-RC10"
+accompaninsVersion = "0.35.0-alpha"
+activityVersion = "1.9.3"
+activityComposeVersion = "1.9.3"
+appcompatVersion = "1.7.0"
+composeBomVersion = "2024.12.01"
+constraintLayoutVersion = "2.2.0"
+desugarVersion = "2.1.5"
+dataContainerDataVersion = "5.0.0-RC18"
+dataContainerContractVersion = "5.0.0-RC18"
+fragmentVersion = "1.8.2"
+gradlePluginVersion = "8.9.0"
+kotlinVersion = "2.0.20"
+lifecycleVersion = "2.8.7"
+materialVersion = "1.12.0"
+permissionDispatcherVersion = "4.8.0"
 sdkVersion = "6.0.0-beta2"
 sdkDebugVersion = "6.0.0-alpha34-dev-005"
 

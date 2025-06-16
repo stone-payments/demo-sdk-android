@@ -1,3 +1,4 @@
+// SOLUÇÃO 1: Adicionar ScrollableColumn e focusManager
 @file:OptIn(ExperimentalLayoutApi::class)
 
 package br.com.stonesdk.sdkdemo.ui.transactions
@@ -15,6 +16,9 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
@@ -27,6 +31,8 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import br.com.stonesdk.sdkdemo.ui.components.BaseSpinner
@@ -40,6 +46,7 @@ internal fun TransactionScreen(
     viewModel: TransactionViewModel = koinViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsState()
+    val focusManager = LocalFocusManager.current
 
     val desiredAmount = remember { derivedStateOf { uiState.value.amount } }
     val errorMessages = remember { derivedStateOf { uiState.value.errorMessages } }
@@ -93,9 +100,9 @@ internal fun TransactionScreen(
         shouldCaptureTransaction = shouldCaptureTransaction.value,
         transactionButtonEnabled = transactionButtonEnabled.value,
         errorMessages = errorMessages.value,
-        onEvent = viewModel::onEvent
+        onEvent = viewModel::onEvent,
+        onDismissKeyboard = { focusManager.clearFocus() }
     )
-
 }
 
 @Composable
@@ -111,13 +118,16 @@ fun TransactionContent(
     showAffiliationCodeSelection: Boolean,
     shouldCaptureTransaction: Boolean,
     transactionButtonEnabled: Boolean,
-    errorMessages : List<String>,
-    onEvent: (TransactionEvent) -> Unit
+    errorMessages: List<String>,
+    onEvent: (TransactionEvent) -> Unit,
+    onDismissKeyboard: () -> Unit
 ) {
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(scrollState) // Adiciona scroll
             .padding(4.dp)
             .imePadding(),
         verticalArrangement = Arrangement.Top
@@ -132,7 +142,13 @@ fun TransactionContent(
                 onValueChange = { amount -> onEvent(TransactionEvent.UserInput(amount)) },
                 label = { Text(text = "Digite o valor") },
                 modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done // Adiciona botão "Done"
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { onDismissKeyboard() } // Fecha teclado ao pressionar Done
+                )
             )
         }
 
@@ -197,25 +213,164 @@ fun TransactionContent(
                 .fillMaxWidth()
                 .padding(16.dp),
             enabled = transactionButtonEnabled,
-            onClick = { onEvent(TransactionEvent.SendTransaction) },
+            onClick = {
+                onDismissKeyboard() // Fecha teclado antes de enviar
+                onEvent(TransactionEvent.SendTransaction)
+            },
         ) {
             Text(text = "Enviar Transação")
         }
 
-        LazyColumn {
-            items(
-                count = errorMessages.size,
-                key = { index -> index }
-            ) { index ->
-                MonospacedText(
-                    text = errorMessages
-                        .getOrNull(index)
-                        .orEmpty(),
-                    modifier = Modifier.padding(8.dp)
+        // Mensagens de erro agora em Column normal para não conflitar com scroll
+        if (errorMessages.isNotEmpty()) {
+            Column {
+                errorMessages.forEach { message ->
+                    MonospacedText(
+                        text = message,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+// SOLUÇÃO 2: Alternativa usando LazyColumn para toda a tela
+@Composable
+fun TransactionContentWithLazyColumn(
+    desiredAmount: String,
+    typeOfTransactions: List<TypeOfTransactionEnum>,
+    selectedTypeOfTransaction: TypeOfTransactionEnum,
+    showInstallmentSelection: Boolean,
+    installments: List<InstallmentTransaction>,
+    selectedInstallment: InstallmentTransaction,
+    affiliationCodes: List<String>,
+    selectedAffiliationCode: String,
+    showAffiliationCodeSelection: Boolean,
+    shouldCaptureTransaction: Boolean,
+    transactionButtonEnabled: Boolean,
+    errorMessages: List<String>,
+    onEvent: (TransactionEvent) -> Unit,
+    onDismissKeyboard: () -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(4.dp)
+            .imePadding(),
+        verticalArrangement = Arrangement.Top
+    ) {
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    value = desiredAmount,
+                    readOnly = false,
+                    onValueChange = { amount -> onEvent(TransactionEvent.UserInput(amount)) },
+                    label = { Text(text = "Digite o valor") },
+                    modifier = Modifier.weight(1f),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { onDismissKeyboard() }
+                    )
                 )
             }
         }
 
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 2.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                RadioButtonGroup(
+                    onEvent = onEvent,
+                    selectedTransactionType = selectedTypeOfTransaction,
+                    transactionTypes = typeOfTransactions
+                )
+
+                AnimatedVisibility(showInstallmentSelection) {
+                    Spacer(modifier = Modifier.width(4.dp))
+                    BaseSpinner(
+                        title = "Nº de parcelas",
+                        onItemSelected = { installment ->
+                            onEvent(
+                                TransactionEvent.OnInstallmentSelected(
+                                    installment
+                                )
+                            )
+                        },
+                        selectedElement = selectedInstallment,
+                        elements = installments,
+                        elementNaming = { installment -> installment.mapInstallmentToPresentation() }
+                    )
+                }
+            }
+        }
+
+        item {
+            AnimatedVisibility(showAffiliationCodeSelection) {
+                Spacer(modifier = Modifier.width(4.dp))
+                BaseSpinner(
+                    title = "Código de Afiliação",
+                    onItemSelected = { affiliationCode ->
+                        onEvent(
+                            TransactionEvent.OnAffiliationCodeSelected(
+                                affiliationCode
+                            )
+                        )
+                    },
+                    selectedElement = selectedAffiliationCode,
+                    elements = affiliationCodes,
+                    elementNaming = { affiliationCode -> affiliationCode }
+                )
+            }
+        }
+
+        item {
+            CheckboxCapture(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                onEvent = onEvent,
+                label = "Transação com Captura",
+                checked = shouldCaptureTransaction
+            )
+        }
+
+        item {
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                enabled = transactionButtonEnabled,
+                onClick = {
+                    onDismissKeyboard()
+                    onEvent(TransactionEvent.SendTransaction)
+                },
+            ) {
+                Text(text = "Enviar Transação")
+            }
+        }
+
+        // Mensagens de erro
+        items(
+            count = errorMessages.size,
+            key = { index -> index }
+        ) { index ->
+            MonospacedText(
+                text = errorMessages
+                    .getOrNull(index)
+                    .orEmpty(),
+                modifier = Modifier.padding(8.dp)
+            )
+        }
     }
 }
 
@@ -225,7 +380,6 @@ fun RadioButtonGroup(
     transactionTypes: List<TypeOfTransactionEnum>,
     selectedTransactionType: TypeOfTransactionEnum
 ) {
-
     FlowRow {
         transactionTypes.forEach { type ->
             Row(
@@ -262,4 +416,3 @@ fun CheckboxCapture(
         Text(text = label)
     }
 }
-

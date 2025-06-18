@@ -1,9 +1,10 @@
-// SOLUÇÃO 1: Adicionar ScrollableColumn e focusManager
 @file:OptIn(ExperimentalLayoutApi::class)
 
 package br.com.stonesdk.sdkdemo.ui.transactions
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -12,16 +13,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
@@ -31,7 +37,9 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -87,7 +95,7 @@ internal fun TransactionScreen(
         }
     }
 
-    TransactionContent(
+    TransactionContentFixed(
         desiredAmount = desiredAmount.value,
         typeOfTransactions = typeOfTransactions.value,
         selectedTypeOfTransaction = selectedTypeOfTransaction.value,
@@ -106,7 +114,7 @@ internal fun TransactionScreen(
 }
 
 @Composable
-fun TransactionContent(
+fun TransactionContentFixed(
     desiredAmount: String,
     typeOfTransactions: List<TypeOfTransactionEnum>,
     selectedTypeOfTransaction: TypeOfTransactionEnum,
@@ -127,45 +135,40 @@ fun TransactionContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState) // Adiciona scroll
-            .padding(4.dp)
+            .verticalScroll(scrollState)
+            .padding(16.dp)
             .imePadding(),
         verticalArrangement = Arrangement.Top
     ) {
-        Row(
+        // Campo de valor
+        OutlinedTextField(
+            value = desiredAmount,
+            readOnly = false,
+            onValueChange = { amount -> onEvent(TransactionEvent.UserInput(amount)) },
+            label = { Text(text = "Digite o valor") },
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            OutlinedTextField(
-                value = desiredAmount,
-                readOnly = false,
-                onValueChange = { amount -> onEvent(TransactionEvent.UserInput(amount)) },
-                label = { Text(text = "Digite o valor") },
-                modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done // Adiciona botão "Done"
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { onDismissKeyboard() } // Fecha teclado ao pressionar Done
-                )
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = { onDismissKeyboard() }
             )
-        }
+        )
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 2.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            RadioButtonGroup(
-                onEvent = onEvent,
-                selectedTransactionType = selectedTypeOfTransaction,
-                transactionTypes = typeOfTransactions
-            )
+        Spacer(modifier = Modifier.height(16.dp))
 
-            AnimatedVisibility(showInstallmentSelection) {
-                Spacer(modifier = Modifier.width(4.dp))
+        // Tipo de transação
+        RadioButtonGroup(
+            onEvent = onEvent,
+            selectedTransactionType = selectedTypeOfTransaction,
+            transactionTypes = typeOfTransactions
+        )
+
+        // Seleção de parcelas
+        AnimatedVisibility(showInstallmentSelection) {
+            Column {
+                Spacer(modifier = Modifier.height(16.dp))
                 BaseSpinner(
                     title = "Nº de parcelas",
                     onItemSelected = { installment ->
@@ -182,62 +185,103 @@ fun TransactionContent(
             }
         }
 
+        // Código de afiliação
         AnimatedVisibility(showAffiliationCodeSelection) {
-            Spacer(modifier = Modifier.width(4.dp))
-            BaseSpinner(
-                title = "Código de Afiliação",
-                onItemSelected = { affiliationCode ->
-                    onEvent(
-                        TransactionEvent.OnAffiliationCodeSelected(
-                            affiliationCode
+            Column {
+                Spacer(modifier = Modifier.height(16.dp))
+                BaseSpinner(
+                    title = "Código de Afiliação",
+                    onItemSelected = { affiliationCode ->
+                        onEvent(
+                            TransactionEvent.OnAffiliationCodeSelected(
+                                affiliationCode
+                            )
                         )
-                    )
-                },
-                selectedElement = selectedAffiliationCode,
-                elements = affiliationCodes,
-                elementNaming = { affiliationCode -> affiliationCode }
-            )
+                    },
+                    selectedElement = selectedAffiliationCode,
+                    elements = affiliationCodes,
+                    elementNaming = { affiliationCode -> affiliationCode }
+                )
+            }
         }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Checkbox de captura
         CheckboxCapture(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
             label = "Transação com Captura",
             checked = shouldCaptureTransaction
         )
 
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Botão de enviar
         Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth(),
             enabled = transactionButtonEnabled,
             onClick = {
-                onDismissKeyboard() // Fecha teclado antes de enviar
+                onDismissKeyboard()
                 onEvent(TransactionEvent.SendTransaction)
             },
         ) {
             Text(text = "Enviar Transação")
         }
 
-        // Mensagens de erro agora em Column normal para não conflitar com scroll
+        // SEÇÃO DE MENSAGENS DE ERRO - MELHORADA
         if (errorMessages.isNotEmpty()) {
-            Column {
-                errorMessages.forEach { message ->
-                    MonospacedText(
-                        text = message,
-                        modifier = Modifier.padding(8.dp)
-                    )
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Título da seção de erros
+            Text(
+                text = "Erros encontrados:",
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.colors.error,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            // Card para destacar as mensagens de erro
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colors.error,
+                        shape = RoundedCornerShape(8.dp)
+                    ),
+                backgroundColor = MaterialTheme.colors.error.copy(alpha = 0.1f),
+                elevation = 4.dp
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    errorMessages.forEachIndexed { index, message ->
+                        if (message.isNotBlank()) { // Verifica se a mensagem não está vazia
+                            MonospacedText(
+                                text = "• $message", // Adiciona bullet point
+                                modifier = Modifier.padding(vertical = 4.dp)
+                            )
+
+                            // Adiciona divisor entre mensagens (exceto na última)
+                            if (index < errorMessages.size - 1) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+                        }
+                    }
                 }
             }
         }
+
+        // Adiciona espaço extra no final para garantir que tudo seja visível
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
-// SOLUÇÃO 2: Alternativa usando LazyColumn para toda a tela
+// VERSÃO ALTERNATIVA COM LAZYCOLUMN
 @Composable
-fun TransactionContentWithLazyColumn(
+fun TransactionContentWithLazyColumnFixed(
     desiredAmount: String,
     typeOfTransactions: List<TypeOfTransactionEnum>,
     selectedTypeOfTransaction: TypeOfTransactionEnum,
@@ -256,67 +300,63 @@ fun TransactionContentWithLazyColumn(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(4.dp)
+            .padding(16.dp)
             .imePadding(),
         verticalArrangement = Arrangement.Top
     ) {
+        // Campo de valor
         item {
-            Row(
+            OutlinedTextField(
+                value = desiredAmount,
+                readOnly = false,
+                onValueChange = { amount -> onEvent(TransactionEvent.UserInput(amount)) },
+                label = { Text(text = "Digite o valor") },
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedTextField(
-                    value = desiredAmount,
-                    readOnly = false,
-                    onValueChange = { amount -> onEvent(TransactionEvent.UserInput(amount)) },
-                    label = { Text(text = "Digite o valor") },
-                    modifier = Modifier.weight(1f),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = { onDismissKeyboard() }
-                    )
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { onDismissKeyboard() }
                 )
-            }
+            )
         }
 
-        item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 2.dp),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                RadioButtonGroup(
-                    onEvent = onEvent,
-                    selectedTransactionType = selectedTypeOfTransaction,
-                    transactionTypes = typeOfTransactions
-                )
+        item { Spacer(modifier = Modifier.height(16.dp)) }
 
-                AnimatedVisibility(showInstallmentSelection) {
-                    Spacer(modifier = Modifier.width(4.dp))
-                    BaseSpinner(
-                        title = "Nº de parcelas",
-                        onItemSelected = { installment ->
-                            onEvent(
-                                TransactionEvent.OnInstallmentSelected(
-                                    installment
-                                )
+        // Tipo de transação
+        item {
+            RadioButtonGroup(
+                onEvent = onEvent,
+                selectedTransactionType = selectedTypeOfTransaction,
+                transactionTypes = typeOfTransactions
+            )
+        }
+
+        // Seleção de parcelas
+        if (showInstallmentSelection) {
+            item { Spacer(modifier = Modifier.height(16.dp)) }
+            item {
+                BaseSpinner(
+                    title = "Nº de parcelas",
+                    onItemSelected = { installment ->
+                        onEvent(
+                            TransactionEvent.OnInstallmentSelected(
+                                installment
                             )
-                        },
-                        selectedElement = selectedInstallment,
-                        elements = installments,
-                        elementNaming = { installment -> installment.mapInstallmentToPresentation() }
-                    )
-                }
+                        )
+                    },
+                    selectedElement = selectedInstallment,
+                    elements = installments,
+                    elementNaming = { installment -> installment.mapInstallmentToPresentation() }
+                )
             }
         }
 
-        item {
-            AnimatedVisibility(showAffiliationCodeSelection) {
-                Spacer(modifier = Modifier.width(4.dp))
+        // Código de afiliação
+        if (showAffiliationCodeSelection) {
+            item { Spacer(modifier = Modifier.height(16.dp)) }
+            item {
                 BaseSpinner(
                     title = "Código de Afiliação",
                     onItemSelected = { affiliationCode ->
@@ -333,22 +373,24 @@ fun TransactionContentWithLazyColumn(
             }
         }
 
+        item { Spacer(modifier = Modifier.height(16.dp)) }
+
+        // Checkbox
         item {
             CheckboxCapture(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 onEvent = onEvent,
                 label = "Transação com Captura",
                 checked = shouldCaptureTransaction
             )
         }
 
+        item { Spacer(modifier = Modifier.height(24.dp)) }
+
+        // Botão
         item {
             Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 enabled = transactionButtonEnabled,
                 onClick = {
                     onDismissKeyboard()
@@ -359,18 +401,53 @@ fun TransactionContentWithLazyColumn(
             }
         }
 
-        // Mensagens de erro
-        items(
-            count = errorMessages.size,
-            key = { index -> index }
-        ) { index ->
-            MonospacedText(
-                text = errorMessages
-                    .getOrNull(index)
-                    .orEmpty(),
-                modifier = Modifier.padding(8.dp)
-            )
+        // Seção de mensagens de erro melhorada
+        if (errorMessages.isNotEmpty()) {
+            item { Spacer(modifier = Modifier.height(24.dp)) }
+
+            item {
+                Text(
+                    text = "Erros encontrados:",
+                    style = MaterialTheme.typography.h6,
+                    color = MaterialTheme.colors.error,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+
+            item {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colors.error,
+                            shape = RoundedCornerShape(8.dp)
+                        ),
+                    backgroundColor = MaterialTheme.colors.error.copy(alpha = 0.1f),
+                    elevation = 4.dp
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        errorMessages.forEachIndexed { index, message ->
+                            if (message.isNotBlank()) {
+                                MonospacedText(
+                                    text = "• $message",
+                                    modifier = Modifier.padding(vertical = 4.dp)
+                                )
+
+                                if (index < errorMessages.size - 1) {
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
+
+        item { Spacer(modifier = Modifier.height(32.dp)) }
     }
 }
 

@@ -7,22 +7,24 @@
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1.8</string>
+	<string>0.1.10</string>
 	<key>CFBundleVersion</key>
-	<string>0.1.8</string>
+	<string>0.1.10</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIconName</key>
 	<string>AppIcon</string>
-<key>UILaunchScreen</key>
-<dict>
-    <key>UIColorName</key>
-    <string>SystemBackgroundColor</string>
-    <key>UIImageName</key>
-    <string>LaunchIcon</string>
-    <key>UIImageRespectsSafeAreaInsets</key>
-    <true/>
-</dict>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Este app precisa do Bluetooth para se conectar a dispositivos próximos.</string>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>SystemBackgroundColor</string>
+		<key>UIImageName</key>
+		<string>LaunchIcon</string>
+		<key>UIImageRespectsSafeAreaInsets</key>
+		<true/>
+	</dict>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>

@@ -158,7 +158,7 @@ class TransactionViewModel(
 
             println("connect(hardwareAddress)")
             val connectStatus = bluetoothRepository.connect(connectedDevice.hardwareAddress)
-            if(connectStatus.isSuccess){
+            if (connectStatus.isSuccess) {
                 println("connect to device")
             }
             if (connectStatus.isFailure) {
@@ -186,7 +186,7 @@ class TransactionViewModel(
 
                     is PaymentProviderWrapper.TransactionStatus.Error -> {
                         val errorMessages = _uiState.value.errorMessages.toMutableList()
-                        val errorMessage = "Falha ao processar transação"
+                        val errorMessage = status.message
                         val newErrorMessage = "${getCurrentFormattedTimestamp()}: $errorMessage"
                         errorMessages.add(0, newErrorMessage)
 
@@ -243,7 +243,7 @@ fun InstallmentTransaction.mapInstallmentToPresentation(): String {
 }
 
 data class TransactionUiModel(
-    val errorMessages : List<String> = emptyList(),
+    val errorMessages: List<String> = emptyList(),
     val success: Boolean = false,
     val amount: String = "",
     val typeOfTransactions: List<TypeOfTransactionEnum> = emptyList(),

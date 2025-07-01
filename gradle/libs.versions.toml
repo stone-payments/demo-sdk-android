@@ -15,7 +15,7 @@ gradlePluginVersion = "8.9.0"
 lifecycleVersion = "2.8.7"
 materialVersion = "1.12.0"
 permissionDispatcherVersion = "4.8.0"
-sdkVersion = "6.0.0-beta4"
+sdkVersion = "6.0.0-beta2"
 sdkDebugVersion = "6.0.0-alpha34-dev-005"
 
 # libraries

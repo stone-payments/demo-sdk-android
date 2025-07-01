@@ -5,9 +5,13 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -23,6 +27,7 @@ import br.com.stonesdk.sdkdemo.ui.paired_devices.DeviceScreen
 import br.com.stonesdk.sdkdemo.ui.splashscreen.ValidationScreen
 import br.com.stonesdk.sdkdemo.ui.transactionList.TransactionListScreen
 import br.com.stonesdk.sdkdemo.ui.transactions.TransactionScreen
+import co.stone.posmobile.sdk.utils.logger.LogSaver
 import org.koin.compose.koinInject
 
 @Composable
@@ -35,7 +40,14 @@ fun DemoApp() {
 
         Scaffold(
             contentWindowInsets = WindowInsets.safeContent,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { LogSaver.share() }
+                ) {
+                    Icon(Icons.Default.Share, contentDescription = "Export Logs")
+                }
+            }
         ) { innerPadding ->
             Surface(
                 modifier = Modifier.padding(innerPadding)

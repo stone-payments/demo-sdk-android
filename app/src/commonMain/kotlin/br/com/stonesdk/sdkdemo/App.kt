@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import br.com.stone.posandroid.logger.LogSaver
 import br.com.stonesdk.sdkdemo.routes.NavigationManager
 import br.com.stonesdk.sdkdemo.routes.Route
 import br.com.stonesdk.sdkdemo.theme.DemoSdkTheme
@@ -27,7 +28,6 @@ import br.com.stonesdk.sdkdemo.ui.paired_devices.DeviceScreen
 import br.com.stonesdk.sdkdemo.ui.splashscreen.ValidationScreen
 import br.com.stonesdk.sdkdemo.ui.transactionList.TransactionListScreen
 import br.com.stonesdk.sdkdemo.ui.transactions.TransactionScreen
-import co.stone.posmobile.sdk.utils.logger.LogSaver
 import org.koin.compose.koinInject
 
 @Composable

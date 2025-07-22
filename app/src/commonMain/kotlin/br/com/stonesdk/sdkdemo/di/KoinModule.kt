@@ -110,7 +110,8 @@ val commonModule: Module = module {
 
     viewModel {
         TransactionListViewModel(
-            transactionListProvider = get()
+            transactionProvider = get(),
+            emailProviderWrapper = get(),
         )
     }
 

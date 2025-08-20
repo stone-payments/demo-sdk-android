@@ -11,5 +11,11 @@ android {
             signingConfig signingConfigs.debug
             versionNameSuffix "-sunmi"
         }
+
+        sunmiSeriesP {
+            dimension "model"
+            signingConfig signingConfigs.debug
+            versionNameSuffix "-sunmiSeriesP"
+        }
     }
 }

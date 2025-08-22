@@ -7,3 +7,4 @@
 *.iml
 gertec/gertec-keystore.properties
 gertec/*.jks
+.kotlin

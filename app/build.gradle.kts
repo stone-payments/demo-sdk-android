@@ -7,13 +7,14 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.serialization)
 }
 
 kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
@@ -35,29 +36,37 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.material3.android)
             implementation(libs.koin.android)
             implementation(libs.koin.android.compose)
         }
         commonMain.dependencies {
+            implementation(project.dependencies.platform(libs.androidx.compose.bom))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.materialIconsExtended)
+            implementation(compose.animation)
+
+            implementation(libs.kotlin.datetime)
+            implementation(libs.kotlin.stdlib)
+            implementation(libs.androidx.datastore)
+            implementation(libs.androidx.datastore.preferences)
+            implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
+            implementation(libs.androidx.lifecycle.viewmodel.savedstate)
+            implementation(libs.androidx.navigation.compose)
+
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
-            // implementation(libs.androidx.lifecycle.viewmodel)
-            implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
+            implementation(libs.okio)
 
-            implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha12")
             implementation(libs.posmobile.sdk.core)
             implementation(libs.posmobile.sdk.manufacturer.serial)
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
-            implementation(libs.platform.tools)
-            implementation(libs.kotlin.logging)
+            implementation(libs.posmobile.platform.tools)
+
         }
 
         iosMain.dependencies {
@@ -66,11 +75,11 @@ kotlin {
 }
 
 android {
-    namespace = "org.example.project"
+    namespace = "br.com.stonesdk.sdkdemo"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.example.project"
+        applicationId = "br.com.stonesdk.sdkdemo"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -91,21 +100,26 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true
     }
 }
 
-configurations.all {
-    resolutionStrategy {
-        exclude("co.stone.posmobile", "lib-commons-android")
-        exclude("br.com.stone.posandroid", "hal-api")
+configurations {
+    all {
+        resolutionStrategy {
+            exclude("co.stone.posmobile", "lib-commons-android")
+            exclude("br.com.stone.posandroid", "hal-api")
+        }
+    }
+
+    implementation {
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-gradle-plugin-api")
     }
 }
 
 dependencies {
-    implementation(libs.androidx.lifecycle.viewmodel.android)
     debugImplementation(compose.uiTooling)
     coreLibraryDesugaring(libs.tools.desugar)
 }

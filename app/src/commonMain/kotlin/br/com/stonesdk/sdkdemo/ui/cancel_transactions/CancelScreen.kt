@@ -1,11 +1,11 @@
-package br.com.stonesdk.sdkdemo.activities.cancel
+package br.com.stonesdk.sdkdemo.ui.cancel_transactions
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import br.com.stonesdk.sdkdemo.ui.transactions.transactionList.TransactionListContent
-import org.koin.androidx.compose.koinViewModel
+import br.com.stonesdk.sdkdemo.ui.components.TransactionListContent
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun CancelScreen(

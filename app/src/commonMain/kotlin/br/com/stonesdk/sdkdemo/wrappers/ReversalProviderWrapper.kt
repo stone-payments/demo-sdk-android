@@ -1,4 +1,4 @@
-package br.com.stonesdk.sdkdemo.activities.transaction
+package br.com.stonesdk.sdkdemo.wrappers
 
 import br.com.stone.sdk.android.error.StoneStatus
 import co.stone.posmobile.sdk.callback.StoneResultCallback

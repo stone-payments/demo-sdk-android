@@ -1,4 +1,4 @@
-package br.com.stonesdk.sdkdemo.ui.transactions.transactionList
+package br.com.stonesdk.sdkdemo.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -17,35 +17,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import br.com.stonesdk.sdkdemo.ui.components.DottedSpaceBetweenRowElements
-
-@Composable
-fun TransactionListScreen(
-    viewModel: TransactionListViewModel = viewModel { TransactionListViewModel() },
-) {
-    val uiModel = viewModel.uiState.collectAsState()
-
-    val errorMessage = remember { derivedStateOf { uiModel.value.errorMessage } }
-    val loading = remember { derivedStateOf { uiModel.value.loading } }
-    val transactions = remember { derivedStateOf { uiModel.value.transactions } }
-
-    TransactionListContent(
-        loading = loading.value,
-        errorMessage = errorMessage.value,
-        transactions = transactions.value,
-        onItemClick = viewModel::onItemClick,
-    )
-}
+import br.com.stonesdk.sdkdemo.ui.transactionList.Transaction
+import co.stone.posmobile.sdk.payment.domain.model.response.TransactionStatus
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun TransactionListContent(
@@ -167,4 +147,27 @@ fun TransactionListItem(
             fontSize = 14.sp,
         )
     }
+}
+
+@Composable
+@Preview
+fun TransactionListItemPreview() {
+    val transaction =
+        Transaction(
+            id = 1,
+            affiliationCode = "123",
+            authorizedAmount = "R$ 100,00",
+            authorizationDate = "2021-12-25T18:59:59.000Z",
+            atk = "12345678901234",
+            status = "Aprovado",
+        )
+
+    TransactionListItem(
+        id = transaction.id.toString(),
+        authorizedAmount = transaction.authorizedAmount,
+        authorizationDate = transaction.authorizationDate,
+        status = TransactionStatus.APPROVED.toString(),
+        atk = transaction.atk,
+        onItemSelected = {},
+    )
 }

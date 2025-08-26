@@ -1,11 +1,12 @@
-package br.com.stonesdk.sdkdemo.activities.cancel
+package br.com.stonesdk.sdkdemo.ui.cancel_transactions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListProviderWrapper
-import br.com.stonesdk.sdkdemo.activities.transaction.list.TransactionListProviderWrapper.TransactionListStatus
-import br.com.stonesdk.sdkdemo.ui.transactions.transactionList.Transaction
+import br.com.stonesdk.sdkdemo.ui.transactionList.Transaction
 import br.com.stonesdk.sdkdemo.utils.parseCentsToCurrency
+import br.com.stonesdk.sdkdemo.wrappers.CancelProviderWrapper
+import br.com.stonesdk.sdkdemo.wrappers.TransactionListProviderWrapper
+import br.com.stonesdk.sdkdemo.wrappers.TransactionListProviderWrapper.TransactionListStatus
 import co.stone.posmobile.sdk.payment.domain.model.response.TransactionStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +29,7 @@ class CancelViewModel(
                     is TransactionListStatus.Loading -> {
                         _uiState.update { it.copy(loading = true) }
                     }
+
                     is TransactionListStatus.Success -> {
                         val transactions =
                             status.transactions
@@ -116,3 +118,4 @@ data class CancelUiModel(
     val errorMessage: String? = null,
     val transactions: List<Transaction> = emptyList(),
 )
+

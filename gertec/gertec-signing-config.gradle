@@ -13,7 +13,7 @@ android {
             storePassword keystoreProperties.getProperty('storePassword', System.env.GERTEC_KEYSTORE_PASSWORD)
         }
 
-        gertecGposSeries7 {
+        gertecGpos760 {
             storeFile rootProject.file("gertec/${keystoreProperties.getProperty('storeFileGpos760', System.env.GERTEC_760_KEYSTORE_FILE)}")
             keyAlias keystoreProperties.getProperty('keyAliasGpos760', System.env.GERTEC_760_KEYSTORE_ALIAS)
             keyPassword keystoreProperties.getProperty('keyPasswordGpos760', System.env.GERTEC_760_KEYSTORE_KEY_PASSWORD)
@@ -29,10 +29,10 @@ android {
             versionNameSuffix "-gertecGpos700"
         }
 
-        gertecGposSeries7 {
+        gertecGpos760 {
             dimension "model"
-            signingConfig signingConfigs.gertecGposSeries7
-            versionNameSuffix "-gertecGposSeries7"
+            signingConfig signingConfigs.gertecGpos760
+            versionNameSuffix "-gertecGpos760"
             ndk {
                 abiFilters.addAll(['armeabi-v7a'])
             }

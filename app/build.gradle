@@ -55,10 +55,8 @@ dependencies {
     implementation "br.com.stone:stone-sdk-posandroid:$stone_sdk_version"
     ingenicoImplementation "br.com.stone:stone-sdk-posandroid-ingenico:$stone_sdk_version"
     sunmiImplementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
-    sunmiSeriesPImplementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
     tectoySeriesTImplementation "br.com.stone:stone-sdk-posandroid-tectoy:$stone_sdk_version"
     gertecGpos700Implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
-    gertecGposSeries7Implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
     positivoSeriesLImplementation "br.com.stone:stone-sdk-posandroid-positivo:$stone_sdk_version"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

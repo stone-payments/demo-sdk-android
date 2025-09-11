@@ -5,12 +5,12 @@ apply from: '../gertec/gertec-signing-config.gradle'
 apply from: '../ingenico/ingenico-signing-config.gradle'
 apply from: '../sunmi/sunmi-signing-config.gradle'
 apply from: '../tectoy/tectoy-signing-config.gradle'
-
 android {
     compileSdkVersion 34
     buildToolsVersion '28.0.3'
     flavorDimensions = ["model"]
-
+    namespace = "br.com.stonesdk.sdkdemo"
+    compileSdk = 35
     defaultConfig {
         applicationId "br.com.stonesdk.sdkdemo"
         minSdkVersion 22
@@ -18,7 +18,6 @@ android {
         versionCode 1
         versionName "1.0"
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -28,18 +27,15 @@ android {
             signingConfig null
         }
     }
-
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
-
     packagingOptions {
         exclude 'META-INF/api_release.kotlin_module'
         exclude 'META-INF/client_release.kotlin_module'
     }
 }
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -47,10 +43,8 @@ dependencies {
     annotationProcessor "com.github.permissions-dispatcher:permissionsdispatcher-processor:4.8.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.google.android.material:material:1.3.0'
-
     debugImplementation "com.github.tony19:logback-android:2.0.0"
     debugImplementation "br.com.stone.sdk.android:debugmode:4.0.3"
-
     implementation "br.com.stone:stone-sdk:$stone_sdk_version"
     implementation "br.com.stone:stone-sdk-posandroid:$stone_sdk_version"
     ingenicoImplementation "br.com.stone:stone-sdk-posandroid-ingenico:$stone_sdk_version"
@@ -60,9 +54,7 @@ dependencies {
     gertecGpos700Implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
     gertecGposSeries7Implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
     positivoSeriesLImplementation "br.com.stone:stone-sdk-posandroid-positivo:$stone_sdk_version"
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
     testImplementation "io.mockk:mockk:1.10.6"
     testImplementation "org.junit.platform:junit-platform-launcher:1.7.1"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:5.7.1"

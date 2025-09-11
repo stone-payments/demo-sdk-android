@@ -29,18 +29,12 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
     public void onSuccess() {
         if (transactionObject.getTransactionStatus() == TransactionStatusEnum.APPROVED) {
 
-            // Move printing to background thread to avoid ANR
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    final PrintController printMerchant =
-                            new PrintController(PosTransactionActivity.this,
-                                    new PosPrintReceiptProvider(getApplicationContext(),
-                                            transactionObject, ReceiptType.MERCHANT));
+            final PrintController printMerchant =
+                    new PrintController(PosTransactionActivity.this,
+                            new PosPrintReceiptProvider(this.getApplicationContext(),
+                                    transactionObject, ReceiptType.MERCHANT));
 
-                    printMerchant.print();
-                }
-            }).start();
+            printMerchant.print();
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Transação aprovada! Deseja imprimir a via do cliente?");
@@ -48,17 +42,11 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
             builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    // Move client printing to background thread to avoid ANR
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            final PrintController printClient =
-                            new PrintController(PosTransactionActivity.this,
-                                    new PosPrintReceiptProvider(getApplicationContext(),
-                                            transactionObject, ReceiptType.CLIENT));
-                            printClient.print();
-                        }
-                    }).start();
+                    final PrintController printClient =
+                    new PrintController(PosTransactionActivity.this,
+                            new PosPrintReceiptProvider(getApplicationContext(),
+                                    transactionObject, ReceiptType.CLIENT));
+                    printClient.print();
                 }
             });
 
@@ -103,27 +91,22 @@ public class PosTransactionActivity extends BaseTransactionActivity<PosTransacti
     public void onStatusChanged(final Action action) {
         super.onStatusChanged(action);
 
-        switch (action) {
-            case TRANSACTION_WAITING_PASSWORD:
-                runOnUiThread(() -> {
+        runOnUiThread(() -> {
+
+            switch (action) {
+                case TRANSACTION_WAITING_PASSWORD:
                     Toast.makeText(
                             PosTransactionActivity.this,
                             "Pin tries remaining to block card: ${transactionProvider?.remainingPinTries}",
                             Toast.LENGTH_LONG
                     ).show();
-                });
-                break;
-            case TRANSACTION_TYPE_SELECTION:
-                // Move potentially blocking operation to background thread
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<String> options = getTransactionProvider().getTransactionTypeOptions();
-                        runOnUiThread(() -> showTransactionTypeSelectionDialog(options));
-                    }
-                }).start();
-                break;
-        }
+                    break;
+                case TRANSACTION_TYPE_SELECTION:
+                    List<String> options = getTransactionProvider().getTransactionTypeOptions();
+                    showTransactionTypeSelectionDialog(options);
+            }
+
+        });
     }
 
 

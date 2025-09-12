@@ -34,7 +34,6 @@ import stone.utils.Stone;
 /**
  * Created by felipe on 05/03/18.
  */
-
 public abstract class BaseTransactionActivity<T extends BaseTransactionProvider> extends AppCompatActivity implements StoneActionCallback {
     private BaseTransactionProvider transactionProvider;
     protected final TransactionObject transactionObject = new TransactionObject();
@@ -47,7 +46,6 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     TextView logTextView;
     Button sendTransactionButton;
     Button cancelTransactionButton;
-
     Dialog builder;
 
     @Override
@@ -63,33 +61,33 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
         logTextView = findViewById(R.id.logTextView);
         sendTransactionButton = findViewById(R.id.sendTransactionButton);
         cancelTransactionButton = findViewById(R.id.cancelTransactionButton);
-
         spinnerAction();
         radioGroupClick();
         sendTransactionButton.setOnClickListener(v -> initTransaction());
-        cancelTransactionButton.setOnClickListener(v -> transactionProvider.abortPayment());
-
-
+        cancelTransactionButton.setOnClickListener(v -> {
+            if (transactionProvider != null) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        transactionProvider.abortPayment();
+                    }
+                }).start();
+            }
+        });
         builder = new Dialog(this);
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         builder.getWindow().setBackgroundDrawable(
                 new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
     }
 
     private void radioGroupClick() {
         transactionTypeRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            switch (checkedId) {
-                case R.id.radioPix:
-                case R.id.radioDebit:
-                case R.id.radioVoucher:
-                    installmentsTextView.setVisibility(View.GONE);
-                    installmentsSpinner.setVisibility(View.GONE);
-                    break;
-                case R.id.radioCredit:
-                    installmentsTextView.setVisibility(View.VISIBLE);
-                    installmentsSpinner.setVisibility(View.VISIBLE);
-                    break;
+            if (checkedId == R.id.radioPix || checkedId == R.id.radioDebit || checkedId == R.id.radioVoucher) {
+                installmentsTextView.setVisibility(View.GONE);
+                installmentsSpinner.setVisibility(View.GONE);
+            } else if (checkedId == R.id.radioCredit) {
+                installmentsTextView.setVisibility(View.VISIBLE);
+                installmentsSpinner.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -98,48 +96,46 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.installments_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         installmentsSpinner.setAdapter(adapter);
-
         ArrayAdapter<String> stoneCodeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
         stoneCodeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        for (UserModel userModel : Stone.sessionApplication.getUserModelList()) {
-            stoneCodeAdapter.add(userModel.getStoneCode());
+        if (Stone.sessionApplication != null && Stone.sessionApplication.getUserModelList() != null) {
+            for (UserModel userModel : Stone.sessionApplication.getUserModelList()) {
+                stoneCodeAdapter.add(userModel.getStoneCode());
+            }
         }
         stoneCodeSpinner.setAdapter(stoneCodeAdapter);
     }
 
     public void initTransaction() {
         InstalmentTransactionEnum installmentsEnum = InstalmentTransactionEnum.getAt(installmentsSpinner.getSelectedItemPosition());
-
         // Informa a quantidade de parcelas.
         transactionObject.setInstalmentTransaction(InstalmentTransactionEnum.getAt(installmentsSpinner.getSelectedItemPosition()));
-
         // Verifica a forma de pagamento selecionada.
         TypeOfTransactionEnum transactionType;
-        switch (transactionTypeRadioGroup.getCheckedRadioButtonId()) {
-            case R.id.radioCredit:
-                transactionType = TypeOfTransactionEnum.CREDIT;
-                break;
-            case R.id.radioDebit:
-                transactionType = TypeOfTransactionEnum.DEBIT;
-                break;
-            case R.id.radioVoucher:
-                transactionType = TypeOfTransactionEnum.VOUCHER;
-                break;
-            case R.id.radioPix:
-                transactionType = TypeOfTransactionEnum.PIX;
-                break;
-            default:
-                transactionType = TypeOfTransactionEnum.CREDIT;
+        int checkedRadioButtonId = transactionTypeRadioGroup.getCheckedRadioButtonId();
+        if (checkedRadioButtonId == R.id.radioCredit) {
+            transactionType = TypeOfTransactionEnum.CREDIT;
+        } else if (checkedRadioButtonId == R.id.radioDebit) {
+            transactionType = TypeOfTransactionEnum.DEBIT;
+        } else if (checkedRadioButtonId == R.id.radioVoucher) {
+            transactionType = TypeOfTransactionEnum.VOUCHER;
+        } else if (checkedRadioButtonId == R.id.radioPix) {
+            transactionType = TypeOfTransactionEnum.PIX;
+        } else {
+            transactionType = TypeOfTransactionEnum.CREDIT;
         }
-
         transactionObject.setInitiatorTransactionKey(null);
         transactionObject.setTypeOfTransaction(transactionType);
         transactionObject.setCapture(captureTransactionCheckBox.isChecked());
         transactionObject.setAmount(amountEditText.getText().toString());
-
         transactionProvider = buildTransactionProvider();
         transactionProvider.setConnectionCallback(this);
-        transactionProvider.execute();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                transactionProvider.execute();
+            }
+        }).start();
     }
 
     protected String getAuthorizationMessage() {
@@ -160,7 +156,6 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     @Override
     public void onStatusChanged(final Action action) {
         runOnUiThread(() -> logTextView.append(action.name() + "\n"));
-
         if (action == Action.TRANSACTION_WAITING_QRCODE_SCAN) {
             ImageView imageView = new ImageView(this);
             imageView.setImageBitmap(transactionObject.getQRCode());
@@ -181,6 +176,10 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
     }
 
     protected UserModel getSelectedUserModel() {
-        return Stone.getUserModel(stoneCodeSpinner.getSelectedItemPosition());
+        if (Stone.sessionApplication != null && Stone.sessionApplication.getUserModelList() != null
+                && !Stone.sessionApplication.getUserModelList().isEmpty()) {
+            return Stone.getUserModel(stoneCodeSpinner.getSelectedItemPosition());
+        }
+        return null;
     }
 }

@@ -38,6 +38,8 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
             implementation(libs.koin.android.compose)
+            implementation(libs.posmobile.sdk.manufacturer.sunmi)
+
         }
         commonMain.dependencies {
             implementation(project.dependencies.platform(libs.androidx.compose.bom))
@@ -66,6 +68,7 @@ kotlin {
             implementation(libs.posmobile.sdk.core)
             implementation(libs.posmobile.sdk.manufacturer.serial)
             implementation(libs.posmobile.platform.tools)
+//            implementation(libs.posmobile.sdk.manufacturer.sunmi)
 
         }
 

@@ -15,19 +15,19 @@ gradlePluginVersion = "8.9.0"
 lifecycleVersion = "2.8.7"
 materialVersion = "1.12.0"
 permissionDispatcherVersion = "4.8.0"
-sdkVersion = "6.0.0"
+sdkVersion = "6.0.0-SNAPSHOT"
 sdkDebugVersion = "6.0.0"
 
 # libraries
 agp = "8.9.2"
-android-compileSdk = "35"
+android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "35"
 androidx-compose-bom = "2025.05.01"
 androidx-datastore = "1.1.6"
 androidx-lifecycle-viewmodel = "2.9.0"
 compose-multiplatform = "1.8.1"
-kotlinVersion = "2.1.20"
+kotlinVersion = "2.2.21"
 kotlinDatetimeVersion = "0.6.1"
 kotlinLoggingVersion = "5.1.0"
 koinVersion = "4.0.4"
@@ -73,6 +73,7 @@ okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 posmobile-platform-tools = { module = "co.stone.pos.mobile:platform-tools", version.ref = "platformToolsVersion" }
 posmobile-sdk-core = { group = "co.stone.pos.mobile.sdk", name = "sdk-core", version.ref = "sdkVersion" }
 posmobile-sdk-manufacturer-serial = { group = "co.stone.pos.mobile.sdk.manufacturer", name = "manufacturer-serial", version.ref = "sdkVersion" }
+posmobile-sdk-manufacturer-sunmi = { group = "co.stone.pos.mobile.sdk.manufacturer", name = "manufacturer-sunmi", version.ref = "sdkVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

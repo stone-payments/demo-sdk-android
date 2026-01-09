@@ -135,7 +135,7 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
         transactionObject.setSubMerchantRegisteredIdentifier("00.000.000/0001-91");
         transactionObject.setSubMerchantPostalAddress("592344-100");
         transactionObject.setSubMerchantLegalName("Stark Corp");
-        transactionObject.setSubMerchantTaxIdentificationType("PRSN"); // tipo de documento (fisico(PRSN) ou juridico (JRDC))
+        transactionObject.setSubMerchantTaxIdentificationType("JRDC"); // tipo de documento (fisico(PRSN) ou juridico (JRDC))
         transactionObject.setSubMerchantPhoneNumber("(87) 9 9999-9999");
         transactionObject.setSubMerchantCountryCode("076");
         transactionObject.setSubMerchantState("PE");

@@ -128,6 +128,26 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
         transactionObject.setTypeOfTransaction(transactionType);
         transactionObject.setCapture(captureTransactionCheckBox.isChecked());
         transactionObject.setAmount(amountEditText.getText().toString());
+
+        // Submerchant Information
+        transactionObject.setSubMerchantCity("Juazeiro");
+        transactionObject.setSubMerchantTaxIdentificationNumber("00.000.000/0001-91");
+        transactionObject.setSubMerchantRegisteredIdentifier("00.000.000/0001-91");
+        transactionObject.setSubMerchantPostalAddress("592344-100");
+        transactionObject.setSubMerchantLegalName("Stark Corp");
+        transactionObject.setSubMerchantTaxIdentificationType("JRDC"); // tipo de documento (fisico(PRSN) ou juridico (JRDC))
+        transactionObject.setSubMerchantPhoneNumber("(87) 9 9999-9999");
+        transactionObject.setSubMerchantCountryCode("076");
+        transactionObject.setSubMerchantState("PE");
+        transactionObject.setSubMerchantNeighborhood("Manoel Alves de Carvalho Nunes");
+        transactionObject.setSubMerchantEmail("start@corporation.com.br");
+        transactionObject.setSubMerchantSiteUrl("www.starkcorp.com.br");
+        transactionObject.setSubMerchantBuildingNumber("445");
+        transactionObject.setShortName("Stark");
+        transactionObject.setSubMerchantAddress("Rua de cima");
+        transactionObject.setSubMerchantCategoryCode("5734");
+        transactionObject.setSubMerchantPaymentGatewayId("123123");
+
         transactionProvider = buildTransactionProvider();
         transactionProvider.setConnectionCallback(this);
         new Thread(new Runnable() {

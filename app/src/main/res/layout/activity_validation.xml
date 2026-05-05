@@ -5,22 +5,6 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/act_validation_environment_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Ambiente" />
-
-    <Spinner
-        android:id="@+id/act_validation_env_spin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/act_validation_environment_txt"
-        android:layout_marginEnd="60dp"
-        android:layout_marginStart="60dp" />
-
-    <TextView
         android:id="@+id/act_validation_stone_code_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

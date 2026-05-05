@@ -2,7 +2,6 @@ package br.com.stonesdk.sdkdemo.activities;
 
 import static android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
 import static br.com.stonesdk.sdkdemo.activities.ValidationActivityPermissionsDispatcher.initiateAppWithPermissionCheck;
-import static stone.environment.Environment.valueOf;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -12,11 +11,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,7 +33,6 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import stone.application.StoneStart;
 import stone.application.interfaces.StoneCallbackInterface;
-import stone.environment.Environment;
 import stone.providers.ActiveApplicationProvider;
 import stone.user.UserModel;
 import stone.utils.Stone;
@@ -49,8 +44,6 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
     private static final int REQUEST_PERMISSION_SETTINGS = 100;
 
     private EditText stoneCodeEditText;
-    private Button activateButton;
-    private Spinner environmentSpinner;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,32 +51,11 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
         initiateAppWithPermissionCheck(this);
         Stone.setAppName("DEMO APP"); // Setando o nome do APP (obrigatorio)
 
-        activateButton = findViewById(R.id.act_validation_activate_button);
+        Button activateButton = findViewById(R.id.act_validation_activate_button);
         stoneCodeEditText = findViewById(R.id.act_validation_stone_code_edt_txt);
-        environmentSpinner = findViewById(R.id.act_validation_env_spin);
 
-        if(activateButton != null)
+        if (activateButton != null)
             activateButton.setOnClickListener(this);
-
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item);
-
-        for (Environment env : Environment.values()) {
-            adapter.add(env.name());
-        }
-
-        environmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Environment environment = valueOf(adapter.getItem(position));
-//                Stone.setEnvironment(environment);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-//                Stone.setEnvironment(PRODUCTION);
-            }
-        });
-        environmentSpinner.setAdapter(adapter);
 
         Stone.setAppName("Demo SDK");
 
@@ -120,7 +92,7 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
     public void initiateApp() {
         Map<StoneKeyType, String> keys = new HashMap<>();
-        keys.put(StoneKeyType.QRCODE_PROVIDERID, "xxxx");
+        keys.put(StoneKeyType.QRCODE_PROVIDERID, "xxx");
         keys.put(StoneKeyType.QRCODE_AUTHORIZATION, "xxx");
 
         /**
@@ -141,24 +113,18 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
 
     @OnPermissionDenied({Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDenied() {
-        buildPermissionDialog(new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                initiateAppWithPermissionCheck(ValidationActivity.this);
-            }
-        });
+        buildPermissionDialog((dialog, which) ->
+                initiateAppWithPermissionCheck(ValidationActivity.this)
+        );
     }
 
     @OnNeverAskAgain({Manifest.permission.READ_EXTERNAL_STORAGE})
     void showNeverAskAgain() {
-        buildPermissionDialog(new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(ACTION_APPLICATION_DETAILS_SETTINGS);
-                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                intent.setData(uri);
-                startActivityForResult(intent, REQUEST_PERMISSION_SETTINGS);
-            }
+        buildPermissionDialog((dialog, which) -> {
+            Intent intent = new Intent(ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", getPackageName(), null);
+            intent.setData(uri);
+            startActivityForResult(intent, REQUEST_PERMISSION_SETTINGS);
         });
     }
 
@@ -170,12 +136,7 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
 
     @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE})
     void showRationale(final PermissionRequest request) {
-        buildPermissionDialog(new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                request.proceed();
-            }
-        });
+        buildPermissionDialog((dialog, which) -> request.proceed());
     }
 
     private void buildPermissionDialog(OnClickListener listener) {

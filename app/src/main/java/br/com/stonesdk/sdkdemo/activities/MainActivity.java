@@ -50,185 +50,172 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        // Para cada nova opção na lista, um novo "case" precisa ser inserido aqui.
-        switch (v.getId()) {
+        // Para cada nova opção na lista, um novo "if" precisa ser inserido aqui.
+        int id = v.getId();
 
-            case R.id.pairedDevicesOption:
-                Intent devicesIntent = new Intent(MainActivity.this, DevicesActivity.class);
-                startActivity(devicesIntent);
-                break;
+        if (id == R.id.pairedDevicesOption) {
+            Intent devicesIntent = new Intent(MainActivity.this, DevicesActivity.class);
+            startActivity(devicesIntent);
 
-            case R.id.transactionOption:
-                // Verifica se o bluetooth esta ligado e se existe algum pinpad conectado.
-                if (Stone.getPinpadListSize() > 0) {
-                    Intent transactionIntent = new Intent(MainActivity.this, TransactionActivity.class);
-                    startActivity(transactionIntent);
-                    break;
-                } else {
-                    makeText(getApplicationContext(), "Conecte-se a um pinpad.", LENGTH_SHORT).show();
-                    break;
+        } else if (id == R.id.transactionOption) {
+            // Verifica se o bluetooth esta ligado e se existe algum pinpad conectado.
+            if (Stone.getPinpadListSize() > 0) {
+                Intent transactionIntent = new Intent(MainActivity.this, TransactionActivity.class);
+                startActivity(transactionIntent);
+            } else {
+                makeText(getApplicationContext(), "Conecte-se a um pinpad.", LENGTH_SHORT).show();
+            }
+
+        } else if (id == R.id.listTransactionOption) {
+            Intent transactionListIntent = new Intent(MainActivity.this, TransactionListActivity.class);
+            startActivity(transactionListIntent);
+
+        } else if (id == R.id.displayMessageOption) {
+            if (Stone.getPinpadListSize() <= 0) {
+                makeText(getApplicationContext(), "Conecte-se a um pinpad.", LENGTH_SHORT).show();
+                return;
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle("Digite a mensagem para mostrar no pinpad");
+            final EditText editText = new EditText(MainActivity.this);
+            builder.setView(editText);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String text = editText.getText().toString();
+                    DisplayMessageProvider displayMessageProvider =
+                            new DisplayMessageProvider(MainActivity.this, text, Stone.getPinpadFromListAt(0));
+                    displayMessageProvider.execute();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            builder.show();
+
+        } else if (id == R.id.cancelTransactionsOption) {
+            final ReversalProvider reversalProvider = new ReversalProvider(this);
+            reversalProvider.setDialogMessage("Cancelando transações com erro");
+            reversalProvider.setConnectionCallback(new StoneCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    Toast.makeText(MainActivity.this, "Transações canceladas com sucesso", Toast.LENGTH_SHORT).show();
                 }
 
-            case R.id.listTransactionOption:
-                Intent transactionListIntent = new Intent(MainActivity.this, TransactionListActivity.class);
-                startActivity(transactionListIntent);
-                break;
+                @Override
+                public void onError() {
+                    Toast.makeText(MainActivity.this, "Ocorreu um erro durante o cancelamento das tabelas: " + reversalProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            reversalProvider.execute();
 
-            case R.id.displayMessageOption:
-                if (Stone.getPinpadListSize() <= 0) {
-                    makeText(getApplicationContext(), "Conecte-se a um pinpad.", LENGTH_SHORT).show();
-                    break;
+        } else if (id == R.id.deactivateOption) {
+            final ActiveApplicationProvider provider = new ActiveApplicationProvider(MainActivity.this);
+            provider.setDialogMessage("Desativando o aplicativo...");
+            provider.setDialogTitle("Aguarde");
+            provider.setConnectionCallback(new StoneCallbackInterface() {
+                /* Metodo chamado se for executado sem erros */
+                public void onSuccess() {
+                    Intent mainIntent = new Intent(MainActivity.this, ValidationActivity.class);
+                    startActivity(mainIntent);
+                    finish();
                 }
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Digite a mensagem para mostrar no pinpad");
-                final EditText editText = new EditText(MainActivity.this);
-                builder.setView(editText);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String text = editText.getText().toString();
-                        DisplayMessageProvider displayMessageProvider =
-                                new DisplayMessageProvider(MainActivity.this, text, Stone.getPinpadFromListAt(0));
-                        displayMessageProvider.execute();
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-                builder.show();
-                break;
-
-            case R.id.cancelTransactionsOption:
-                final ReversalProvider reversalProvider = new ReversalProvider(this);
-                reversalProvider.setDialogMessage("Cancelando transações com erro");
-                reversalProvider.setConnectionCallback(new StoneCallbackInterface() {
-                    @Override
-                    public void onSuccess() {
-                        Toast.makeText(MainActivity.this, "Transações canceladas com sucesso", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError() {
-                        Toast.makeText(MainActivity.this, "Ocorreu um erro durante o cancelamento das tabelas: " + reversalProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                reversalProvider.execute();
-                break;
-
-            case R.id.deactivateOption:
-                final ActiveApplicationProvider provider = new ActiveApplicationProvider(MainActivity.this);
-                provider.setDialogMessage("Desativando o aplicativo...");
-                provider.setDialogTitle("Aguarde");
-                provider.setConnectionCallback(new StoneCallbackInterface() {
-                    /* Metodo chamado se for executado sem erros */
-                    public void onSuccess() {
-                        Intent mainIntent = new Intent(MainActivity.this, ValidationActivity.class);
-                        startActivity(mainIntent);
-                        finish();
-                    }
-
-                    /* metodo chamado caso ocorra alguma excecao */
-                    public void onError() {
-                        makeText(MainActivity.this, "Erro na ativacao do aplicativo, verifique a lista de erros do provider", LENGTH_SHORT).show();
-                        /* Chame o metodo abaixo para verificar a lista de erros. Para mais detalhes, leia a documentacao: */
-                        Log.e("deactivateOption", "onError: " + provider.getListOfErrors().toString());
-                    }
-                });
-                provider.deactivate();
-                break;
-
-            case R.id.disconnectDeviceOption:
-                if (Stone.getPinpadListSize() > 0) {
-                    Intent closeBluetoothConnectionIntent = new Intent(MainActivity.this, DisconnectPinpadActivity.class);
-                    startActivity(closeBluetoothConnectionIntent);
-                } else {
-                    Toast.makeText(this, "Nenhum device Conectado", Toast.LENGTH_SHORT).show();
+                /* metodo chamado caso ocorra alguma excecao */
+                public void onError() {
+                    makeText(MainActivity.this, "Erro na ativacao do aplicativo, verifique a lista de erros do provider", LENGTH_SHORT).show();
+                    /* Chame o metodo abaixo para verificar a lista de erros. Para mais detalhes, leia a documentacao: */
+                    Log.e("deactivateOption", "onError: " + provider.getListOfErrors().toString());
                 }
-                break;
+            });
+            provider.deactivate();
 
-            case R.id.posTransactionOption:
-                startActivity(new Intent(MainActivity.this, PosTransactionActivity.class));
-                break;
+        } else if (id == R.id.disconnectDeviceOption) {
+            if (Stone.getPinpadListSize() > 0) {
+                Intent closeBluetoothConnectionIntent = new Intent(MainActivity.this, DisconnectPinpadActivity.class);
+                startActivity(closeBluetoothConnectionIntent);
+            } else {
+                Toast.makeText(this, "Nenhum device Conectado", Toast.LENGTH_SHORT).show();
+            }
 
-            case R.id.manageStoneCodeOption:
-                startActivity(new Intent(MainActivity.this, ManageStoneCodeActivity.class));
-                break;
+        } else if (id == R.id.posTransactionOption) {
+            startActivity(new Intent(MainActivity.this, PosTransactionActivity.class));
 
-            case R.id.posValidateCardOption:
-                final PosValidateTransactionByCardProvider posValidateTransactionByCardProvider = new PosValidateTransactionByCardProvider(this);
-                posValidateTransactionByCardProvider.setConnectionCallback(new StoneActionCallback() {
-                    @Override
-                    public void onStatusChanged(final Action action) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(MainActivity.this, action.name(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
+        } else if (id == R.id.manageStoneCodeOption) {
+            startActivity(new Intent(MainActivity.this, ManageStoneCodeActivity.class));
 
-                    @Override
-                    public void onSuccess() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                final List<TransactionObject> transactionsWithCurrentCard = posValidateTransactionByCardProvider.getTransactionsWithCurrentCard();
-                                if (transactionsWithCurrentCard.isEmpty())
-                                    Toast.makeText(MainActivity.this, "Cartão não fez transação.", Toast.LENGTH_SHORT).show();
-                                Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                                Log.i("posValidateCardOption", "onSuccess: " + transactionsWithCurrentCard);
-                            }
-                        });
+        } else if (id == R.id.posValidateCardOption) {
+            final PosValidateTransactionByCardProvider posValidateTransactionByCardProvider = new PosValidateTransactionByCardProvider(this);
+            posValidateTransactionByCardProvider.setConnectionCallback(new StoneActionCallback() {
+                @Override
+                public void onStatusChanged(final Action action) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, action.name(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
 
-                    }
+                @Override
+                public void onSuccess() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            final List<TransactionObject> transactionsWithCurrentCard = posValidateTransactionByCardProvider.getTransactionsWithCurrentCard();
+                            if (transactionsWithCurrentCard.isEmpty())
+                                Toast.makeText(MainActivity.this, "Cartão não fez transação.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                            Log.i("posValidateCardOption", "onSuccess: " + transactionsWithCurrentCard);
+                        }
+                    });
 
-                    @Override
-                    public void onError() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                                Log.e("posValidateCardOption", "onError: " + posValidateTransactionByCardProvider.getListOfErrors());
-                            }
-                        });
-                    }
+                }
 
-                });
-                posValidateTransactionByCardProvider.execute();
-                break;
+                @Override
+                public void onError() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                            Log.e("posValidateCardOption", "onError: " + posValidateTransactionByCardProvider.getListOfErrors());
+                        }
+                    });
+                }
 
-            case R.id.posPrinterProvider:
-                final PosPrintProvider customPosPrintProvider = new PosPrintProvider(getApplicationContext());
-                customPosPrintProvider.addLine("PAN : " + "123");
-                customPosPrintProvider.addLine("DATE/TIME : 01/01/1900");
-                customPosPrintProvider.addLine("AMOUNT : 200.00");
-                customPosPrintProvider.addLine("ATK : 123456789");
-                customPosPrintProvider.addLine("Signature");
-                customPosPrintProvider.addBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.signature));
-                customPosPrintProvider.setConnectionCallback(new StoneCallbackInterface() {
-                    @Override
-                    public void onSuccess() {
-                        Toast.makeText(getApplicationContext(), "Recibo impresso", Toast.LENGTH_SHORT).show();
-                    }
+            });
+            posValidateTransactionByCardProvider.execute();
 
-                    @Override
-                    public void onError() {
-                        Toast.makeText(getApplicationContext(), "Erro ao imprimir: " + customPosPrintProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                customPosPrintProvider.execute();
+        } else if (id == R.id.posPrinterProvider) {
+            final PosPrintProvider customPosPrintProvider = new PosPrintProvider(getApplicationContext());
+            customPosPrintProvider.addLine("PAN : " + "123");
+            customPosPrintProvider.addLine("DATE/TIME : 01/01/1900");
+            customPosPrintProvider.addLine("AMOUNT : 200.00");
+            customPosPrintProvider.addLine("ATK : 123456789");
+            customPosPrintProvider.addLine("Signature");
+            customPosPrintProvider.addBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.signature));
+            customPosPrintProvider.setConnectionCallback(new StoneCallbackInterface() {
+                @Override
+                public void onSuccess() {
+                    Toast.makeText(getApplicationContext(), "Recibo impresso", Toast.LENGTH_SHORT).show();
+                }
 
-            case R.id.posMifareProvider:
-                startActivity(new Intent(MainActivity.this, MifareActivity.class));
-                break;
+                @Override
+                public void onError() {
+                    Toast.makeText(getApplicationContext(), "Erro ao imprimir: " + customPosPrintProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            customPosPrintProvider.execute();
+            // Preserva o fall-through original do switch (case sem break) para MifareActivity.
+            startActivity(new Intent(MainActivity.this, MifareActivity.class));
 
-            default:
-                break;
+        } else if (id == R.id.posMifareProvider) {
+            startActivity(new Intent(MainActivity.this, MifareActivity.class));
         }
     }
 

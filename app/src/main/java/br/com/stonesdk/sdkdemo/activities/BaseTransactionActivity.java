@@ -79,17 +79,14 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
 
     private void radioGroupClick() {
         transactionTypeRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            switch (checkedId) {
-                case R.id.radioPix:
-                case R.id.radioDebit:
-                case R.id.radioVoucher:
-                    installmentsTextView.setVisibility(View.GONE);
-                    installmentsSpinner.setVisibility(View.GONE);
-                    break;
-                case R.id.radioCredit:
-                    installmentsTextView.setVisibility(View.VISIBLE);
-                    installmentsSpinner.setVisibility(View.VISIBLE);
-                    break;
+            if (checkedId == R.id.radioPix
+                    || checkedId == R.id.radioDebit
+                    || checkedId == R.id.radioVoucher) {
+                installmentsTextView.setVisibility(View.GONE);
+                installmentsSpinner.setVisibility(View.GONE);
+            } else if (checkedId == R.id.radioCredit) {
+                installmentsTextView.setVisibility(View.VISIBLE);
+                installmentsSpinner.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -115,21 +112,17 @@ public abstract class BaseTransactionActivity<T extends BaseTransactionProvider>
 
         // Verifica a forma de pagamento selecionada.
         TypeOfTransactionEnum transactionType;
-        switch (transactionTypeRadioGroup.getCheckedRadioButtonId()) {
-            case R.id.radioCredit:
-                transactionType = TypeOfTransactionEnum.CREDIT;
-                break;
-            case R.id.radioDebit:
-                transactionType = TypeOfTransactionEnum.DEBIT;
-                break;
-            case R.id.radioVoucher:
-                transactionType = TypeOfTransactionEnum.VOUCHER;
-                break;
-            case R.id.radioPix:
-                transactionType = TypeOfTransactionEnum.PIX;
-                break;
-            default:
-                transactionType = TypeOfTransactionEnum.CREDIT;
+        int checkedRadioId = transactionTypeRadioGroup.getCheckedRadioButtonId();
+        if (checkedRadioId == R.id.radioCredit) {
+            transactionType = TypeOfTransactionEnum.CREDIT;
+        } else if (checkedRadioId == R.id.radioDebit) {
+            transactionType = TypeOfTransactionEnum.DEBIT;
+        } else if (checkedRadioId == R.id.radioVoucher) {
+            transactionType = TypeOfTransactionEnum.VOUCHER;
+        } else if (checkedRadioId == R.id.radioPix) {
+            transactionType = TypeOfTransactionEnum.PIX;
+        } else {
+            transactionType = TypeOfTransactionEnum.CREDIT;
         }
 
         transactionObject.setInitiatorTransactionKey(null);

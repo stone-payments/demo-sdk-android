@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/environmentTextView"
+        android:id="@+id/act_validation_environment_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -13,34 +13,34 @@
         android:text="Ambiente" />
 
     <Spinner
-        android:id="@+id/environmentSpinner"
+        android:id="@+id/act_validation_env_spin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/environmentTextView"
+        android:layout_below="@id/act_validation_environment_txt"
         android:layout_marginEnd="60dp"
         android:layout_marginStart="60dp" />
 
     <TextView
-        android:id="@+id/stoneCodeTextView"
+        android:id="@+id/act_validation_stone_code_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="Digite o Stone Code" />
 
     <EditText
-        android:id="@+id/stoneCodeEditText"
+        android:id="@+id/act_validation_stone_code_edt_txt"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/stoneCodeTextView"
+        android:layout_below="@+id/act_validation_stone_code_txt"
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:inputType="number" />
 
     <Button
-        android:id="@+id/activateButton"
+        android:id="@+id/act_validation_activate_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/stoneCodeEditText"
+        android:layout_below="@+id/act_validation_stone_code_edt_txt"
         android:layout_centerHorizontal="true"
         android:text="Ativar" />
 </RelativeLayout>

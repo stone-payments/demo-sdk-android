@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -46,22 +47,30 @@ import stone.utils.keys.StoneKeyType;
 public class ValidationActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "ValidationActivity";
     private static final int REQUEST_PERMISSION_SETTINGS = 100;
+
     private EditText stoneCodeEditText;
+    private Button activateButton;
+    private Spinner environmentSpinner;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_validation);
         initiateAppWithPermissionCheck(this);
-//        Stone.setEnvironment(SANDBOX);
         Stone.setAppName("DEMO APP"); // Setando o nome do APP (obrigatorio)
-        findViewById(R.id.activateButton).setOnClickListener(this);
-        stoneCodeEditText = findViewById(R.id.stoneCodeEditText);
-        Spinner environmentSpinner = findViewById(R.id.environmentSpinner);
+
+        activateButton = findViewById(R.id.act_validation_activate_button);
+        stoneCodeEditText = findViewById(R.id.act_validation_stone_code_edt_txt);
+        environmentSpinner = findViewById(R.id.act_validation_env_spin);
+
+        if(activateButton != null)
+            activateButton.setOnClickListener(this);
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item);
+
         for (Environment env : Environment.values()) {
             adapter.add(env.name());
         }
+
         environmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

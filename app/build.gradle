@@ -114,42 +114,42 @@ android {
 configurations {
     ingenicoImplementation {
         dependencies {
-            implementation "br.com.stone:stone-sdk-posandroid-ingenico:$stone_sdk_version"
+            ingenicoImplementation "br.com.stone:stone-sdk-posandroid-ingenico:$stone_sdk_version"
         }
     }
     positivoSeriesLImplementation {
         dependencies {
-            implementation "br.com.stone:stone-sdk-posandroid-positivo:$stone_sdk_version"
+            positivoSeriesLImplementation "br.com.stone:stone-sdk-posandroid-positivo:$stone_sdk_version"
         }
     }
     gertecGpos760DebugImplementation {
         dependencies {
-            implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
+            gertecGpos760DebugImplementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
         }
     }
     gertecGpos760ReleaseImplementation {
         dependencies {
-            implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
+            gertecGpos760ReleaseImplementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
         }
     }
     tectoySeriesTDebugImplementation {
         dependencies {
-            implementation "br.com.stone:stone-sdk-posandroid-tectoy:$stone_sdk_version"
+            tectoySeriesTDebugImplementation "br.com.stone:stone-sdk-posandroid-tectoy:$stone_sdk_version"
         }
     }
     tectoySeriesTReleaseImplementation {
         dependencies {
-            implementation "br.com.stone:stone-sdk-posandroid-tectoy:$stone_sdk_version"
+            tectoySeriesTReleaseImplementation "br.com.stone:stone-sdk-posandroid-tectoy:$stone_sdk_version"
         }
     }
     sunmiLegacyImplementation {
         dependencies {
-            implementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
+            sunmiLegacyImplementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
         }
     }
     sunmiSeriesPImplementation {
         dependencies {
-            implementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
+            sunmiSeriesPImplementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
         }
     }
 }
@@ -161,6 +161,7 @@ dependencies {
     annotationProcessor "com.github.permissions-dispatcher:permissionsdispatcher-processor:4.9.2"
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'com.google.android.material:material:1.13.0'
+    implementation "org.slf4j:slf4j-api:2.0.17"
 
     debugImplementation "com.github.tony19:logback-android:3.0.0"
     debugImplementation "br.com.stone.sdk.android:debugmode:4.0.3"

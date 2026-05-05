@@ -1,0 +1,27 @@
+def keystorePropertiesFile = rootProject.file("signatures/gertec/gertec-keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+
+    signingConfigs {
+        gertecGpos760 {
+            storeFile rootProject.file("signatures/gertec/${keystoreProperties.getProperty('storeFileGpos760', System.env.GERTEC_760_KEYSTORE_FILE)}")
+            keyAlias keystoreProperties.getProperty('keyAliasGpos760', System.env.GERTEC_760_KEYSTORE_ALIAS)
+            keyPassword keystoreProperties.getProperty('keyPasswordGpos760', System.env.GERTEC_760_KEYSTORE_KEY_PASSWORD)
+            storePassword keystoreProperties.getProperty('storePasswordGpos760', System.env.GERTEC_760_KEYSTORE_PASSWORD)
+
+        }
+    }
+
+    productFlavors {
+        gertecGpos760 {
+            dimension "model"
+            signingConfig signingConfigs.gertecGpos760
+            versionNameSuffix "-gertecGpos760"
+        }
+
+    }
+}

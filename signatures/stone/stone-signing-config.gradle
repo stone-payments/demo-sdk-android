@@ -1,0 +1,16 @@
+def keystorePropertiesFile = rootProject.file("signatures/stone/stone-keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    signingConfigs {
+        stone {
+            storeFile rootProject.file("signatures/stone/${keystoreProperties.getProperty('storeFile', System.env.ANDROID_KEYSTORE_FILE)}")
+            keyAlias keystoreProperties.getProperty('keyAlias', System.env.ANDROID_KEYSTORE_ALIAS)
+            keyPassword keystoreProperties.getProperty('keyPassword', System.env.ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD)
+            storePassword keystoreProperties.getProperty('storePassword', System.env.ANDROID_KEYSTORE_PASSWORD)
+        }
+    }
+}

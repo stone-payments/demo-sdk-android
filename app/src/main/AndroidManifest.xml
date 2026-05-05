@@ -52,6 +52,13 @@
         <activity
             android:name=".activities.ManageStoneCodeActivity"
             android:label="@string/title_activity_manage_stone_codes" />
+
+        <activity
+            android:name="br.com.stone.sdk.android.envconfig.data.EnvironmentActivity"
+            android:exported="true"
+            tools:replace="android:exported">
+        </activity>
+
     </application>
 
 </manifest>

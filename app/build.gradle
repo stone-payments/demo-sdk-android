@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply from: '../positivo/positivo-signing-config.gradle'
-apply from: '../gertec/gertec-signing-config.gradle'
-apply from: '../ingenico/ingenico-signing-config.gradle'
-apply from: '../sunmi/sunmi-signing-config.gradle'
-apply from: '../tectoy/tectoy-signing-config.gradle'
+
+apply from: rootProject.file("signatures/positivo/positivo-signing-config.gradle")
+apply from: rootProject.file("signatures/gertec/gertec-signing-config.gradle")
+apply from: rootProject.file("signatures/stone/stone-signing-config.gradle")
 
 android {
     compileSdkVersion 36
     flavorDimensions = ["model"]
+    namespace "br.com.stonesdk.sdkdemo"
 
     defaultConfig {
         applicationId "br.com.stonesdk.sdkdemo"
@@ -21,7 +21,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             signingConfig null
@@ -29,13 +29,128 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     packagingOptions {
         exclude 'META-INF/api_release.kotlin_module'
         exclude 'META-INF/client_release.kotlin_module'
+    }
+
+    flavorDimensions = ["model"]
+
+    productFlavors {
+
+        sunmiLegacy { //Flavor para Sunmi P2A7, usando HAL 1.x
+            dimension "model"
+            signingConfig signingConfigs.stone
+            versionNameSuffix "-sunmiLegacy"
+
+        }
+
+        sunmiSeriesP { //Flavor os novos terminais Sunmi (P2A11), usando HAL 2.x
+            dimension "model"
+            signingConfig signingConfigs.stone
+            versionNameSuffix "-sunmiSeriesP"
+        }
+
+        ingenico {
+            dimension "model"
+            signingConfig signingConfigs.stone
+            versionNameSuffix "-ingenico"
+        }
+
+        tectoySeriesT {
+            dimension "model"
+            signingConfig signingConfigs.stone
+            versionNameSuffix "-tectoySeriesT"
+        }
+    }
+
+    sourceSets {
+        gertecGpos760 {
+            assets {
+                srcDirs 'src/gertecGpos760/assets'
+            }
+        }
+        tectoySeriesT {
+            assets {
+                srcDirs 'src/tectoySeriesT/assets'
+            }
+        }
+        sunmiLegacy {
+            assets {
+                srcDirs 'src/sunmiLegacy/assets'
+            }
+        }
+        sunmiSeriesP {
+            assets {
+                srcDirs 'src/sunmiSeriesP/assets'
+            }
+        }
+
+        positivoSeriesL {
+            assets {
+                srcDirs 'src/positivoSeriesL/assets'
+            }
+        }
+
+        ingenico {
+            assets {
+                srcDirs 'src/ingenico/assets'
+            }
+        }
+
+        main {
+            assets {
+                srcDirs 'src/main/assets'
+            }
+        }
+    }
+
+}
+
+configurations {
+    ingenicoImplementation {
+        dependencies {
+            implementation "br.com.stone:stone-sdk-posandroid-ingenico:$stone_sdk_version"
+        }
+    }
+    positivoSeriesLImplementation {
+        dependencies {
+            implementation "br.com.stone:stone-sdk-posandroid-positivo:$stone_sdk_version"
+        }
+    }
+    gertecGpos760DebugImplementation {
+        dependencies {
+            implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
+        }
+    }
+    gertecGpos760ReleaseImplementation {
+        dependencies {
+            implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
+        }
+    }
+    tectoySeriesTDebugImplementation {
+        dependencies {
+            implementation "br.com.stone:stone-sdk-posandroid-tectoy:$stone_sdk_version"
+        }
+    }
+    tectoySeriesTReleaseImplementation {
+        dependencies {
+            implementation "br.com.stone:stone-sdk-posandroid-tectoy:$stone_sdk_version"
+        }
+    }
+    sunmiLegacyImplementation {
+        dependencies {
+            implementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
+        }
+    }
+    sunmiSeriesPImplementation {
+        dependencies {
+            implementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
+        }
     }
 }
 
@@ -49,16 +164,10 @@ dependencies {
 
     debugImplementation "com.github.tony19:logback-android:3.0.0"
     debugImplementation "br.com.stone.sdk.android:debugmode:4.0.3"
+    debugImplementation "br.com.stone.sdk.android:envconfig:$stone_sdk_version"
 
     implementation "br.com.stone:stone-sdk:$stone_sdk_version"
     implementation "br.com.stone:stone-sdk-posandroid:$stone_sdk_version"
-    ingenicoImplementation "br.com.stone:stone-sdk-posandroid-ingenico:$stone_sdk_version"
-    sunmiImplementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
-    sunmiSeriesPImplementation "br.com.stone:stone-sdk-posandroid-sunmi:$stone_sdk_version"
-    tectoySeriesTImplementation "br.com.stone:stone-sdk-posandroid-tectoy:$stone_sdk_version"
-    gertecGpos700Implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
-    gertecGposSeries7Implementation "br.com.stone:stone-sdk-posandroid-gertec:$stone_sdk_version"
-    positivoSeriesLImplementation "br.com.stone:stone-sdk-posandroid-positivo:$stone_sdk_version"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 

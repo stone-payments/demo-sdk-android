@@ -1,0 +1,12 @@
+# Copy this file to `local.properties` and fill in the values.
+# `local.properties` is gitignored — never commit real credentials.
+#
+# Alternatively, export these as environment variables; env vars take
+# precedence over local.properties:
+#   STONE_QRCODE_PROVIDER_ID
+#   STONE_QRCODE_AUTHORIZATION
+stoneQrcodeProviderId=
+stoneQrcodeAuthorization=
+# PackageCloud tokens used by the root build.gradle for private Maven repos.
+packageCloudReadToken=
+packageCloudReadTokenInternal=

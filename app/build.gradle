@@ -1,6 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+def appLocalProps = new Properties()
+def appLocalPropsFile = rootProject.file('local.properties')
+if (appLocalPropsFile.exists()) {
+    appLocalProps.load(new FileInputStream(appLocalPropsFile))
+}
+
 apply from: rootProject.file("signatures/positivo/positivo-signing-config.gradle")
 apply from: rootProject.file("signatures/gertec/gertec-signing-config.gradle")
 apply from: rootProject.file("signatures/stone/stone-signing-config.gradle")
@@ -10,12 +16,21 @@ android {
     flavorDimensions = ["model"]
     namespace "br.com.stonesdk.sdkdemo"
 
+    buildFeatures {
+        buildConfig true
+    }
+
     defaultConfig {
         applicationId "br.com.stonesdk.sdkdemo"
         minSdkVersion 22
         targetSdkVersion 36
         versionCode 1
         versionName "1.0"
+
+        def qrcodeProviderId = System.env.STONE_QRCODE_PROVIDER_ID ?: (appLocalProps["stoneQrcodeProviderId"] ?: "")
+        def qrcodeAuthorization = System.env.STONE_QRCODE_AUTHORIZATION ?: (appLocalProps["stoneQrcodeAuthorization"] ?: "")
+        buildConfigField "String", "QRCODE_PROVIDER_ID", "\"${qrcodeProviderId}\""
+        buildConfigField "String", "QRCODE_AUTHORIZATION", "\"${qrcodeAuthorization}\""
     }
 
     buildTypes {

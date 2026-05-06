@@ -4,7 +4,6 @@ import static android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
 import static br.com.stonesdk.sdkdemo.activities.ValidationActivityPermissionsDispatcher.initiateAppWithPermissionCheck;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
@@ -24,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.stonesdk.sdkdemo.BuildConfig;
 import br.com.stonesdk.sdkdemo.R;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -92,8 +92,8 @@ public class ValidationActivity extends AppCompatActivity implements View.OnClic
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
     public void initiateApp() {
         Map<StoneKeyType, String> keys = new HashMap<>();
-        keys.put(StoneKeyType.QRCODE_PROVIDERID, "xxx");
-        keys.put(StoneKeyType.QRCODE_AUTHORIZATION, "xxx");
+        keys.put(StoneKeyType.QRCODE_PROVIDERID, BuildConfig.QRCODE_PROVIDER_ID);
+        keys.put(StoneKeyType.QRCODE_AUTHORIZATION, BuildConfig.QRCODE_AUTHORIZATION);
 
         /**
          * Este deve ser, obrigatoriamente, o primeiro metodo

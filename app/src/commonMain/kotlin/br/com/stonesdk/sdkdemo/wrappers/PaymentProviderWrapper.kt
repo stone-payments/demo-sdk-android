@@ -26,7 +26,7 @@ class PaymentProviderWrapper {
                     }
 
                     override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                        launch { send(TransactionStatus.Error) }
+                        launch { send(TransactionStatus.Error(stoneStatus?.message.orEmpty()) )}
                     }
 
                     override fun onEvent(event: PaymentAction) {
@@ -41,7 +41,7 @@ class PaymentProviderWrapper {
 
     sealed class TransactionStatus {
         data object Success : TransactionStatus()
-        data object Error : TransactionStatus()
+        data class Error(val message: String) : TransactionStatus()
         data class StatusChanged(val action: PaymentAction) : TransactionStatus()
     }
 }

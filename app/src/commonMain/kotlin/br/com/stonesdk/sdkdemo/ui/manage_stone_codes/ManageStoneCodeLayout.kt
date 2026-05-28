@@ -13,12 +13,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import br.com.stonesdk.sdkdemo.ui.components.LoadingContent
 import br.com.stonesdk.sdkdemo.ui.manage_stone_codes.ManageStoneCodeViewModel
-import br.com.stonesdk.sdkdemo.ui.manage_stone_codes.MerchantData
+import br.com.stonesdk.sdkdemo.data.MerchantData
+import org.koin.compose.viewmodel.koinViewModel
 
 
 @Composable
 fun ManageStateScreen(
-    viewModel: ManageStoneCodeViewModel = androidx.lifecycle.viewmodel.compose.viewModel { ManageStoneCodeViewModel() }
+    viewModel: ManageStoneCodeViewModel = koinViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -43,15 +44,13 @@ fun ManageStateScreen(
         is ManageStoneCodeViewModel.ManageStoneCodeState.Finish -> {
             with(uiState as ManageStoneCodeViewModel.ManageStoneCodeState.Finish) {
                 ManageStoneCodeContent(modifier = Modifier.fillMaxSize(), merchants, onMerchantDeactived = { affiliationCode ->
-                    viewModel.desactivateMerchant(affiliationCode)
+                    viewModel.deactivateMerchant(affiliationCode)
                 },
                     onMerchantUpate = { affiliationCode ->
                         viewModel.updateMerchant(affiliationCode)
                     })
             }
         }
-
-        else -> {}
     }
 }
 

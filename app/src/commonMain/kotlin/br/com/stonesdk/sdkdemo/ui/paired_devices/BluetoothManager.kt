@@ -1,69 +1,60 @@
 package br.com.stonesdk.sdkdemo.ui.paired_devices
 
-import br.com.stone.sdk.android.error.StoneStatus
+import br.com.stonesdk.sdkdemo.data.BluetoothPreferences
+import br.com.stonesdk.sdkdemo.wrappers.BluetoothConnectStatus
+import br.com.stonesdk.sdkdemo.wrappers.BluetoothDiscoverStatus
+import br.com.stonesdk.sdkdemo.wrappers.BluetoothProviderWrapper
 import co.stone.posmobile.sdk.bluetooth.domain.model.BluetoothDevice
-import co.stone.posmobile.sdk.bluetooth.provider.BluetoothProvider
-import co.stone.posmobile.sdk.callback.StoneResultCallback
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.first
 
-class BluetoothDeviceRepository() {
-    val provider: BluetoothProvider
-        get() = BluetoothProvider.create()
-
-    val scope = CoroutineScope(Dispatchers.IO)
+class BluetoothDeviceRepository(
+    private val bluetoothProviderWrapper: BluetoothProviderWrapper,
+    private val bluetoothPreferences: BluetoothPreferences
+) {
 
     fun startScan(): Flow<BluetoothDevice> = channelFlow {
-
-        provider.discoverPinpad(object : StoneResultCallback<List<BluetoothDevice>> {
-            override fun onSuccess(result: List<BluetoothDevice>) {
-                result.forEach { trySend(it) }
+        when (val result = bluetoothProviderWrapper.discoverPinpad()) {
+            is BluetoothDiscoverStatus.Success -> {
+                result.devices.forEach { trySend(it) }
             }
 
-            override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                close(throwable)
+            is BluetoothDiscoverStatus.Error -> {
+                close()
             }
-        })
+        }
+
         awaitClose {
-            provider.stopDiscover()
+            bluetoothProviderWrapper.stopDiscover()
         }
 
     }
 
     fun stopScan() {
-        provider.stopDiscover()
+        bluetoothProviderWrapper.stopDiscover()
     }
 
     fun disconnect() {
-        provider.disconnect()
+        bluetoothProviderWrapper.disconnect()
+    }
+
+    suspend fun getConnectedBluetoothDevice(): BluetoothDevice? {
+        return bluetoothPreferences.getPreferences()
+    }
+
+    suspend fun saveConnectedBluetoothDevice(
+        deviceName: String,
+        deviceAddress: String
+    ) {
+        bluetoothPreferences.savePreferences(bluetoothName = deviceName, bluetoothAddress = deviceAddress)
     }
 
     suspend fun connect(address: String): Result<Unit> {
-
-        val channel = Channel<Result<Unit>>()
-
-        provider.connect(
-            pinpadAddress = address,
-            stoneResultCallback = object : StoneResultCallback<Boolean> {
-                override fun onSuccess(result: Boolean) {
-                    scope.launch { channel.trySend(Result.success(Unit)) }
-                }
-
-                override fun onError(stoneStatus: StoneStatus?, throwable: Throwable) {
-                    scope.launch { channel.trySend(Result.failure(throwable)) }
-                }
-            }
-
-        )
-        return channel.receive()
+        return when(val connectResult = bluetoothProviderWrapper.connect(address).first()){
+            is BluetoothConnectStatus.Error -> Result.failure(Exception(connectResult.errorMessage))
+            BluetoothConnectStatus.Success -> Result.success(Unit)
+        }
     }
 }

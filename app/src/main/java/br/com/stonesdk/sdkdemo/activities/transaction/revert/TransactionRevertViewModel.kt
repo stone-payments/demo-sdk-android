@@ -2,7 +2,7 @@ package br.com.stonesdk.sdkdemo.activities.transaction.revert
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.stonesdk.sdkdemo.activities.transaction.ReversalProviderWrapper
+import br.com.stonesdk.sdkdemo.wrappers.ReversalProviderWrapper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

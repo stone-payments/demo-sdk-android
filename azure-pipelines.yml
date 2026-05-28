@@ -18,7 +18,7 @@ pr:
 extends:
   template: build.yml@pos-android
   parameters:
-    projectAssembleExcludes: ' -x assembleGertec'
+    projectAssembleExcludes: ''
     projectBuildExcludes: '-x test -x lint'
     positivoJks: true
     gertecJks: true

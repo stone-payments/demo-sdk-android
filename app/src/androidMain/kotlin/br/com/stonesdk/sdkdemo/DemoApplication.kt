@@ -1,33 +1,25 @@
 package br.com.stonesdk.sdkdemo
 
 import android.app.Application
-import android.util.Log
-import co.stone.posmobile.sdk.callback.StoneResultCallback
-import co.stone.posmobile.sdk.merchant.domain.model.Merchant
-import co.stone.posmobile.sdk.stoneStart.provider.StoneStart
+import br.com.stonesdk.sdkdemo.di.initializeKoin
+import br.com.stonesdk.sdkdemo.utils.AppInfo
+import org.koin.android.ext.koin.androidContext
 
 class DemoApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        StoneStart.init(
-            context = this,
-            appName = "",
-            appVersion = "123",
-            packageName = "br.com.example",
-            environment = StoneStart.StoneEnvironment.SANDBOX,
-            callback = object : StoneResultCallback<List<Merchant>> {
-                override fun onSuccess(result: List<Merchant>) {
-                    Log.d("StoneStart", "Success: ${result.size}")
-                }
 
-                override fun onError(
-                    stoneStatus: br.com.stone.sdk.android.error.StoneStatus?,
-                    throwable: Throwable
-                ) {
-                    Log.d("StoneStart", "Error: ${throwable.message}")
-                }
-            }
-        )
+        initializeKoin(
+            platformContext = this@DemoApplication,
+            appInfo = getAppInfo()
+        ){
+            androidContext(this@DemoApplication)
+        }
+    }
+
+    private fun getAppInfo(): AppInfo {
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
+        return AppInfo(packageName, packageInfo.applicationInfo?.loadLabel(packageManager).toString(), packageInfo.versionName ?: "unknown")
     }
 }

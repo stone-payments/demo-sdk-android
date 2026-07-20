@@ -13,7 +13,7 @@ android {
     compileSdk = 35
     defaultConfig {
         applicationId "br.com.stonesdk.sdkdemo"
-        minSdkVersion 22
+        minSdkVersion 23
         targetSdkVersion 34
         versionCode 1
         versionName "1.0"
@@ -30,6 +30,7 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
     }
     packagingOptions {
         exclude 'META-INF/api_release.kotlin_module'
@@ -59,4 +60,5 @@ dependencies {
     testImplementation "org.junit.platform:junit-platform-launcher:1.7.1"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:5.7.1"
     testImplementation "org.junit.vintage:junit-vintage-engine:5.7.1"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 }

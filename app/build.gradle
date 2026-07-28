@@ -36,6 +36,14 @@ android {
         exclude 'META-INF/client_release.kotlin_module'
     }
 }
+kotlin {
+    compilerOptions {
+        // Must match compileOptions above. Without this the Kotlin target defaults
+        // to the JDK running Gradle (21 with Android Studio's JBR), which fails the
+        // JVM-target consistency check against javac's 17.
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+    }
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'

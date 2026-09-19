@@ -8,6 +8,9 @@ Inclua no arquivo **local.properties**, localizado na raiz do projeto, a variáv
 packageCloudReadToken=SEU_TOKEN
 ```
 
+## Permissao Bluetooth
+Em dispositivos com Android 12 ou superior, o app solicita a permissao `BLUETOOTH_CONNECT` em tempo de execucao antes de listar pinpads pareados ou iniciar a conexao Bluetooth.
+
 ---
 #### LICENSE
 ```

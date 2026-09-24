@@ -8,6 +8,11 @@ on:
         type: string
         default: ''
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   call-dx-labeler:
     uses: stone-payments/github-runner-validator/.github/workflows/dx-labeler.yaml@main

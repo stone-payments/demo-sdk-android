@@ -32,12 +32,25 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
     packagingOptions {
         exclude 'META-INF/api_release.kotlin_module'
         exclude 'META-INF/client_release.kotlin_module'
     }
 
 
+}
+// PRJHW-7286: versao do netclient usada pela NetClientTestActivity. O SDK 6.0.9-PR resolve 3.6.1.5.
+def netclientVersion = '3.6.1.15'
+configurations.configureEach {
+    resolutionStrategy.eachDependency { details ->
+        // Alinha todos os modulos do netclient (inclusive os transitivos do SDK) na mesma versao.
+        if (details.requested.group == 'br.com.stone.posandroid.net') {
+            details.useVersion(netclientVersion)
+        }
+    }
 }
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -59,6 +72,13 @@ dependencies {
     gertecGposSeries7Implementation "br.com.stone:stone-sdk-posandroid-gertec-series7:$stone_sdk_version"
     positivoSeriesLImplementation "br.com.stone:stone-sdk-posandroid-positivo:$stone_sdk_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    // Netclient so esta no classpath de execucao (transitivo do SDK). Declarado aqui para a tela
+    // NetClientTestActivity (PRJHW-7286) compilar. Mesma versao que o SDK 6.0.9-PR ja resolve.
+    // transitive = false: o POM dessas libs aponta para artefatos raiz inexistentes nessa versao.
+    implementation("br.com.stone.posandroid.net:client-android:$netclientVersion") { transitive = false }
+    implementation("br.com.stone.posandroid.net:core-android:$netclientVersion") { transitive = false }
+    implementation("br.com.stone.posandroid.net:common-android:$netclientVersion") { transitive = false }
+    implementation("br.com.stone.posandroid.net:phc-common-android:$netclientVersion") { transitive = false }
     testImplementation "io.mockk:mockk:1.10.6"
     testImplementation "org.junit.platform:junit-platform-launcher:1.7.1"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:5.7.1"

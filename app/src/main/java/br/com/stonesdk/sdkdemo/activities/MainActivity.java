@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.posValidateCardOption).setOnClickListener(this);
         findViewById(R.id.posPrinterProvider).setOnClickListener(this);
         findViewById(R.id.posMifareProvider).setOnClickListener(this);
+        findViewById(R.id.netClientTestOption).setOnClickListener(this);
     }
 
     @Override
@@ -197,6 +198,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             customPosPrintProvider.execute();
         } else if (id == R.id.posMifareProvider) {
             startActivity(new Intent(MainActivity.this, MifareActivity.class));
+        } else if (id == R.id.netClientTestOption) {
+            startActivity(new Intent(MainActivity.this, NetClientTestActivity.class));
         }
     }
 }

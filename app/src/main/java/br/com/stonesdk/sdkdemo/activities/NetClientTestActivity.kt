@@ -205,9 +205,11 @@ class NetClientTestActivity : AppCompatActivity() {
     }
 
     private fun client(): NetworkingClient =
-        client ?: NetClientFactoryHelper.create(10_000L, 30_000L, 30_000L, 30_000L).also {
+        // Timeouts iguais aos padroes da lib (NetClientConfig): connect/read/write 10 s e socket 30 s.
+        client ?: NetClientFactoryHelper.create(10_000L, 10_000L, 10_000L, 30_000L).also {
             client = it
-            log("-- NetworkingClient criado (ConnectionType.DEFAULT, via NetClientFactoryHelper)")
+            log("-- NetworkingClient criado (ConnectionType.DEFAULT, via NetClientFactoryHelper, " +
+                "timeouts connect=10000 read=10000 write=10000 socket=30000 ms)")
         }
 
     private fun disconnect() {
@@ -226,13 +228,13 @@ class NetClientTestActivity : AppCompatActivity() {
             val connects = response.events.count { it.eventType == EventType.CONNECTION }
             val sends = response.events.count { it.eventType == EventType.SEND }
             val verdict = if (connects == 0) "REUSOU socket" else "ABRIU socket ($connects connect)"
-            log("[$name] HTTP ${response.statusCode} ${response.protocol} | CONNECTION=$connects SEND=$sends | ${elapsed}ms | $verdict")
+            log("[$name] metodo=${selectedMethod()} keep-alive=${keepAliveCheck.isChecked} -> HTTP ${response.statusCode} ${response.protocol} | CONNECTION=$connects SEND=$sends | ${elapsed}ms | $verdict")
             response.events.forEach {
                 log("    evento ${it.eventType} ${it.endTime - it.beginTime}ms erro=${it.error?.javaClass?.simpleName}")
             }
             connects
         } catch (t: Throwable) {
-            log("[$name] FALHOU em ${System.currentTimeMillis() - started}ms: ${t.javaClass.simpleName}: ${t.message}")
+            log("[$name] metodo=${selectedMethod()} keep-alive=${keepAliveCheck.isChecked} -> FALHOU em ${System.currentTimeMillis() - started}ms: ${t.javaClass.simpleName}: ${t.message}")
             generateSequence(t.cause) { it.cause }.take(4).forEach { log("    causa: ${it.javaClass.name}: ${it.message}") }
             t.stackTrace.take(6).forEach { log("    at $it") }
             null
